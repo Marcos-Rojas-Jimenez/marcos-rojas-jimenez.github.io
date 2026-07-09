@@ -2662,3 +2662,95 @@ details[open] s*mmary::before {
   transform: translateY(-3px) !important;
   border-color: rgba(122,167,255,0.38) !important;
 }
+
+.profile-card {
+  max-width: 520px !important;
+  padding: 32px !important;
+  border-radius: 34px !important;
+  background: linear-gradient(180deg, rgba(24,31,50,0.98), rgba(9,14,27,0.97)) !important;
+  border: 1px solid rgba(122,167,255,0.28) !important;
+  box-shadow: 0 38px 110px rgba(0,0,0,0.48), 0 0 42px rgba(122,167,255,0.08) !important;
+}
+
+.profile-card .card-label {
+  display: inline-flex !important;
+  margin-bottom: 18px !important;
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(122,167,255,0.12) !important;
+  border: 1px solid rgba(122,167,255,0.25) !important;
+  color: #a9c2ff !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.14em !important;
+  font-weight: 950 !important;
+}
+
+.profile-card .focus-row {
+  padding: 18px 20px !important;
+  border-radius: 22px !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.085), rgba(255,255,255,0.045)) !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  margin-top: 14px !important;
+}
+
+.profile-card .focus-row span {
+  color: #aab6c8 !important;
+  font-size: 0.95rem !important;
+}
+
+.profile-card .focus-row strong {
+  color: #ffffff !important;
+  font-size: 1.08rem !important;
+}
+
+.profile-card .focus-row:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(122,167,255,0.38) !important;
+  background: linear-gradient(180deg, rgba(122,167,255,0.14), rgba(255,255,255,0.055)) !important;
+}
+
+.profile-card::after {
+  content: "Career Target\A SOC Analyst L1 · Blue Team Junior" !important;
+  white-space: pre-line !important;
+  display: block !important;
+  position: static !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: auto !important;
+  height: auto !important;
+  margin-top: 14px !important;
+  padding: 18px 20px !important;
+  border-radius: 22px !important;
+  background: linear-gradient(135deg, rgba(122,167,255,0.18), rgba(167,139,250,0.16)) !important;
+  border: 1px solid rgba(122,167,255,0.36) !important;
+  color: #ffffff !important;
+  font-weight: 900 !important;
+  line-height: 1.55 !important;
+  pointer-events: none !important;
+}
+
+
+/* Current Focus card upgrade */
+.profile-card {
+  max-width: 520px !important;
+  padding: 34px !important;
+}
+
+.profile-card .focus-row {
+  padding: 20px 22px !important;
+  margin-top: 14px !important;
+  border-radius: 22px !important;
+}
+
+.profile-card .career-row {
+  background: linear-gradient(135deg, rgba(122,167,255,0.18), rgba(167,139,250,0.16)) !important;
+  border-color: rgba(122,167,255,0.38) !important;
+}
+
+.profile-card .career-row span {
+  color: #c7d7ff !important;
+}
+
+.profile-card .career-row strong {
+  color: #ffffff !important;
+}
