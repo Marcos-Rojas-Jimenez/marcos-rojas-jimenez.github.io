@@ -19,12 +19,13 @@
       <button class="nav-toggle" id="navToggle" aria-label="Open menu">Menu</button>
 
       <div class="nav-links" id="navLinks">
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="projects.html">Projects</a>
-        <a href="#training">Training</a>
-        <a href="#contact">Contact</a>
-      </div>
+<a href="#about">About</a>
+<a href="#skills">Skills</a>
+<a href="projects.html">Projects</a>
+<a href="#training">Training</a>
+<a href="#certifications">Certifications</a>
+<a href="#contact">Contact</a>
+</div>
     </nav>
   </header>
 
@@ -128,71 +129,137 @@
   </div>
 </section>
 
-<section id="skills" class="section">
-      <div class="shell">
-        <div class="section-head reveal">
-          <p class="kicker">Skills</p>
-          <h2>Technical capabilities.</h2>
-          <p>Grouped skills for SOC, systems, email security and automation roles.</p>
+<section id="skills" class="section skills-section">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Skills</p>
+      <h2>Technical skills matrix.</h2>
+      <p>
+        A compact overview of the technical areas I am developing across SOC monitoring,
+        Blue Team operations, email security, systems, networking and automation.
+      </p>
+    </div>
+
+    <div class="skills-matrix reveal">
+
+      <article class="skill-category soc">
+        <div class="skill-category-head">
+          <span>01</span>
+          <h3>SOC and Blue Team</h3>
         </div>
-
-        <div class="skill-tabs reveal">
-          <button class="skill-tab active" data-tab="soc">SOC</button>
-          <button class="skill-tab" data-tab="email">Email Security</button>
-          <button class="skill-tab" data-tab="systems">Systems</button>
-          <button class="skill-tab" data-tab="automation">Automation</button>
+        <p>
+          Security monitoring, alert triage, log analysis and evidence-based investigation
+          focused on defensive operations.
+        </p>
+        <div class="skill-pills">
+          <span>SOC Monitoring</span>
+          <span>Alert Triage</span>
+          <span>Log Analysis</span>
+          <span>Threat Detection</span>
+          <span>Incident Response Fundamentals</span>
+          <span>Evidence Handling</span>
+          <span>Security Event Analysis</span>
+          <span>SIEM Fundamentals</span>
         </div>
+      </article>
 
-        <div class="skill-box reveal">
-          <div class="skill-panel active" id="soc">
-            <span>SOC Monitoring</span>
-            <span>Log Analysis</span>
-            <span>Incident Triage</span>
-            <span>Security Monitoring</span>
-            <span>Evidence Handling</span>
-            <span>Technical Reporting</span>
-          </div>
-
-          <div class="skill-panel" id="email">
-            <span>SPF</span>
-            <span>DKIM</span>
-            <span>DMARC</span>
-            <span>DNSSEC</span>
-            <span>MTA-STS</span>
-            <span>TLS-RPT</span>
-            <span>Postfix</span>
-            <span>Dovecot</span>
-            <span>OpenDKIM</span>
-            <span>OpenDMARC</span>
-            <span>OpenARC</span>
-          </div>
-
-          <div class="skill-panel" id="systems">
-            <span>Linux</span>
-            <span>Windows</span>
-            <span>TCP/IP</span>
-            <span>DNS</span>
-            <span>DHCP</span>
-            <span>Routing</span>
-            <span>Firewall Concepts</span>
-            <span>TLS</span>
-          </div>
-
-          <div class="skill-panel" id="automation">
-            <span>Python</span>
-            <span>Bash</span>
-            <span>Pandas</span>
-            <span>Dash</span>
-            <span>Plotly</span>
-            <span>Git</span>
-            <span>GitHub Pages</span>
-            <span>Render</span>
-          </div>
+      <article class="skill-category email">
+        <div class="skill-category-head">
+          <span>02</span>
+          <h3>Email Security</h3>
         </div>
-      </div>
-    </section>
+        <p>
+          Defensive email security controls, domain authentication, spoofing validation
+          and secure mail infrastructure.
+        </p>
+        <div class="skill-pills">
+          <span>SPF</span>
+          <span>DKIM</span>
+          <span>DMARC</span>
+          <span>DNSSEC</span>
+          <span>MTA-STS</span>
+          <span>TLS-RPT</span>
+          <span>OpenDKIM</span>
+          <span>OpenDMARC</span>
+          <span>OpenARC</span>
+          <span>Email Header Analysis</span>
+          <span>Spoofing Simulation</span>
+        </div>
+      </article>
 
-    <section id="projects" class="section">
+      <article class="skill-category systems">
+        <div class="skill-category-head">
+          <span>03</span>
+          <h3>Systems and Networking</h3>
+        </div>
+        <p>
+          Technical foundation in Linux, Windows, network fundamentals, troubleshooting
+          and secure infrastructure concepts.
+        </p>
+        <div class="skill-pills">
+          <span>Linux</span>
+          <span>Windows</span>
+          <span>TCP/IP</span>
+          <span>DNS</span>
+          <span>DHCP</span>
+          <span>Routing</span>
+          <span>Switching</span>
+          <span>Firewall Concepts</span>
+          <span>TLS</span>
+          <span>Network Troubleshooting</span>
+        </div>
+      </article>
+
+      <article class="skill-category automation">
+        <div class="skill-category-head">
+          <span>04</span>
+          <h3>Automation and Dashboarding</h3>
+        </div>
+        <p>
+          Scripting, data processing, dashboards and automation workflows for security
+          monitoring and technical reporting.
+        </p>
+        <div class="skill-pills">
+          <span>Python</span>
+          <span>Bash</span>
+          <span>Pandas</span>
+          <span>Dash</span>
+          <span>Plotly</span>
+          <span>CSV Processing</span>
+          <span>Data Visualization</span>
+          <span>SOC Dashboards</span>
+          <span>Git</span>
+          <span>GitHub Pages</span>
+          <span>Render</span>
+        </div>
+      </article>
+
+      <article class="skill-category methods">
+        <div class="skill-category-head">
+          <span>05</span>
+          <h3>Security Methodology</h3>
+        </div>
+        <p>
+          Practical approach based on validation, documentation, risk awareness,
+          evidence collection and sanitized public reporting.
+        </p>
+        <div class="skill-pills">
+          <span>Technical Documentation</span>
+          <span>Incident Reporting</span>
+          <span>Anomaly Detection</span>
+          <span>Fault Diagnosis</span>
+          <span>Risk Awareness</span>
+          <span>Security Testing</span>
+          <span>Defensive Validation</span>
+          <span>Public Data Sanitization</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="projects" class="section">
       <div class="shell">
         <div class="section-head reveal">
           <p class="kicker">Projects</p>
@@ -349,6 +416,10 @@
   <script src="main.js"></script>
 </body>
 </html>
+
+
+
+
 
 
 
