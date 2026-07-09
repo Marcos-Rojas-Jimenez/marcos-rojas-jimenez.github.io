@@ -9,18 +9,14 @@
 </head>
 
 <body>
-  <div class="page-orb orb-one"></div>
-  <div class="page-orb orb-two"></div>
-  <div class="noise-layer"></div>
-
   <header class="topbar">
     <nav class="nav shell">
-      <a class="brand" href="#home" aria-label="Go to home">
+      <a class="brand" href="#home">
         <span class="brand-mark">MR</span>
-        <span class="brand-text">Marcos Rojas</span>
+        <span>Marcos Rojas</span>
       </a>
 
-      <button class="nav-toggle" id="navToggle" aria-label="Open navigation menu">☰</button>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">Menu</button>
 
       <div class="nav-links" id="navLinks">
         <a href="#about">About</a>
@@ -34,131 +30,120 @@
 
   <main>
     <section id="home" class="hero">
-      <div class="shell hero-layout">
+      <div class="shell hero-grid">
         <div class="hero-copy reveal">
-          <div class="status-pill">
-            <span class="pulse"></span>
-            Available for SOC, Blue Team and Cybersecurity Junior roles
-          </div>
+          <p class="kicker">Cybersecurity Portfolio</p>
 
-          <h1>
-            Cybersecurity portfolio built around
-            <span>defensive security</span>
-            and real evidence.
-          </h1>
+          <h1>Marcos Rojas Jimenez</h1>
+
+          <p class="role">Junior Cybersecurity Analyst</p>
 
           <p class="hero-text">
-            Junior cybersecurity profile focused on SOC monitoring, Blue Team workflows,
-            Linux systems, email security, log analysis, evidence handling and technical reporting.
+            Defensive security, SOC analysis and technical projects built with evidence,
+            clarity and real-world validation.
           </p>
 
-          <div class="hero-actions">
+          <div class="actions">
             <a class="btn primary" href="#projects">View projects</a>
             <a class="btn secondary" href="#skills">Explore skills</a>
             <a class="btn ghost" href="mailto:marcosrojasjimenez2@gmail.com">Contact</a>
           </div>
-
-          <div class="quick-metrics">
-            <div>
-              <strong>Blue Team</strong>
-              <span>Defensive focus</span>
-            </div>
-            <div>
-              <strong>SOC</strong>
-              <span>Monitoring and evidence</span>
-            </div>
-            <div>
-              <strong>Python</strong>
-              <span>Automation and dashboards</span>
-            </div>
-          </div>
         </div>
 
-        <aside class="hero-console reveal">
-          <div class="console-card">
-            <div class="console-header">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
+        <aside class="profile-card reveal">
+          <p class="card-label">Current focus</p>
 
-            <div class="console-body">
-              <p><span class="prompt">portfolio@marcos:~$</span> whoami</p>
-              <p class="output">Marcos Rojas Jimenez</p>
-
-              <p><span class="prompt">portfolio@marcos:~$</span> focus</p>
-              <p class="output">SOC · Blue Team · Email Security · Linux</p>
-
-              <p><span class="prompt">portfolio@marcos:~$</span> run</p>
-              <p class="output success"><span id="typingText"></span><span class="cursor">█</span></p>
-            </div>
+          <div class="focus-row">
+            <span>SOC Monitoring</span>
+            <strong>Blue Team</strong>
           </div>
 
-          <div class="mini-dashboard">
-            <div class="mini-title">Portfolio Signals</div>
-            <div class="mini-row"><span>Featured project</span><strong>LIVE</strong></div>
-            <div class="mini-row"><span>Case study</span><strong>PUBLIC</strong></div>
-            <div class="mini-row"><span>Dashboard</span><strong>ONLINE</strong></div>
+          <div class="focus-row">
+            <span>Email Security</span>
+            <strong>SPF · DKIM · DMARC</strong>
+          </div>
+
+          <div class="focus-row">
+            <span>Automation</span>
+            <strong>Python · Dash</strong>
           </div>
         </aside>
       </div>
     </section>
 
     <section id="about" class="section">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">About Me</p>
+      <h2>Defensive cybersecurity profile with a technical systems background.</h2>
+      <p>
+        I am a junior cybersecurity professional focused on defensive security, SOC monitoring,
+        Blue Team operations and email security. My background combines Telecommunications and
+        Computer Systems training with a Cybersecurity Master's Degree, giving me a practical
+        foundation in networking, Linux systems, troubleshooting, infrastructure maintenance and
+        secure service configuration.
+      </p>
+
+      <p>
+        During my cybersecurity training, I developed PhisDefense SOC & Email Security Lab, a
+        practical project based on a real VPS Ubuntu environment. The project involved deploying
+        and validating a secure mail infrastructure with Postfix, Dovecot, OpenDKIM, OpenDMARC,
+        OpenARC, SPF, DKIM, DMARC p=reject, DNSSEC, MTA-STS, TLS-RPT, STARTTLS and IMAPS TLS.
+      </p>
+
+      <p>
+        Before specializing in cybersecurity, I gained technical experience in environments that
+        required anomaly detection, fault diagnosis, structured reporting, technical documentation
+        and attention to detail. These skills are directly transferable to SOC monitoring, alert
+        triage, incident analysis and evidence-based investigation.
+      </p>
+    </div>
+
+    <div class="cards three">
+      <article class="card reveal">
+        <h3>Technical Background</h3>
+        <p>
+          Training in Telecommunications, Computer Systems and Cybersecurity, with practical
+          experience in networking fundamentals, troubleshooting, documentation, anomaly
+          detection and technical incident reporting.
+        </p>
+      </article>
+
+      <article class="card reveal">
+        <h3>Cybersecurity Focus</h3>
+        <p>
+          Focused on SOC monitoring, Blue Team workflows, log analysis, email security, Linux
+          systems, evidence handling and defensive validation through practical projects.
+        </p>
+      </article>
+
+      <article class="card reveal">
+        <h3>Professional Direction</h3>
+        <p>
+          Seeking junior opportunities in SOC analysis, security monitoring, Blue Team operations,
+          threat detection, incident response fundamentals and defensive cybersecurity operations.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="skills" class="section">
       <div class="shell">
         <div class="section-head reveal">
-          <p class="section-kicker">About</p>
-          <h2>Defensive cybersecurity profile.</h2>
-          <p>
-            I combine systems knowledge, networking fundamentals and practical cybersecurity projects
-            to build a profile oriented to SOC, Blue Team and defensive operations.
-          </p>
-        </div>
-
-        <div class="info-grid">
-          <article class="panel reveal">
-            <h3>Profile</h3>
-            <p>
-              Background in Telecommunications, IT Systems and a Master's in Cybersecurity.
-              Current focus: SOC monitoring, log analysis, Linux systems, defensive validation and email security.
-            </p>
-          </article>
-
-          <article class="panel reveal">
-            <h3>Objective</h3>
-            <p>
-              Open to opportunities as SOC Analyst L1, Junior Cybersecurity Analyst,
-              Security Monitoring Analyst or technical roles related to defensive security.
-            </p>
-          </article>
-
-          <article class="panel reveal">
-            <h3>Method</h3>
-            <p>
-              I build practical labs, validate controls with evidence and present results through
-              documentation, dashboards and public case studies.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="skills" class="section">
-      <div class="shell">
-        <div class="section-head reveal">
-          <p class="section-kicker">Skills</p>
+          <p class="kicker">Skills</p>
           <h2>Technical capabilities.</h2>
-          <p>Grouped skills prepared for SOC, systems, email security and automation roles.</p>
+          <p>Grouped skills for SOC, systems, email security and automation roles.</p>
         </div>
 
         <div class="skill-tabs reveal">
-          <button class="skill-tab active" data-tab="soc">SOC and Blue Team</button>
+          <button class="skill-tab active" data-tab="soc">SOC</button>
           <button class="skill-tab" data-tab="email">Email Security</button>
-          <button class="skill-tab" data-tab="systems">Systems and Networking</button>
+          <button class="skill-tab" data-tab="systems">Systems</button>
           <button class="skill-tab" data-tab="automation">Automation</button>
         </div>
 
-        <div class="skill-panels reveal">
+        <div class="skill-box reveal">
           <div class="skill-panel active" id="soc">
             <span>SOC Monitoring</span>
             <span>Log Analysis</span>
@@ -210,14 +195,14 @@
     <section id="projects" class="section">
       <div class="shell">
         <div class="section-head reveal">
-          <p class="section-kicker">Projects</p>
-          <h2>Featured technical work.</h2>
-          <p>Projects are presented as independent case studies, each with its own technical focus.</p>
+          <p class="kicker">Projects</p>
+          <h2>Technical work.</h2>
+          <p>Independent case studies with different technical focus areas.</p>
         </div>
 
-        <div class="project-layout">
-          <article class="feature-project reveal">
-            <div class="project-label">Featured project</div>
+        <article class="project-card reveal">
+          <div>
+            <p class="project-label">Featured project</p>
             <h3>PhisDefense SOC and Email Security Lab</h3>
             <p>
               Defensive email security and SOC monitoring lab based on a real mail security environment.
@@ -225,27 +210,38 @@
               OpenDKIM, OpenDMARC, OpenARC and an interactive Python/Dash dashboard.
             </p>
 
-            <div class="project-metrics">
-              <div><strong>270</strong><span>tests</span></div>
-              <div><strong>190</strong><span>SOC events</span></div>
-              <div><strong>p=reject</strong><span>DMARC</span></div>
-            </div>
-
             <div class="project-actions">
-              <a class="btn primary" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">View case study</a>
+              <a class="btn primary" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">Case study</a>
               <a class="btn secondary" href="https://phisdefense-email-security-soc.onrender.com" target="_blank" rel="noopener">Live dashboard</a>
             </div>
+          </div>
+
+          <div class="project-stats">
+            <div>
+              <strong>270</strong>
+              <span>tests</span>
+            </div>
+
+            <div>
+              <strong>190</strong>
+              <span>SOC events</span>
+            </div>
+
+            <div>
+              <strong>p=reject</strong>
+              <span>DMARC policy</span>
+            </div>
+          </div>
+        </article>
+
+        <div class="cards two future-projects">
+          <article class="card reveal">
+            <h3>Future Cloud Security Lab</h3>
+            <p>Reserved for future cloud and infrastructure security projects.</p>
           </article>
 
-          <article class="future-card reveal">
-            <span>Future slot</span>
-            <h3>Cloud Security Lab</h3>
-            <p>Reserved for future cloud or infrastructure security projects.</p>
-          </article>
-
-          <article class="future-card reveal">
-            <span>Future slot</span>
-            <h3>DFIR or Automation Project</h3>
+          <article class="card reveal">
+            <h3>Future DFIR or Automation Project</h3>
             <p>Reserved for future forensic, monitoring or automation work.</p>
           </article>
         </div>
@@ -255,38 +251,92 @@
     <section id="training" class="section">
       <div class="shell">
         <div class="section-head reveal">
-          <p class="section-kicker">Training</p>
+          <p class="kicker">Training</p>
           <h2>Education and learning path.</h2>
         </div>
 
         <div class="timeline reveal">
-          <div class="timeline-item">
+          <div>
             <span>2026</span>
-            <div>
-              <h3>Master's in Cybersecurity</h3>
-              <p>Defensive security, SOC operations, systems security, networking and technical projects.</p>
-            </div>
+            <h3>Master's in Cybersecurity</h3>
+            <p>Defensive security, SOC operations, systems security, networking and technical projects.</p>
           </div>
 
-          <div class="timeline-item">
+          <div>
             <span>IT</span>
-            <div>
-              <h3>Systems and Telecommunications background</h3>
-              <p>Foundations in networking, infrastructure, TCP/IP, troubleshooting and systems.</p>
-            </div>
+            <h3>Systems and Telecommunications background</h3>
+            <p>Foundations in networking, infrastructure, TCP/IP, troubleshooting and systems.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="contact" class="section contact-section">
+    <section id="certifications" class="section">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Certifications</p>
+      <h2>Certifications and learning path.</h2>
+      <p>
+        A visual overview of completed, in-progress and planned certifications related to networking,
+        SOC analysis, Blue Team operations and defensive cybersecurity.
+      </p>
+    </div>
+
+    <div class="cert-grid">
+
+      <article class="cert-card reveal">
+        <div class="cert-image">
+          <img src="assets/certifications/ccna-introduction-to-networks.webp" alt="CCNA Introduction to Networks certificate" />
+        </div>
+        <div class="cert-content">
+          <span class="cert-status completed">Completed</span>
+          <h3>CCNA: Introduction to Networks</h3>
+          <p>
+            Cisco Networking Academy certification focused on networking fundamentals,
+            TCP/IP, routing, switching, addressing and basic network troubleshooting.
+          </p>
+        </div>
+      </article>
+
+      <article class="cert-card reveal">
+        <div class="cert-image">
+          <img src="assets/certifications/tryhackme-sal1.png" alt="TryHackMe SOC Analyst Level 1 certificate" />
+        </div>
+        <div class="cert-content">
+          <span class="cert-status progress">In progress</span>
+          <h3>SOC Analyst Level 1</h3>
+          <p>
+            TryHackMe learning path focused on SOC fundamentals, alert triage,
+            log analysis, security monitoring and practical Blue Team workflows.
+          </p>
+        </div>
+      </article>
+
+      <article class="cert-card reveal">
+        <div class="cert-image">
+          <img src="assets/certifications/btl1.jpg" alt="Blue Team Level 1 certificate" />
+        </div>
+        <div class="cert-content">
+          <span class="cert-status planned">Coming soon</span>
+          <h3>Blue Team Level 1</h3>
+          <p>
+            Planned certification focused on practical Blue Team skills, defensive analysis,
+            incident handling, security operations and investigation methodology.
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+<section id="contact" class="section">
       <div class="shell">
         <div class="contact-card reveal">
-          <p class="section-kicker">Contact</p>
+          <p class="kicker">Contact</p>
           <h2>Open to cybersecurity junior opportunities.</h2>
           <p>Available for opportunities in Spain and remote positions.</p>
 
-          <div class="contact-actions">
+          <div class="actions center">
             <a class="btn primary" href="mailto:marcosrojasjimenez2@gmail.com">Email me</a>
             <a class="btn secondary" href="https://github.com/Marcos-Rojas-Jimenez" target="_blank" rel="noopener">GitHub</a>
             <a class="btn ghost" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">Main project</a>
@@ -299,3 +349,7 @@
   <script src="main.js"></script>
 </body>
 </html>
+
+
+
+
