@@ -119,3 +119,16 @@ if (projectCard) {
     projectCard.style.transform = "";
   });
 }
+
+const allCards = document.querySelectorAll(".card, .skill-category, .compact-project-card, .cert-card");
+
+allCards.forEach((card) => {
+  card.addEventListener("mousemove", (event) => {
+    const rect = card.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    card.style.setProperty("--mouse-x", `${x}px`);
+    card.style.setProperty("--mouse-y", `${y}px`);
+  });
+});
