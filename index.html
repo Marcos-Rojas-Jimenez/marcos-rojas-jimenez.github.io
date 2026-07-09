@@ -104,6 +104,46 @@
     box-shadow: 0 24px 60px rgba(0,0,0,0.34), 0 0 30px rgba(122,167,255,0.12) !important;
   }
 </style>
+<style id="final-cta-click-fix">
+  #projects .compact-project-card,
+  #projects .compact-project-header,
+  #projects .compact-project-header div {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #projects .compact-project-card::before,
+  #projects .compact-project-card::after,
+  #projects .btn::before,
+  #projects .btn::after {
+    display: none !important;
+    pointer-events: none !important;
+  }
+
+  #projects .compact-project-header {
+    display: block !important;
+  }
+
+  #projects .compact-cta {
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 250px !important;
+    height: 58px !important;
+    margin-top: 22px !important;
+    padding: 0 28px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    isolation: isolate !important;
+  }
+
+  #projects .compact-project-card * {
+    pointer-events: auto;
+  }
+</style>
 </head>
 
 <body>
@@ -424,47 +464,95 @@
       </div>
 
       <div class="project-dark-accordion">
-        <details open>
-          <summary>Project objective</summary>
-          <p>
-            Build a defensive email security lab where controls were not only configured,
-            but also tested, documented and validated with technical evidence.
-          </p>
-        </details>
+  <details open>
+    <summary>Project objective</summary>
+    <p>
+      Build a defensive email security lab where controls were not only configured, but also tested,
+      documented and validated with technical evidence.
+    </p>
+    <ul>
+      <li>Validate how a real mail environment reacts to spoofing and SMTP abuse scenarios.</li>
+      <li>Demonstrate defensive controls through logs, SMTP responses and dashboard evidence.</li>
+      <li>Transform a technical deployment into a public case study suitable for portfolio review.</li>
+    </ul>
+  </details>
 
-        <details>
-          <summary>Technical environment</summary>
-          <p>
-            Real Ubuntu VPS environment using Postfix, Dovecot, OpenDKIM, OpenDMARC,
-            OpenARC, DNS records, TLS validation, syslog evidence and Python-based processing.
-          </p>
-        </details>
+  <details>
+    <summary>Technical environment</summary>
+    <p>
+      The project was deployed on a real Ubuntu VPS and used a full email security stack.
+    </p>
+    <ul>
+      <li>Postfix as the main SMTP service.</li>
+      <li>Dovecot for IMAPS TLS validation.</li>
+      <li>OpenDKIM for DKIM signing and validation.</li>
+      <li>OpenDMARC for DMARC policy evaluation and rejection.</li>
+      <li>OpenARC for ARC-related authentication chain support.</li>
+      <li>Syslog as the main source of technical evidence.</li>
+    </ul>
+  </details>
 
-        <details>
-          <summary>Validated controls</summary>
-          <p>
-            SPF fail, DKIM valid/broken/absent, DKIM rotation to s2026, progressive DMARC
-            enforcement to p=reject, DNSSEC, MTA-STS, TLS-RPT, STARTTLS SMTP, IMAPS TLS
-            and spoofing rejection.
-          </p>
-        </details>
+  <details>
+    <summary>Validated controls</summary>
+    <p>
+      The project validated email authentication, DNS-based controls and transport security.
+      DMARC was applied progressively until reaching the final enforcement policy p=reject.
+      DKIM rotation was handled separately through the selector s2026.
+    </p>
+    <ul>
+      <li>SPF pass and SPF fail validation.</li>
+      <li>DKIM valid, broken and absent scenarios.</li>
+      <li>DKIM selector rotation to s2026.</li>
+      <li>Progressive DMARC policy ending in p=reject.</li>
+      <li>External spoofing rejection through DMARC.</li>
+      <li>DNSSEC, MTA-STS and TLS-RPT documentation.</li>
+      <li>STARTTLS SMTP and IMAPS TLS validation.</li>
+    </ul>
+  </details>
 
-        <details>
-          <summary>SOC evidence and dashboard</summary>
-          <p>
-            Server events and controlled tests were processed into a sanitized SOC dataset
-            and visualized through an interactive Python/Dash dashboard.
-          </p>
-        </details>
+  <details>
+    <summary>SOC evidence and dashboard</summary>
+    <p>
+      Server events and controlled tests were processed into a sanitized SOC dataset and visualized
+      through an interactive Python/Dash dashboard.
+    </p>
+    <ul>
+      <li>270 total security tests aggregated in the project.</li>
+      <li>190 SOC events processed and categorized.</li>
+      <li>Events covering SMTP AUTH failures, recipient unknown, open relay testing and TLS checks.</li>
+      <li>Email security events covering SPF fail, DKIM issues and DMARC spoofing rejection.</li>
+      <li>Dashboard views for KPIs, tables, event categories, SMTP security and reporting status.</li>
+    </ul>
+  </details>
 
-        <details>
-          <summary>Public version and privacy</summary>
-          <p>
-            The public version removes private keys, credentials, full raw logs, internal paths,
-            sensitive IPs and complete server backups.
-          </p>
-        </details>
-      </div>
+  <details>
+    <summary>Public version and privacy</summary>
+    <p>
+      The public version was prepared for portfolio use while protecting sensitive operational data
+      from the original environment.
+    </p>
+    <ul>
+      <li>No private DKIM keys.</li>
+      <li>No credentials or .env files.</li>
+      <li>No complete raw logs or full server backups.</li>
+      <li>No sensitive IP addresses or internal operational data.</li>
+      <li>Only sanitized datasets and public evidence are included.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Professional value</summary>
+    <p>
+      This project demonstrates practical Blue Team skills through a full defensive workflow:
+      configuration, validation, evidence collection, automation, dashboarding and technical communication.
+    </p>
+    <ul>
+      <li>Relevant for SOC Analyst L1, Junior Cybersecurity Analyst and Blue Team junior roles.</li>
+      <li>Shows ability to document and explain technical controls clearly.</li>
+      <li>Connects infrastructure security with SOC-style analysis and reporting.</li>
+    </ul>
+  </details>
+</div>
     </article>
 
     <div class="cards two future-projects">
@@ -582,6 +670,9 @@
   <script src="main.js"></script>
 </body>
 </html>
+
+
+
 
 
 
