@@ -144,6 +144,140 @@
     pointer-events: auto;
   }
 </style>
+<style id="training-clean-final-style">
+  #training.training-clean {
+    padding-top: 72px !important;
+    padding-bottom: 72px !important;
+  }
+
+  #training .training-clean-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+    align-items: stretch !important;
+  }
+
+  #training .training-clean-card {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 26px !important;
+    border-radius: 28px !important;
+    background: linear-gradient(180deg, rgba(22,29,46,0.98), rgba(13,18,31,0.94)) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.34) !important;
+    min-height: 300px !important;
+  }
+
+  #training .training-clean-card.highlight {
+    border-color: rgba(122,167,255,0.36) !important;
+  }
+
+  #training .training-clean-card::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 5px !important;
+    background: linear-gradient(180deg, #7aa7ff, #a78bfa) !important;
+  }
+
+  #training .training-clean-card::after {
+    content: "" !important;
+    position: absolute !important;
+    right: -90px !important;
+    top: -90px !important;
+    width: 190px !important;
+    height: 190px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle, rgba(122,167,255,0.14), transparent 70%) !important;
+    pointer-events: none !important;
+  }
+
+  #training .training-clean-card:hover {
+    transform: translateY(-6px) !important;
+    border-color: rgba(122,167,255,0.40) !important;
+    box-shadow: 0 34px 95px rgba(0,0,0,0.46) !important;
+  }
+
+  #training .training-clean-top {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  #training .training-clean-top span {
+    color: #8fb5ff !important;
+    font-size: 0.78rem !important;
+    font-weight: 950 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  #training .training-clean-top strong {
+    padding: 7px 10px !important;
+    border-radius: 999px !important;
+    background: rgba(122,167,255,0.14) !important;
+    border: 1px solid rgba(122,167,255,0.24) !important;
+    color: #c7d7ff !important;
+    font-size: 0.78rem !important;
+  }
+
+  #training .training-clean-card h3 {
+    color: #ffffff !important;
+    margin: 0 0 8px !important;
+    font-size: 1.34rem !important;
+    line-height: 1.18 !important;
+  }
+
+  #training .training-clean-place {
+    color: #c4b5fd !important;
+    font-weight: 850 !important;
+    margin: 0 0 14px !important;
+  }
+
+  #training .training-clean-card p {
+    color: #aab6c8 !important;
+    line-height: 1.65 !important;
+    margin-top: 0 !important;
+  }
+
+  #training .training-clean-tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin-top: 18px !important;
+  }
+
+  #training .training-clean-tags span {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 8px 10px !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,0.075) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    color: #e7eefc !important;
+    font-size: 0.86rem !important;
+    font-weight: 760 !important;
+  }
+
+  #training .training-clean-tags span:hover {
+    background: rgba(122,167,255,0.16) !important;
+    border-color: rgba(122,167,255,0.30) !important;
+  }
+
+  @media (max-width: 900px) {
+    #training .training-clean-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    #training .training-clean-card {
+      min-height: auto !important;
+    }
+  }
+</style>
 </head>
 
 <body>
@@ -569,84 +703,95 @@
   </div>
 </section>
 
-<section id="training" class="section training-section">
+<section id="training" class="section training-clean">
   <div class="shell">
     <div class="section-head reveal">
       <p class="kicker">Training</p>
       <h2>Education and technical background.</h2>
       <p>
-        A combination of cybersecurity training, systems knowledge, networking fundamentals
-        and previous technical experience focused on troubleshooting, analysis and documentation.
+        Cybersecurity training, systems knowledge, networking fundamentals and previous
+        technical experience applied to troubleshooting, analysis and documentation.
       </p>
     </div>
 
-    <div class="training-grid reveal">
-      <article class="training-card featured">
-        <span class="training-date">Oct 2025 - Jun 2026</span>
+    <div class="training-clean-grid reveal">
+      <article class="training-clean-card highlight">
+        <div class="training-clean-top">
+          <span>Oct 2025 - Jun 2026</span>
+          <strong>Cybersecurity</strong>
+        </div>
         <h3>Cybersecurity Master's Degree</h3>
-        <p class="training-place">DigitechFP</p>
+        <p class="training-clean-place">DigitechFP</p>
         <p>
-          Specialized training in cybersecurity, threat analysis, security monitoring,
-          incident response fundamentals and secure infrastructure.
+          Specialized training in threat analysis, security monitoring, incident response
+          fundamentals, secure infrastructure and defensive cybersecurity projects.
         </p>
-
-        <div class="training-points">
+        <div class="training-clean-tags">
           <span>SOC monitoring</span>
           <span>Threat analysis</span>
           <span>Email security</span>
-          <span>Incident response fundamentals</span>
+          <span>Incident response</span>
           <span>Secure infrastructure</span>
         </div>
       </article>
 
-      <article class="training-card">
-        <span class="training-date">Sep 2022 - Jun 2024</span>
-        <h3>Higher National Diploma in Telecommunications and Computer Systems</h3>
-        <p class="training-place">IES Universidad Laboral</p>
+      <article class="training-clean-card">
+        <div class="training-clean-top">
+          <span>Sep 2022 - Jun 2024</span>
+          <strong>Systems</strong>
+        </div>
+        <h3>Telecommunications and Computer Systems</h3>
+        <p class="training-clean-place">IES Universidad Laboral</p>
         <p>
           Technical training in telecommunications, computer systems, networking,
-          connectivity and infrastructure maintenance.
+          connectivity, infrastructure maintenance and troubleshooting.
         </p>
-
-        <div class="training-points">
+        <div class="training-clean-tags">
           <span>Networking</span>
           <span>TCP/IP</span>
           <span>Infrastructure</span>
+          <span>Connectivity</span>
           <span>Troubleshooting</span>
         </div>
       </article>
 
-      <article class="training-card">
-        <span class="training-date">Technical experience</span>
-        <h3>Operational analysis and documentation</h3>
-        <p class="training-place">Transferable experience to SOC environments</p>
+      <article class="training-clean-card">
+        <div class="training-clean-top">
+          <span>Technical experience</span>
+          <strong>Operations</strong>
+        </div>
+        <h3>Analysis and documentation</h3>
+        <p class="training-clean-place">Transferable experience to SOC environments</p>
         <p>
-          Previous technical roles strengthened skills in anomaly detection, fault diagnosis,
+          Previous technical roles developed skills in anomaly detection, fault diagnosis,
           structured reporting, quality checks and evidence-based documentation.
         </p>
-
-        <div class="training-points">
+        <div class="training-clean-tags">
           <span>Anomaly detection</span>
           <span>Fault diagnosis</span>
-          <span>Incident reporting</span>
+          <span>Reporting</span>
           <span>Documentation</span>
+          <span>Attention to detail</span>
         </div>
       </article>
 
-      <article class="training-card">
-        <span class="training-date">Continuous learning</span>
-        <h3>Cybersecurity certifications and labs</h3>
-        <p class="training-place">Networking, SOC and Blue Team path</p>
+      <article class="training-clean-card">
+        <div class="training-clean-top">
+          <span>Continuous learning</span>
+          <strong>Blue Team</strong>
+        </div>
+        <h3>Certifications and hands-on labs</h3>
+        <p class="training-clean-place">Networking, SOC and Blue Team path</p>
         <p>
           Ongoing development through networking fundamentals, SOC analyst training,
-          Blue Team learning paths and hands-on cybersecurity projects.
+          Blue Team learning paths and practical cybersecurity labs.
         </p>
-
-        <div class="training-points">
-          <span>CCNA Introduction to Networks</span>
+        <div class="training-clean-tags">
+          <span>CCNA ITN</span>
           <span>SOC Analyst L1</span>
           <span>BTL1 path</span>
           <span>Hands-on labs</span>
+          <span>Security monitoring</span>
         </div>
       </article>
     </div>
@@ -719,7 +864,7 @@
 
           <div class="actions center">
             <a class="btn primary" href="mailto:marcosrojasjimenez2@gmail.com">Email me</a>
-            <a class="btn secondary" href="https://github.com/Marcos-Rojas-Jimenez" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn secondary" href="https://www.linkedin.com/in/marcos-rojas-jimenez" target="_blank" rel="noopener">LinkedIn</a>
             <a class="btn ghost" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">Main project</a>
           </div>
         </div>
@@ -730,6 +875,9 @@
   <script src="main.js"></script>
 </body>
 </html>
+
+
+
 
 
 
