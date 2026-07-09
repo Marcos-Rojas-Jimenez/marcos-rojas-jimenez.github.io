@@ -15,70 +15,22 @@ if (navToggle && navLinks) {
   });
 }
 
-const typingText = document.getElementById("typingText");
-
-const commands = [
-  "analyze_logs --source syslog",
-  "validate_dmarc --policy reject",
-  "monitor_soc --events 190",
-  "deploy_dashboard --live"
-];
-
-let commandIndex = 0;
-let charIndex = 0;
-let deleting = false;
-
-function typeLoop() {
-  if (!typingText) {
-    return;
-  }
-
-  const current = commands[commandIndex];
-
-  if (!deleting) {
-    typingText.textContent = current.slice(0, charIndex + 1);
-    charIndex += 1;
-
-    if (charIndex === current.length) {
-      deleting = true;
-      setTimeout(typeLoop, 1200);
-      return;
-    }
-  } else {
-    typingText.textContent = current.slice(0, charIndex - 1);
-    charIndex -= 1;
-
-    if (charIndex === 0) {
-      deleting = false;
-      commandIndex = (commandIndex + 1) % commands.length;
-    }
-  }
-
-  setTimeout(typeLoop, deleting ? 38 : 72);
-}
-
-typeLoop();
-
 const tabs = document.querySelectorAll(".skill-tab");
 const panels = document.querySelectorAll(".skill-panel");
 
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
-    const target = tab.dataset.tab;
-
     tabs.forEach((item) => item.classList.remove("active"));
     panels.forEach((panel) => panel.classList.remove("active"));
 
     tab.classList.add("active");
 
-    const panel = document.getElementById(target);
-    if (panel) {
-      panel.classList.add("active");
+    const activePanel = document.getElementById(tab.dataset.tab);
+    if (activePanel) {
+      activePanel.classList.add("active");
     }
   });
 });
-
-const revealElements = document.querySelectorAll(".reveal");
 
 const revealObserver = new IntersectionObserver(
   (entries) => {
@@ -93,6 +45,77 @@ const revealObserver = new IntersectionObserver(
   }
 );
 
-revealElements.forEach((element) => {
+document.querySelectorAll(".reveal").forEach((element) => {
   revealObserver.observe(element);
 });
+
+// Premium interactive layer
+const progressBar = document.createElement("div");
+progressBar.className = "scroll-progress";
+document.body.appendChild(progressBar);
+
+window.addEventListener("scroll", () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = `${progress}%`;
+});
+
+const cursorGlow = document.createElement("div");
+cursorGlow.className = "cursor-glow";
+document.body.appendChild(cursorGlow);
+
+window.addEventListener("mousemove", (event) => {
+  cursorGlow.style.left = `${event.clientX}px`;
+  cursorGlow.style.top = `${event.clientY}px`;
+});
+
+const sectionIds = ["about", "skills", "projects", "training", "contact"];
+const navAnchors = document.querySelectorAll(".nav-links a");
+
+function updateActiveNav() {
+  let current = "";
+
+  sectionIds.forEach((id) => {
+    const section = document.getElementById(id);
+    if (!section) {
+      return;
+    }
+
+    const rect = section.getBoundingClientRect();
+
+    if (rect.top <= 170 && rect.bottom >= 170) {
+      current = id;
+    }
+  });
+
+  navAnchors.forEach((link) => {
+    link.classList.remove("active");
+
+    if (link.getAttribute("href") === `#${current}`) {
+      link.classList.add("active");
+    }
+  });
+}
+
+window.addEventListener("scroll", updateActiveNav);
+updateActiveNav();
+
+const projectCard = document.querySelector(".project-card");
+
+if (projectCard) {
+  projectCard.addEventListener("mousemove", (event) => {
+    const rect = projectCard.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    const rotateX = ((y / rect.height) - 0.5) * -4;
+    const rotateY = ((x / rect.width) - 0.5) * 4;
+
+    projectCard.style.transform = `translateY(-6px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  });
+
+  projectCard.addEventListener("mouseleave", () => {
+    projectCard.style.transform = "";
+  });
+}
