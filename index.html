@@ -6,6 +6,104 @@
   <title>Marcos Rojas Jimenez | Cybersecurity Portfolio</title>
   <meta name="description" content="Cybersecurity portfolio focused on SOC analysis, Blue Team, Linux systems, email security and defensive projects." />
   <link rel="stylesheet" href="styles.css" />
+<style id="project-accordion-final-fix">
+  #projects .compact-project-card {
+    overflow: hidden !important;
+  }
+
+  #projects .compact-project-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 18px !important;
+    flex-wrap: wrap !important;
+  }
+
+  #projects .compact-cta {
+    white-space: normal !important;
+    max-width: 100% !important;
+  }
+
+  #projects details {
+    display: block !important;
+    background: linear-gradient(180deg, rgba(20,27,43,0.98), rgba(10,15,28,0.96)) !important;
+    border: 1px solid rgba(255,255,255,0.14) !important;
+    border-radius: 18px !important;
+    color: #f4f7fb !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.22) !important;
+    overflow: hidden !important;
+    margin: 0 0 12px 0 !important;
+    padding: 0 !important;
+  }
+
+  #projects details[open] {
+    background: linear-gradient(180deg, rgba(28,36,58,0.98), rgba(13,19,34,0.96)) !important;
+    border-color: rgba(122,167,255,0.40) !important;
+    box-shadow: 0 22px 55px rgba(0,0,0,0.32), 0 0 28px rgba(122,167,255,0.10) !important;
+  }
+
+  #projects summary {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    cursor: pointer !important;
+    padding: 18px 20px !important;
+    color: #ffffff !important;
+    font-weight: 950 !important;
+    list-style: none !important;
+    background: transparent !important;
+  }
+
+  #projects summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  #projects summary::before {
+    content: "+" !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 999px !important;
+    background: rgba(122,167,255,0.16) !important;
+    border: 1px solid rgba(122,167,255,0.28) !important;
+    color: #a9c2ff !important;
+    font-weight: 950 !important;
+  }
+
+  #projects details[open] summary::before {
+    content: "-" !important;
+    background: linear-gradient(135deg, #7aa7ff, #a78bfa) !important;
+    color: #070a11 !important;
+    border-color: transparent !important;
+  }
+
+  #projects details p {
+    color: #aab6c8 !important;
+    padding: 0 22px 22px 58px !important;
+    margin: 0 !important;
+    line-height: 1.65 !important;
+    font-size: 0.98rem !important;
+  }
+
+  #projects details ul {
+    color: #aab6c8 !important;
+    padding: 0 22px 22px 78px !important;
+    margin: 0 !important;
+    line-height: 1.65 !important;
+  }
+
+  #projects details li {
+    color: #aab6c8 !important;
+    margin-bottom: 7px !important;
+  }
+
+  #projects details:hover {
+    border-color: rgba(122,167,255,0.48) !important;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.34), 0 0 30px rgba(122,167,255,0.12) !important;
+  }
+</style>
 </head>
 
 <body>
@@ -21,7 +119,7 @@
       <div class="nav-links" id="navLinks">
 <a href="#about">About</a>
 <a href="#skills">Skills</a>
-<a href="projects.html">Projects</a>
+<a href="#projects">Projects</a>
 <a href="#training">Training</a>
 <a href="#certifications">Certifications</a>
 <a href="#contact">Contact</a>
@@ -45,7 +143,7 @@
           </p>
 
           <div class="actions">
-            <a class="btn primary" href="projects.html">View projects</a>
+            <a class="btn primary" href="#projects">View projects</a>
             <a class="btn secondary" href="#skills">Explore skills</a>
             <a class="btn ghost" href="mailto:marcosrojasjimenez2@gmail.com">Contact</a>
           </div>
@@ -260,62 +358,130 @@
 </section>
 
 <section id="projects" class="section">
-      <div class="shell">
-        <div class="section-head reveal">
-          <p class="kicker">Projects</p>
-          <h2>Technical work.</h2>
-          <p>Independent case studies with different technical focus areas.</p>
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Projects</p>
+      <h2>Technical projects.</h2>
+      <p>
+        Practical cybersecurity work focused on defensive security, SOC analysis,
+        evidence handling and secure infrastructure.
+      </p>
+    </div>
+
+    <article class="compact-project-card reveal">
+      <div class="compact-project-header">
+        <div>
+          <p class="project-label">Featured case study</p>
+          <h3>PhisDefense SOC and Email Security Lab</h3>
         </div>
 
-        <article class="project-card reveal">
-          <div>
-            <p class="project-label">Featured project</p>
-            <h3>PhisDefense SOC and Email Security Lab</h3>
-            <p>
-              Defensive email security and SOC monitoring lab based on a real mail security environment.
-              Includes SPF, DKIM, DMARC p=reject, DNSSEC, MTA-STS, TLS-RPT, Postfix, Dovecot,
-              OpenDKIM, OpenDMARC, OpenARC and an interactive Python/Dash dashboard.
-            </p>
+        <a class="btn primary compact-cta" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">
+          View full case study
+        </a>
+      </div>
 
-            <div class="project-actions">
-              <a class="btn primary" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">Case study</a>
-              <a class="btn secondary" href="https://phisdefense-email-security-soc.onrender.com" target="_blank" rel="noopener">Live dashboard</a>
-            </div>
-          </div>
+      <p class="compact-summary">
+        Defensive email security and SOC monitoring project built around a real mail security
+        environment. It validates SPF, DKIM, a progressive DMARC policy ending in p=reject,
+        DNSSEC, MTA-STS, TLS-RPT, SMTP security controls and SOC-style evidence handling
+        through a public dashboard.
+      </p>
 
-          <div class="project-stats">
-            <div>
-              <strong>270</strong>
-              <span>tests</span>
-            </div>
+      <div class="compact-metrics">
+        <div>
+          <strong>270</strong>
+          <span>security tests</span>
+        </div>
 
-            <div>
-              <strong>190</strong>
-              <span>SOC events</span>
-            </div>
+        <div>
+          <strong>190</strong>
+          <span>SOC events</span>
+        </div>
 
-            <div>
-              <strong>p=reject</strong>
-              <span>DMARC policy</span>
-            </div>
-          </div>
-        </article>
+        <div>
+          <strong>p=reject</strong>
+          <span>final DMARC policy</span>
+        </div>
 
-        <div class="cards two future-projects">
-          <article class="card reveal">
-            <h3>Future Cloud Security Lab</h3>
-            <p>Reserved for future cloud and infrastructure security projects.</p>
-          </article>
-
-          <article class="card reveal">
-            <h3>Future DFIR or Automation Project</h3>
-            <p>Reserved for future forensic, monitoring or automation work.</p>
-          </article>
+        <div>
+          <strong>s2026</strong>
+          <span>DKIM rotation selector</span>
         </div>
       </div>
-    </section>
 
-    <section id="training" class="section">
+      <div class="compact-tags">
+        <span>Email Security</span>
+        <span>Blue Team</span>
+        <span>SOC</span>
+        <span>Linux</span>
+        <span>Postfix</span>
+        <span>Dovecot</span>
+        <span>OpenDKIM</span>
+        <span>OpenDMARC</span>
+        <span>OpenARC</span>
+        <span>Python</span>
+        <span>Dash</span>
+      </div>
+
+      <div class="project-dark-accordion">
+        <details open>
+          <summary>Project objective</summary>
+          <p>
+            Build a defensive email security lab where controls were not only configured,
+            but also tested, documented and validated with technical evidence.
+          </p>
+        </details>
+
+        <details>
+          <summary>Technical environment</summary>
+          <p>
+            Real Ubuntu VPS environment using Postfix, Dovecot, OpenDKIM, OpenDMARC,
+            OpenARC, DNS records, TLS validation, syslog evidence and Python-based processing.
+          </p>
+        </details>
+
+        <details>
+          <summary>Validated controls</summary>
+          <p>
+            SPF fail, DKIM valid/broken/absent, DKIM rotation to s2026, progressive DMARC
+            enforcement to p=reject, DNSSEC, MTA-STS, TLS-RPT, STARTTLS SMTP, IMAPS TLS
+            and spoofing rejection.
+          </p>
+        </details>
+
+        <details>
+          <summary>SOC evidence and dashboard</summary>
+          <p>
+            Server events and controlled tests were processed into a sanitized SOC dataset
+            and visualized through an interactive Python/Dash dashboard.
+          </p>
+        </details>
+
+        <details>
+          <summary>Public version and privacy</summary>
+          <p>
+            The public version removes private keys, credentials, full raw logs, internal paths,
+            sensitive IPs and complete server backups.
+          </p>
+        </details>
+      </div>
+    </article>
+
+    <div class="cards two future-projects">
+      <article class="card reveal">
+        <h3>Future Cloud Security Lab</h3>
+        <p>Reserved for future cloud and infrastructure security projects.</p>
+      </article>
+
+      <article class="card reveal">
+        <h3>Future DFIR or Automation Project</h3>
+        <p>Reserved for future forensic, monitoring or automation work.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="training" class="section">
       <div class="shell">
         <div class="section-head reveal">
           <p class="kicker">Training</p>
@@ -416,6 +582,10 @@
   <script src="main.js"></script>
 </body>
 </html>
+
+
+
+
 
 
 
