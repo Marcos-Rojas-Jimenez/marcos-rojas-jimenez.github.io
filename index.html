@@ -397,6 +397,72 @@
     pointer-events: none !important;
   }
 </style>
+<style id="projects-highlight-final">
+  /* Featured project section highlight */
+  #projects .compact-project-card,
+  #projects .project-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(94, 234, 212, 0.45) !important;
+    box-shadow:
+      0 34px 100px rgba(0, 0, 0, 0.46),
+      0 0 45px rgba(94, 234, 212, 0.14) !important;
+    background:
+      radial-gradient(circle at 90% 10%, rgba(94, 234, 212, 0.14), transparent 32%),
+      linear-gradient(180deg, rgba(22,29,46,0.98), rgba(10,15,28,0.96)) !important;
+  }
+
+  #projects .project-label {
+    display: inline-flex !important;
+    padding: 8px 12px !important;
+    border-radius: 999px !important;
+    background: rgba(94, 234, 212, 0.14) !important;
+    border: 1px solid rgba(94, 234, 212, 0.36) !important;
+    color: #99f6e4 !important;
+    font-weight: 950 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  #projects .compact-metrics div,
+  #projects .project-stats div {
+    border-color: rgba(94, 234, 212, 0.24) !important;
+    background: rgba(255,255,255,0.07) !important;
+  }
+
+  #projects .compact-metrics strong,
+  #projects .project-stats strong {
+    color: #5eead4 !important;
+  }
+
+  #projects .compact-tags span {
+    border-color: rgba(94, 234, 212, 0.22) !important;
+  }
+
+  #projects .compact-tags span:hover {
+    background: rgba(94, 234, 212, 0.14) !important;
+    border-color: rgba(94, 234, 212, 0.42) !important;
+    color: #ffffff !important;
+  }
+
+  /* Green case study button */
+  #projects a[href*="phisdefense-email-security-soc"] {
+    background: linear-gradient(135deg, #22c55e, #5eead4) !important;
+    color: #06110d !important;
+    border: 1px solid rgba(94, 234, 212, 0.70) !important;
+    box-shadow:
+      0 18px 50px rgba(34, 197, 94, 0.34),
+      0 0 32px rgba(94, 234, 212, 0.28) !important;
+    font-weight: 950 !important;
+  }
+
+  #projects a[href*="phisdefense-email-security-soc"]:hover {
+    transform: translateY(-3px) !important;
+    box-shadow:
+      0 24px 70px rgba(34, 197, 94, 0.42),
+      0 0 44px rgba(94, 234, 212, 0.38) !important;
+  }
+</style>
 </head>
 
 <body>
@@ -1000,6 +1066,7 @@
   <script src="main.js"></script>
 </body>
 </html>
+
 
 
 
