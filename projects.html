@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects | Marcos Rojas Jimenez</title>
+  <meta name="description" content="Technical cybersecurity projects by Marcos Rojas Jimenez." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <nav class="nav shell">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">MR</span>
+        <span>Marcos Rojas</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">Menu</button>
+
+      <div class="nav-links" id="navLinks">
+        <a href="index.html#about">About</a>
+        <a href="index.html#skills">Skills</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="index.html#training">Training</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="shell">
+        <p class="kicker">Technical Projects</p>
+        <h1>Cybersecurity projects and case studies.</h1>
+        <p class="page-intro">
+          A curated selection of practical cybersecurity projects focused on defensive security,
+          SOC analysis, evidence handling, automation and secure infrastructure.
+        </p>
+      </div>
+    </section>
+
+    <section class="section projects-page-section">
+      <div class="shell">
+        <article class="project-detail-card reveal">
+          <div class="project-detail-main">
+            <p class="project-label">Featured project</p>
+            <h2>PhisDefense SOC and Email Security Lab</h2>
+
+            <p>
+              PhisDefense is a defensive cybersecurity case study focused on email security,
+              Blue Team monitoring and SOC-style evidence handling. The project was built around
+              a real mail security environment and validates security controls through technical
+              evidence, controlled tests and a public interactive dashboard.
+            </p>
+
+            <p>
+              The lab includes Postfix, Dovecot, OpenDKIM, OpenDMARC, OpenARC, SPF, DKIM,
+              DMARC p=reject, DNSSEC, MTA-STS, TLS-RPT, STARTTLS and IMAPS TLS. It also includes
+              Python/Dash dashboarding to visualize processed SOC events and security test results.
+            </p>
+
+            <div class="project-tags">
+              <span>Email Security</span>
+              <span>SOC</span>
+              <span>Blue Team</span>
+              <span>Python</span>
+              <span>Dash</span>
+              <span>Linux</span>
+              <span>Postfix</span>
+              <span>DMARC</span>
+            </div>
+
+            <div class="project-actions">
+              <a class="btn primary" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">
+                View full case study
+              </a>
+            </div>
+          </div>
+
+          <aside class="project-detail-side">
+            <div>
+              <strong>270</strong>
+              <span>total security tests</span>
+            </div>
+
+            <div>
+              <strong>190</strong>
+              <span>processed SOC events</span>
+            </div>
+
+            <div>
+              <strong>p=reject</strong>
+              <span>final DMARC policy</span>
+            </div>
+
+            <div>
+              <strong>Render</strong>
+              <span>interactive dashboard deployment</span>
+            </div>
+          </aside>
+        </article>
+
+        <div class="future-project-strip reveal">
+          <h3>More projects coming next</h3>
+          <p>
+            This portfolio is prepared to include future projects in cloud security, DFIR,
+            automation, monitoring and infrastructure security.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
