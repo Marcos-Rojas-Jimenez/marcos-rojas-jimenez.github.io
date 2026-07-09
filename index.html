@@ -1,0 +1,301 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marcos Rojas Jimenez | Cybersecurity Portfolio</title>
+  <meta name="description" content="Cybersecurity portfolio focused on SOC analysis, Blue Team, Linux systems, email security and defensive projects." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="page-orb orb-one"></div>
+  <div class="page-orb orb-two"></div>
+  <div class="noise-layer"></div>
+
+  <header class="topbar">
+    <nav class="nav shell">
+      <a class="brand" href="#home" aria-label="Go to home">
+        <span class="brand-mark">MR</span>
+        <span class="brand-text">Marcos Rojas</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Open navigation menu">☰</button>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#training">Training</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="shell hero-layout">
+        <div class="hero-copy reveal">
+          <div class="status-pill">
+            <span class="pulse"></span>
+            Available for SOC, Blue Team and Cybersecurity Junior roles
+          </div>
+
+          <h1>
+            Cybersecurity portfolio built around
+            <span>defensive security</span>
+            and real evidence.
+          </h1>
+
+          <p class="hero-text">
+            Junior cybersecurity profile focused on SOC monitoring, Blue Team workflows,
+            Linux systems, email security, log analysis, evidence handling and technical reporting.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn primary" href="#projects">View projects</a>
+            <a class="btn secondary" href="#skills">Explore skills</a>
+            <a class="btn ghost" href="mailto:marcosrojasjimenez2@gmail.com">Contact</a>
+          </div>
+
+          <div class="quick-metrics">
+            <div>
+              <strong>Blue Team</strong>
+              <span>Defensive focus</span>
+            </div>
+            <div>
+              <strong>SOC</strong>
+              <span>Monitoring and evidence</span>
+            </div>
+            <div>
+              <strong>Python</strong>
+              <span>Automation and dashboards</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-console reveal">
+          <div class="console-card">
+            <div class="console-header">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+            <div class="console-body">
+              <p><span class="prompt">portfolio@marcos:~$</span> whoami</p>
+              <p class="output">Marcos Rojas Jimenez</p>
+
+              <p><span class="prompt">portfolio@marcos:~$</span> focus</p>
+              <p class="output">SOC · Blue Team · Email Security · Linux</p>
+
+              <p><span class="prompt">portfolio@marcos:~$</span> run</p>
+              <p class="output success"><span id="typingText"></span><span class="cursor">█</span></p>
+            </div>
+          </div>
+
+          <div class="mini-dashboard">
+            <div class="mini-title">Portfolio Signals</div>
+            <div class="mini-row"><span>Featured project</span><strong>LIVE</strong></div>
+            <div class="mini-row"><span>Case study</span><strong>PUBLIC</strong></div>
+            <div class="mini-row"><span>Dashboard</span><strong>ONLINE</strong></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="shell">
+        <div class="section-head reveal">
+          <p class="section-kicker">About</p>
+          <h2>Defensive cybersecurity profile.</h2>
+          <p>
+            I combine systems knowledge, networking fundamentals and practical cybersecurity projects
+            to build a profile oriented to SOC, Blue Team and defensive operations.
+          </p>
+        </div>
+
+        <div class="info-grid">
+          <article class="panel reveal">
+            <h3>Profile</h3>
+            <p>
+              Background in Telecommunications, IT Systems and a Master's in Cybersecurity.
+              Current focus: SOC monitoring, log analysis, Linux systems, defensive validation and email security.
+            </p>
+          </article>
+
+          <article class="panel reveal">
+            <h3>Objective</h3>
+            <p>
+              Open to opportunities as SOC Analyst L1, Junior Cybersecurity Analyst,
+              Security Monitoring Analyst or technical roles related to defensive security.
+            </p>
+          </article>
+
+          <article class="panel reveal">
+            <h3>Method</h3>
+            <p>
+              I build practical labs, validate controls with evidence and present results through
+              documentation, dashboards and public case studies.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="section">
+      <div class="shell">
+        <div class="section-head reveal">
+          <p class="section-kicker">Skills</p>
+          <h2>Technical capabilities.</h2>
+          <p>Grouped skills prepared for SOC, systems, email security and automation roles.</p>
+        </div>
+
+        <div class="skill-tabs reveal">
+          <button class="skill-tab active" data-tab="soc">SOC and Blue Team</button>
+          <button class="skill-tab" data-tab="email">Email Security</button>
+          <button class="skill-tab" data-tab="systems">Systems and Networking</button>
+          <button class="skill-tab" data-tab="automation">Automation</button>
+        </div>
+
+        <div class="skill-panels reveal">
+          <div class="skill-panel active" id="soc">
+            <span>SOC Monitoring</span>
+            <span>Log Analysis</span>
+            <span>Incident Triage</span>
+            <span>Security Monitoring</span>
+            <span>Evidence Handling</span>
+            <span>Technical Reporting</span>
+          </div>
+
+          <div class="skill-panel" id="email">
+            <span>SPF</span>
+            <span>DKIM</span>
+            <span>DMARC</span>
+            <span>DNSSEC</span>
+            <span>MTA-STS</span>
+            <span>TLS-RPT</span>
+            <span>Postfix</span>
+            <span>Dovecot</span>
+            <span>OpenDKIM</span>
+            <span>OpenDMARC</span>
+            <span>OpenARC</span>
+          </div>
+
+          <div class="skill-panel" id="systems">
+            <span>Linux</span>
+            <span>Windows</span>
+            <span>TCP/IP</span>
+            <span>DNS</span>
+            <span>DHCP</span>
+            <span>Routing</span>
+            <span>Firewall Concepts</span>
+            <span>TLS</span>
+          </div>
+
+          <div class="skill-panel" id="automation">
+            <span>Python</span>
+            <span>Bash</span>
+            <span>Pandas</span>
+            <span>Dash</span>
+            <span>Plotly</span>
+            <span>Git</span>
+            <span>GitHub Pages</span>
+            <span>Render</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="shell">
+        <div class="section-head reveal">
+          <p class="section-kicker">Projects</p>
+          <h2>Featured technical work.</h2>
+          <p>Projects are presented as independent case studies, each with its own technical focus.</p>
+        </div>
+
+        <div class="project-layout">
+          <article class="feature-project reveal">
+            <div class="project-label">Featured project</div>
+            <h3>PhisDefense SOC and Email Security Lab</h3>
+            <p>
+              Defensive email security and SOC monitoring lab based on a real mail security environment.
+              Includes SPF, DKIM, DMARC p=reject, DNSSEC, MTA-STS, TLS-RPT, Postfix, Dovecot,
+              OpenDKIM, OpenDMARC, OpenARC and an interactive Python/Dash dashboard.
+            </p>
+
+            <div class="project-metrics">
+              <div><strong>270</strong><span>tests</span></div>
+              <div><strong>190</strong><span>SOC events</span></div>
+              <div><strong>p=reject</strong><span>DMARC</span></div>
+            </div>
+
+            <div class="project-actions">
+              <a class="btn primary" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">View case study</a>
+              <a class="btn secondary" href="https://phisdefense-email-security-soc.onrender.com" target="_blank" rel="noopener">Live dashboard</a>
+            </div>
+          </article>
+
+          <article class="future-card reveal">
+            <span>Future slot</span>
+            <h3>Cloud Security Lab</h3>
+            <p>Reserved for future cloud or infrastructure security projects.</p>
+          </article>
+
+          <article class="future-card reveal">
+            <span>Future slot</span>
+            <h3>DFIR or Automation Project</h3>
+            <p>Reserved for future forensic, monitoring or automation work.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="training" class="section">
+      <div class="shell">
+        <div class="section-head reveal">
+          <p class="section-kicker">Training</p>
+          <h2>Education and learning path.</h2>
+        </div>
+
+        <div class="timeline reveal">
+          <div class="timeline-item">
+            <span>2026</span>
+            <div>
+              <h3>Master's in Cybersecurity</h3>
+              <p>Defensive security, SOC operations, systems security, networking and technical projects.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span>IT</span>
+            <div>
+              <h3>Systems and Telecommunications background</h3>
+              <p>Foundations in networking, infrastructure, TCP/IP, troubleshooting and systems.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact-section">
+      <div class="shell">
+        <div class="contact-card reveal">
+          <p class="section-kicker">Contact</p>
+          <h2>Open to cybersecurity junior opportunities.</h2>
+          <p>Available for opportunities in Spain and remote positions.</p>
+
+          <div class="contact-actions">
+            <a class="btn primary" href="mailto:marcosrojasjimenez2@gmail.com">Email me</a>
+            <a class="btn secondary" href="https://github.com/Marcos-Rojas-Jimenez" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn ghost" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">Main project</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
