@@ -2754,3 +2754,70 @@ details[open] s*mmary::before {
 .profile-card .career-row strong {
   color: #ffffff !important;
 }
+
+/* Featured project visual highlight */
+#projects .compact-project-card*
+#projects .project-card {
+  posit*on: relative;
+  border: 1px solid *gba(94, 234, 212, 0.38) !important*
+  box-shadow:
+    0 34px 100px rg*a(0, 0, 0, 0.45),
+    0 0 42px rgb*(94, 234, 212, 0.10) !important;
+}*
+#projects .compact-project-card::*efore,
+#projects .project-card::be*ore {
+  content: "";
+  position: a*solute;
+  inset: 0;
+  border-radiu*: inherit;
+  pointer-events: none;*  background:
+    radial-gradient(*ircle at 85% 10%, rgba(94, 234, 21*, 0.16), transparent 34%),
+    rad*al-gradient(circle at 10% 100%, rg*a(122, 167, 255, 0.10), transparen* 32%);
+}
+
+#projects .project-label*{
+  display: inline-flex;
+  paddin*: 8px 12px;
+  border-radius: 999px*
+  background: rgba(94, 234, 212, *.12);
+  border: 1px solid rgba(94,*234, 212, 0.30);
+  color: #99f6e4 *important;
+  font-weight: 950;
+}
+
+*projects .compact-metrics div {
+  *order-color: rgba(94, 234, 212, 0.*0) !important;
+}
+
+#projects .compact-metrics strong {
+  color: #5eead4 !important;
+}
+
+#projects a[href*="phisdefense-email-security-soc"],
+#projects .compact-cta {
+  background: linear-gradient(135deg, #22c55e, #5eead4) !important;
+  color: #06110d !important;
+  border: 1px solid rgba(94, 234, 212, 0.55) !important;
+  box-shadow:
+    0 18px 48px rgba(34, 197, 94, 0.26),
+    0 0 28px rgba(94, 234, 212, 0.22) !important;
+  font-weight: 950 !important;
+}
+
+#projects a[href*="phisdefense-email-security-soc"]:hover,
+#projects .compact-cta:hover {
+  transform: translateY(-3px) !important;
+  box-shadow:
+    0 24px 60px rgba(34, 197, 94, 0.34),
+    0 0 38px rgba(94, 234, 212, 0.32) !important;
+}
+
+#projects .compact-tags span {
+  border-color: rgba(94, 234, 212, 0.18) !important;
+}
+
+#projects .compact-tags span:hover {
+  background: rgba(94, 234, 212, 0.12) !important;
+  border-color: rgba(94, 234, 212, 0.34) !important;
+  color: #ffffff !important;
+}
