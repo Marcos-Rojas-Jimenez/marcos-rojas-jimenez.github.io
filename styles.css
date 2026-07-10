@@ -3220,3 +3220,53 @@ a[href="assets/cv/marcos-rojas-jimenez-cv.pdf"]*hover {
   background: rgba(34,197,94,0.15);
 }
 
+
+/* Premium animated border accents */
+.profile-card,
+.compact-project-card {
+  position: relative;
+}
+
+.profile-card::before,
+.compact-project-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(122,167,255,0.75), rgba(168,85,247,0.42), rgba(34,197,94,0.55));
+  background-size: 220% 220%;
+  animation: premiumBorderMove 8s ease-in-out infinite alternate;
+  pointer-events: none;
+  opacity: 0.55;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.profile-card > *,
+.compact-project-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes premiumBorderMove {
+  from {
+    background-position: 0% 50%;
+    opacity: 0.38;
+  }
+
+  to {
+    background-position: 100% 50%;
+    opacity: 0.78;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-card::before,
+  .compact-project-card::before {
+    animation: none;
+  }
+}
+
