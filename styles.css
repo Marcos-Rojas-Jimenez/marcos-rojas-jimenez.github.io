@@ -3270,3 +3270,43 @@ a[href="assets/cv/marcos-rojas-jimenez-cv.pdf"]*hover {
   }
 }
 
+
+/* About section premium layout */
+#about .section-head {
+ *max-width: 960px;
+  margin: 0 auto*38px;
+  padding* 34px;
+  text-align: left;
+  borde*-radius: 28px;
+  background* linear-gradient(180deg, rgba(22,2*,46,0.94), rgba(13,18,31,0.88));
+ *border: 1px solid rgba(122,167,255*0.20);
+  box*shadow: 0 30px 90px rgba(0*0,0,0.38), 0 0 36px rgba(122,167,2*5,0.10);
+}
+
+#about .section-head .*icker,
+#about .section-head h2 {
+ *text-align: center;
+}
+
+#about .sec*ion-head::after {
+  margin-left: a*to;
+  margin-right: auto;
+}
+
+#abou* .section-head p:not(.kicker) {
+  *ax-width: 820px;
+  margin-left: au*o;
+  margin-right: auto;
+  text-al*gn: left;
+}
+
+#about .cards.three {*  margin-top: 18px;
+}
+
+@media (max*width: 760px) {
+  #about .section-*ead {
+    padding: 24px;
+    borde*-radius: 22px;
+  }
+}
+
