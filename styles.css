@@ -3142,3 +3142,52 @@ a[href="assets/cv/marcos-rojas-jimenez-cv.pdf"]*hover {
   }
 }
 
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.hero-badges span {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: #dbeafe;
+  background: rgba(122,167,255,0.10);
+  border: 1px solid rgba(122,167,255,0.24);
+  box-shadow:
+    0 12px 34px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.hero-badges span:hover {
+  transform: translateY(-3px);
+  background: rgba(122,167,255,0.16);
+  border-color: rgba(122,167,255,0.40);
+  box-shadow:
+    0 18px 44px rgba(0,0,0,0.30),
+    0 0 28px rgba(122,167,255,0.12);
+}
+
+@media (max-width: 640px) {
+  .hero-badges {
+    gap: 8px;
+  }
+
+  .hero-badges span {
+    padding: 9px 12px;
+    font-size: 0.82rem;
+  }
+}
+
