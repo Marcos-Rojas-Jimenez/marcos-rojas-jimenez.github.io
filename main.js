@@ -149,6 +149,16 @@ function updateActiveNav() {
     }
   });
 
+  const dotsNav = document.querySelector(".side-dots");
+
+  if (dotsNav) {
+    const dotCurrent = window.scrollY < 400 && !current ? "home" : current;
+
+    dotsNav.querySelectorAll("a").forEach((dot) => {
+      dot.classList.toggle("active", dot.getAttribute("href") === `#${dotCurrent}`);
+    });
+  }
+
   moveNavIndicator();
 }
 
@@ -457,12 +467,65 @@ function updateHeaderState() {
 window.addEventListener("scroll", updateHeaderState);
 updateHeaderState();
 
-// Page entrance veil: quick fade from dark on load
-if (!prefersReducedMotion) {
+// Page entrance veil (skipped when the boot intro runs instead)
+let bootPending = false;
+
+try {
+  bootPending = !prefersReducedMotion && sessionStorage.getItem("bootShown") !== "1";
+} catch (e) {
+  bootPending = false;
+}
+
+if (!prefersReducedMotion && !bootPending) {
   const veil = document.createElement("div");
   veil.className = "page-veil";
   document.body.appendChild(veil);
   setTimeout(() => veil.remove(), 1400);
+}
+
+// Boot intro: terminal-style system boot on first visit of the session
+if (bootPending) {
+  try {
+    sessionStorage.setItem("bootShown", "1");
+  } catch (e) { /* storage unavailable: intro still runs this once */ }
+
+  const boot = document.createElement("div");
+  boot.className = "boot-intro";
+
+  const bootPre = document.createElement("pre");
+  boot.appendChild(bootPre);
+  document.body.appendChild(boot);
+
+  const bootLines = [
+    "> init portfolio --secure",
+    "> verifying TLS session ........ OK",
+    "> loading SOC modules .......... OK",
+    "> mounting evidence store ...... OK",
+    "> DMARC policy ................. p=reject",
+    "> access granted — welcome"
+  ];
+
+  let bootIndex = 0;
+
+  function endBoot() {
+    boot.classList.add("done");
+    setTimeout(() => boot.remove(), 700);
+  }
+
+  const bootTimer = setInterval(() => {
+    bootPre.textContent += (bootIndex ? "\n" : "") + bootLines[bootIndex];
+    bootIndex += 1;
+
+    if (bootIndex >= bootLines.length) {
+      clearInterval(bootTimer);
+      setTimeout(endBoot, 550);
+    }
+  }, 240);
+
+  boot.addEventListener("click", () => {
+    clearInterval(bootTimer);
+    endBoot();
+  });
 }
 
 // Simulated SOC live log feed
@@ -514,8 +577,110 @@ if (socFeed) {
     addSocLine();
   }
 
+  let socTimer = null;
+
   if (!prefersReducedMotion) {
-    setInterval(addSocLine, 1700);
+    socTimer = setInterval(addSocLine, 1700);
+  }
+
+  // Interactive shell: type real commands into the terminal
+  const socTerminal = document.querySelector(".soc-terminal");
+  const socBadge = document.querySelector(".soc-terminal-bar strong");
+
+  if (socTerminal) {
+    const promptRow = document.createElement("div");
+    promptRow.className = "soc-prompt";
+
+    const promptLabel = document.createElement("span");
+    promptLabel.textContent = "guest@soc:~$";
+    promptRow.appendChild(promptLabel);
+
+    const socInput = document.createElement("input");
+    socInput.type = "text";
+    socInput.autocomplete = "off";
+    socInput.spellcheck = false;
+    socInput.setAttribute("aria-label", "Terminal command input");
+    socInput.placeholder = "type 'help' and press Enter";
+    promptRow.appendChild(socInput);
+
+    socTerminal.appendChild(promptRow);
+
+    socTerminal.addEventListener("click", () => socInput.focus());
+
+    const TERM_MAX_LINES = 12;
+
+    function printTerm(text, level) {
+      const line = document.createElement("p");
+      line.className = `soc-line ${level}`;
+      line.textContent = text;
+      socFeed.appendChild(line);
+
+      while (socFeed.children.length > TERM_MAX_LINES) {
+        socFeed.removeChild(socFeed.firstChild);
+      }
+    }
+
+    const termCommands = {
+      help: () => [
+        "available commands:",
+        "  whoami    — who is behind this portfolio",
+        "  skills    — core technical skills",
+        "  project   — featured case study",
+        "  contact   — how to reach me",
+        "  clear     — clear the terminal"
+      ],
+      whoami: () => [
+        "Marcos Rojas Jimenez — Junior Cybersecurity Analyst (SOC · Blue Team)"
+      ],
+      skills: () => [
+        "SOC monitoring · log analysis · email security (SPF / DKIM / DMARC)",
+        "Linux · Python · Bash · defensive validation · evidence handling"
+      ],
+      project: () => [
+        "PhisDefense SOC & Email Security Lab — 270 tests · 190 SOC events · p=reject",
+        "→ marcos-rojas-jimenez.github.io/phisdefense-email-security-soc"
+      ],
+      contact: () => [
+        "email: marcosrojasjimenez2@gmail.com",
+        "linkedin: linkedin.com/in/marcos-rojas-jimenez"
+      ],
+      clear: () => {
+        socFeed.innerHTML = "";
+        return [];
+      }
+    };
+
+    socInput.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") {
+        return;
+      }
+
+      const raw = socInput.value.trim();
+      socInput.value = "";
+
+      if (!raw) {
+        return;
+      }
+
+      if (socTimer) {
+        clearInterval(socTimer);
+        socTimer = null;
+
+        if (socBadge) {
+          socBadge.textContent = "SHELL";
+        }
+      }
+
+      printTerm(`guest@soc:~$ ${raw}`, "echo");
+
+      const cmd = raw.toLowerCase();
+
+      if (termCommands[cmd]) {
+        termCommands[cmd]().forEach((text) => printTerm(text, "cmd"));
+      } else {
+        printTerm(`command not found: ${cmd} — try 'help'`, "warn");
+      }
+    });
   }
 }
 
@@ -567,17 +732,102 @@ if (!prefersReducedMotion) {
   });
 }
 
-// Back to top button
+// Back to top button with HUD progress ring
 const backToTop = document.createElement("a");
 backToTop.className = "back-to-top";
 backToTop.href = "#home";
 backToTop.setAttribute("aria-label", "Back to top");
-backToTop.textContent = "↑";
+backToTop.innerHTML =
+  '<svg viewBox="0 0 40 40" aria-hidden="true">' +
+  '<circle class="ring-bg" cx="20" cy="20" r="17"></circle>' +
+  '<circle class="ring-fill" cx="20" cy="20" r="17"></circle>' +
+  "</svg><span>↑</span>";
 document.body.appendChild(backToTop);
+
+const ringFill = backToTop.querySelector(".ring-fill");
+const RING_LENGTH = 2 * Math.PI * 17;
+
+ringFill.style.strokeDasharray = `${RING_LENGTH}`;
+ringFill.style.strokeDashoffset = `${RING_LENGTH}`;
 
 window.addEventListener("scroll", () => {
   backToTop.classList.toggle("show", window.scrollY > 600);
+
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? window.scrollY / docHeight : 0;
+
+  ringFill.style.strokeDashoffset = `${RING_LENGTH * (1 - progress)}`;
 });
+
+// Side dots navigation (desktop)
+const sideDotSections = ["home", ...sectionIds];
+const sideDots = document.createElement("nav");
+sideDots.className = "side-dots";
+sideDots.setAttribute("aria-label", "Section quick navigation");
+
+sideDotSections.forEach((id) => {
+  const dot = document.createElement("a");
+  dot.href = `#${id}`;
+  dot.dataset.label = id === "home" ? "Home" : id.charAt(0).toUpperCase() + id.slice(1);
+  sideDots.appendChild(dot);
+});
+
+document.body.appendChild(sideDots);
+updateActiveNav();
+
+// Precision cursor ring (desktop pointers only)
+if (!prefersReducedMotion && window.matchMedia("(pointer: fine)").matches) {
+  const cursorRing = document.createElement("div");
+  cursorRing.className = "cursor-ring";
+  document.body.appendChild(cursorRing);
+
+  const ringTarget = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  const ringPos = { x: ringTarget.x, y: ringTarget.y };
+
+  window.addEventListener("mousemove", (event) => {
+    ringTarget.x = event.clientX;
+    ringTarget.y = event.clientY;
+  });
+
+  (function animateRing() {
+    ringPos.x += (ringTarget.x - ringPos.x) * 0.3;
+    ringPos.y += (ringTarget.y - ringPos.y) * 0.3;
+    cursorRing.style.left = `${ringPos.x}px`;
+    cursorRing.style.top = `${ringPos.y}px`;
+    requestAnimationFrame(animateRing);
+  })();
+
+  const HOVER_TARGETS = "a, button, input, summary, .skill-pills span";
+
+  document.addEventListener("mouseover", (event) => {
+    if (event.target.closest(HOVER_TARGETS)) {
+      cursorRing.classList.add("on");
+    }
+  });
+
+  document.addEventListener("mouseout", (event) => {
+    if (event.target.closest(HOVER_TARGETS)) {
+      cursorRing.classList.remove("on");
+    }
+  });
+}
+
+// Giant watermark typography behind the hero with scroll parallax
+const heroForWatermark = document.querySelector(".hero");
+
+if (heroForWatermark) {
+  const watermark = document.createElement("div");
+  watermark.className = "hero-watermark";
+  watermark.setAttribute("aria-hidden", "true");
+  watermark.textContent = "DEFEND · DETECT · RESPOND";
+  heroForWatermark.appendChild(watermark);
+
+  if (!prefersReducedMotion) {
+    window.addEventListener("scroll", () => {
+      watermark.style.transform = `translateY(${window.scrollY * 0.22}px)`;
+    });
+  }
+}
 
 // Magnetic buttons
 if (!prefersReducedMotion) {

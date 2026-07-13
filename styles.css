@@ -3847,6 +3847,244 @@ summary:focus-visible {
   }
 }
 
+/* Boot intro overlay */
+.boot-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: #04070f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.6s ease;
+}
+
+.boot-intro pre {
+  margin: 0;
+  min-width: min(360px, 86vw);
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: clamp(0.78rem, 2.2vw, 0.98rem);
+  line-height: 1.9;
+  color: #7ee2a8;
+  text-shadow: 0 0 18px rgba(74,222,128,0.25);
+}
+
+.boot-intro pre::after {
+  content: "▍";
+  animation: caretBlink 0.9s steps(1) infinite;
+}
+
+.boot-intro.done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Interactive terminal prompt */
+.soc-prompt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px 16px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.soc-prompt span {
+  color: #4ade80;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.soc-prompt input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e7eefc;
+  font-family: inherit;
+  font-size: 0.84rem;
+  caret-color: #4ade80;
+}
+
+.soc-prompt input::placeholder {
+  color: #55627a;
+}
+
+.soc-line.echo {
+  color: #93a4c4;
+}
+
+.soc-line.cmd {
+  color: #dbe7ff;
+}
+
+/* Back-to-top: HUD progress ring restyle */
+.back-to-top {
+  background: rgba(10, 15, 28, 0.92);
+  border: 1px solid rgba(122,167,255,0.30);
+  color: #cfe0ff;
+}
+
+.back-to-top svg {
+  position: absolute;
+  inset: 3px;
+  transform: rotate(-90deg);
+}
+
+.back-to-top circle {
+  fill: none;
+  stroke-width: 3;
+}
+
+.back-to-top .ring-bg {
+  stroke: rgba(255,255,255,0.10);
+}
+
+.back-to-top .ring-fill {
+  stroke: #7aa7ff;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(122,167,255,0.55));
+}
+
+.back-to-top span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Side dots navigation */
+.side-dots {
+  position: fixed;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 500;
+}
+
+.side-dots a {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.22);
+  transition:
+    background 0.25s ease,
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.side-dots a:hover {
+  background: rgba(122,167,255,0.55);
+}
+
+.side-dots a.active {
+  background: linear-gradient(135deg, #7aa7ff, #a78bfa);
+  border-color: transparent;
+  transform: scale(1.4);
+  box-shadow: 0 0 14px rgba(122,167,255,0.60);
+}
+
+.side-dots a::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(10, 15, 28, 0.94);
+  border: 1px solid rgba(122,167,255,0.26);
+  color: #dbe7ff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.side-dots a:hover::after {
+  opacity: 1;
+}
+
+@media (max-width: 1100px) {
+  .side-dots {
+    display: none;
+  }
+}
+
+/* Precision cursor ring */
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid rgba(122,167,255,0.65);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 99998;
+  mix-blend-mode: screen;
+  transition:
+    width 0.25s ease,
+    height 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.cursor-ring.on {
+  width: 50px;
+  height: 50px;
+  border-color: rgba(94,234,212,0.85);
+}
+
+/* Giant watermark typography behind the hero */
+.hero {
+  overflow: hidden;
+}
+
+.hero-watermark {
+  position: absolute;
+  left: -2%;
+  top: 14%;
+  z-index: 0;
+  font-size: clamp(5rem, 14vw, 11rem);
+  font-weight: 950;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(122,167,255,0.10);
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .hero-watermark {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-intro,
+  .boot-intro pre::after {
+    animation: none;
+  }
+
+  .cursor-ring {
+    display: none;
+  }
+
+  .back-to-top .ring-fill {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-veil {
     animation-duration: 0.01s;
