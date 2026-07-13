@@ -697,6 +697,8 @@ if (socFeed) {
       }, duration);
     }
 
+    window.__runMatrixRain = runMatrixRain;
+
     const termCommands = {
       help: () => [
         "available commands:",
@@ -1170,6 +1172,192 @@ if (heroForWatermark) {
     });
   }
 }
+
+// Global HUD frame: corner brackets, UTC clock, scroll readout
+const hudFrame = document.createElement("div");
+hudFrame.className = "hud-frame";
+hudFrame.setAttribute("aria-hidden", "true");
+hudFrame.innerHTML =
+  '<span class="hud-corner hud-tl"></span>' +
+  '<span class="hud-corner hud-tr"></span>' +
+  '<span class="hud-corner hud-bl"></span>' +
+  '<span class="hud-corner hud-br"></span>' +
+  '<span class="hud-read hud-id"></span>' +
+  '<span class="hud-read hud-clock"></span>';
+document.body.appendChild(hudFrame);
+
+const hudId = hudFrame.querySelector(".hud-id");
+const hudClock = hudFrame.querySelector(".hud-clock");
+
+function hudPad(n) {
+  return String(n).padStart(2, "0");
+}
+
+function updateHudClock() {
+  const d = new Date();
+  hudClock.textContent =
+    `${hudPad(d.getUTCHours())}:${hudPad(d.getUTCMinutes())}:${hudPad(d.getUTCSeconds())} UTC`;
+}
+
+setInterval(updateHudClock, 1000);
+updateHudClock();
+
+function updateHudScroll() {
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? Math.round((window.scrollY / docHeight) * 100) : 0;
+  hudId.textContent = `MRJ · SOC CONSOLE · SCROLL ${String(pct).padStart(3, "0")}% · CTRL+K = COMMANDS`;
+}
+
+window.addEventListener("scroll", updateHudScroll);
+updateHudScroll();
+
+// Command palette (Ctrl+K or /)
+const paletteActions = [
+  { label: "Go to About", hint: "section", run: () => scrollToSection("#about") },
+  { label: "Go to Skills", hint: "section", run: () => scrollToSection("#skills") },
+  { label: "Go to Projects", hint: "section", run: () => scrollToSection("#projects") },
+  { label: "Go to Training", hint: "section", run: () => scrollToSection("#training") },
+  { label: "Go to Certifications", hint: "section", run: () => scrollToSection("#certifications") },
+  { label: "Go to Contact", hint: "section", run: () => scrollToSection("#contact") },
+  { label: "Download CV", hint: "pdf", run: () => window.open("assets/cv/marcos-rojas-jimenez-cv.pdf", "_blank", "noopener") },
+  { label: "Open featured case study", hint: "link", run: () => window.open("https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/", "_blank", "noopener") },
+  { label: "Open LinkedIn", hint: "link", run: () => window.open("https://www.linkedin.com/in/marcos-rojas-jimenez", "_blank", "noopener") },
+  { label: "Email me", hint: "mailto", run: () => { window.location.href = "mailto:marcosrojasjimenez2@gmail.com"; } },
+  { label: "Enter the matrix", hint: "easter egg", run: () => { if (window.__runMatrixRain) window.__runMatrixRain(6000); } }
+];
+
+function scrollToSection(selector) {
+  const target = document.querySelector(selector);
+
+  if (target) {
+    target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
+  }
+}
+
+const palette = document.createElement("div");
+palette.className = "cmd-palette";
+palette.setAttribute("role", "dialog");
+palette.setAttribute("aria-modal", "true");
+palette.setAttribute("aria-label", "Command palette");
+palette.innerHTML =
+  '<div class="cmd-panel">' +
+  '<input type="text" placeholder="Type a command or search..." aria-label="Search commands" />' +
+  '<div class="cmd-list"></div>' +
+  '<div class="cmd-footer"><span><kbd>↑↓</kbd> navigate</span><span><kbd>Enter</kbd> run</span><span><kbd>Esc</kbd> close</span></div>' +
+  "</div>";
+document.body.appendChild(palette);
+
+const paletteInput = palette.querySelector("input");
+const paletteList = palette.querySelector(".cmd-list");
+let paletteOpen = false;
+let paletteIndex = 0;
+let paletteFiltered = paletteActions.slice();
+
+function renderPalette() {
+  const query = paletteInput.value.trim().toLowerCase();
+  paletteFiltered = paletteActions.filter((a) => a.label.toLowerCase().includes(query));
+
+  if (paletteIndex >= paletteFiltered.length) {
+    paletteIndex = Math.max(0, paletteFiltered.length - 1);
+  }
+
+  paletteList.innerHTML = "";
+
+  if (!paletteFiltered.length) {
+    const empty = document.createElement("p");
+    empty.className = "cmd-empty";
+    empty.textContent = "No matching commands";
+    paletteList.appendChild(empty);
+    return;
+  }
+
+  paletteFiltered.forEach((action, i) => {
+    const item = document.createElement("div");
+    item.className = `cmd-item${i === paletteIndex ? " active" : ""}`;
+
+    const label = document.createElement("span");
+    label.textContent = action.label;
+    const hint = document.createElement("span");
+    hint.className = "hint";
+    hint.textContent = action.hint;
+
+    item.appendChild(label);
+    item.appendChild(hint);
+
+    item.addEventListener("click", () => {
+      togglePalette(false);
+      action.run();
+    });
+
+    item.addEventListener("mousemove", () => {
+      if (paletteIndex !== i) {
+        paletteIndex = i;
+        renderPalette();
+      }
+    });
+
+    paletteList.appendChild(item);
+  });
+}
+
+function togglePalette(open) {
+  paletteOpen = open;
+  palette.classList.toggle("open", open);
+
+  if (open) {
+    paletteInput.value = "";
+    paletteIndex = 0;
+    renderPalette();
+    setTimeout(() => paletteInput.focus(), 30);
+  } else {
+    paletteInput.blur();
+  }
+}
+
+paletteInput.addEventListener("input", () => {
+  paletteIndex = 0;
+  renderPalette();
+});
+
+paletteInput.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    paletteIndex = Math.min(paletteIndex + 1, paletteFiltered.length - 1);
+    renderPalette();
+  } else if (event.key === "ArrowUp") {
+    event.preventDefault();
+    paletteIndex = Math.max(paletteIndex - 1, 0);
+    renderPalette();
+  } else if (event.key === "Enter") {
+    const action = paletteFiltered[paletteIndex];
+
+    if (action) {
+      togglePalette(false);
+      action.run();
+    }
+  }
+});
+
+palette.addEventListener("click", (event) => {
+  if (event.target === palette) {
+    togglePalette(false);
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  const activeTag = document.activeElement ? document.activeElement.tagName : "";
+  const isTyping = activeTag === "INPUT" || activeTag === "TEXTAREA";
+
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    togglePalette(!paletteOpen);
+  } else if (event.key === "/" && !isTyping && !paletteOpen) {
+    event.preventDefault();
+    togglePalette(true);
+  } else if (event.key === "Escape" && paletteOpen) {
+    togglePalette(false);
+  }
+});
 
 // Magnetic buttons
 if (!prefersReducedMotion) {
