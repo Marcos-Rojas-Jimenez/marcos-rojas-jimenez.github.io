@@ -3281,9 +3281,19 @@ h2 {
   transition: background-size 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
 }
 
+.contact-card h2 {
+  background-position: 50% 100%;
+}
+
 .section-head.reveal.visible h2,
 .contact-card.reveal.visible h2 {
   background-size: 92px 4px;
+}
+
+/* Old static underline under the section paragraph: superseded by the
+   animated h2 underline above */
+.section-head::after {
+  display: none;
 }
 
 /* Metric counters: glow while counting up */
