@@ -445,6 +445,26 @@ if (!prefersReducedMotion) {
   });
 }
 
+// Header: transparent at top, frosted after scrolling
+const headerEl = document.querySelector("header.topbar");
+
+function updateHeaderState() {
+  if (headerEl) {
+    headerEl.classList.toggle("scrolled", window.scrollY > 24);
+  }
+}
+
+window.addEventListener("scroll", updateHeaderState);
+updateHeaderState();
+
+// Page entrance veil: quick fade from dark on load
+if (!prefersReducedMotion) {
+  const veil = document.createElement("div");
+  veil.className = "page-veil";
+  document.body.appendChild(veil);
+  setTimeout(() => veil.remove(), 1400);
+}
+
 // Back to top button
 const backToTop = document.createElement("a");
 backToTop.className = "back-to-top";

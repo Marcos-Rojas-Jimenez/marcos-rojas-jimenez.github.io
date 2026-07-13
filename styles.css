@@ -3567,6 +3567,125 @@ h2 {
   }
 }
 
+/* Page entrance veil */
+.page-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #050914;
+  pointer-events: none;
+  animation: veilFade 0.7s ease 0.12s forwards;
+}
+
+@keyframes veilFade {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Custom scrollbar to match the dark theme */
+html {
+  scrollbar-color: #2a3550 #070a11;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070a11;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #334061, #1c2439);
+  border-radius: 999px;
+  border: 3px solid #070a11;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3d4c74;
+}
+
+/* Text selection in brand colors */
+::selection {
+  background: rgba(122,167,255,0.38);
+  color: #ffffff;
+}
+
+/* Certification status chips: leading dot, pulsing while in progress */
+.cert-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  min-width: 7px;
+  border-radius: 50%;
+  margin-right: 7px;
+  display: inline-block;
+  background: currentColor;
+}
+
+.cert-status.progress::before {
+  animation: statusPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  50% {
+    opacity: 0.25;
+    transform: scale(0.75);
+  }
+}
+
+/* Skill category number chip: playful tilt on card hover */
+.skill-category-head span {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skill-category:hover .skill-category-head span {
+  transform: rotate(-7deg) scale(1.12);
+}
+
+/* Contact primary CTA: soft pulsing halo */
+.contact-card .btn.primary {
+  animation: ctaPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes ctaPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(122,167,255,0.38);
+  }
+
+  55% {
+    box-shadow: 0 0 0 14px rgba(122,167,255,0);
+  }
+}
+
+/* Visible keyboard focus in brand color */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #7aa7ff;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-veil {
+    animation-duration: 0.01s;
+    animation-delay: 0s;
+  }
+
+  .cert-status.progress::before,
+  .contact-card .btn.primary {
+    animation: none;
+  }
+
+  .skill-category-head span {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-copy .kicker,
   .hero-copy h1,
