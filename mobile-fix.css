@@ -1,4 +1,39 @@
-﻿@media (max-width: 920px) {
+﻿html,
+body {
+  background: #070b14 !important;
+}
+
+main {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(59,130,246,0.20), transparent 34%),
+    radial-gradient(circle at 86% 16%, rgba(124,58,237,0.22), transparent 36%),
+    radial-gradient(circle at 48% 70%, rgba(20,184,166,0.10), transparent 38%),
+    linear-gradient(180deg, #070b14 0%, #0b1220 44%, #07121a 73%, #070b14 100%) !important;
+}
+
+#home,
+#about,
+#skills,
+#projects,
+#training,
+#certifications,
+#contact,
+.section,
+.skills-section,
+.training-clean {
+  background: transparent !important;
+}
+
+#about {
+  border-top: none !important;
+}
+
+.section:not(:last-child)::after {
+  display: none !important;
+  content: none !important;
+}
+
+@media (max-width: 920px) {
   #about .section-head h2,
   #skills .section-head h2,
   #projects .section-head h2,
