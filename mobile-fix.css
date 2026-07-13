@@ -80,3 +80,42 @@ img {
     line-height: 1.25 !important;
   }
 }
+
+/* Certifications image fit fix */
+#certifications .cert-image {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 280px !important;
+  min-height: 280px !important;
+  padding: 24px !important;
+  overflow: hidden !important;
+  background: rgba(255,255,255,0.035) !important;
+}
+
+#certifications .cert-image img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  display: block !important;
+}
+
+@media (max-width: 920px) {
+  #certifications .cert-image {
+    height: 230px !important;
+    min-height: 230px !important;
+    padding: 20px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  #certifications .cert-image {
+    height: 210px !important;
+    min-height: 210px !important;
+    padding: 18px !important;
+  }
+}
+
