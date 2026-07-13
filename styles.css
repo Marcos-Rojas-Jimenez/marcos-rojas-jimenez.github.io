@@ -2870,3 +2870,65 @@ h2 {
 
 
 
+
+/* Real mobile overflow fix */
+@media (max-width: 920px) {
+  #home,
+  #home * {
+    box-sizing: border-box !important;
+  }
+
+  #home > .shell.hero-grid {
+    width: calc(100% - 36px) !important;
+    max-width: calc(100% - 36px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    grid-template-columns: 1fr !important;
+    gap: 26px !important;
+  }
+
+  #home .hero-copy {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #home .hero-copy h1 {
+    width: auto !important;
+    max-width: 100% !important;
+    font-size: clamp(2.15rem, 9.5vw, 2.85rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.04em !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #home .role {
+    font-size: clamp(1rem, 4.4vw, 1.25rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  #home .hero-text {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+  }
+
+  #home .profile-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 22px !important;
+  }
+
+  #home .focus-row {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
