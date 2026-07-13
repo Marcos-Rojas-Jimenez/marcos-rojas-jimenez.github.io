@@ -465,6 +465,108 @@ if (!prefersReducedMotion) {
   setTimeout(() => veil.remove(), 1400);
 }
 
+// Simulated SOC live log feed
+const socFeed = document.getElementById("socFeed");
+
+if (socFeed) {
+  const socEvents = [
+    { level: "ok", text: "SPF check pass — mail from authorized relay" },
+    { level: "ok", text: "DKIM signature valid — selector s2026" },
+    { level: "block", text: "DMARC p=reject enforced — spoofed sender blocked" },
+    { level: "warn", text: "SMTP AUTH failure — invalid credentials (3rd attempt)" },
+    { level: "block", text: "Open relay probe rejected — relay access denied" },
+    { level: "ok", text: "STARTTLS negotiated — TLS 1.3 session established" },
+    { level: "warn", text: "Recipient unknown — address rejected" },
+    { level: "block", text: "Spoofing attempt quarantined — evidence logged" },
+    { level: "ok", text: "IMAPS login OK — TLS certificate verified" },
+    { level: "ok", text: "TLS-RPT report generated — delivered to aggregator" }
+  ];
+
+  const SOC_MAX_LINES = 7;
+  let socIndex = 0;
+
+  function padTwo(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function addSocLine() {
+    const now = new Date();
+    const stamp = `${padTwo(now.getHours())}:${padTwo(now.getMinutes())}:${padTwo(now.getSeconds())}`;
+    const evt = socEvents[socIndex % socEvents.length];
+    socIndex += 1;
+
+    const line = document.createElement("p");
+    line.className = `soc-line ${evt.level}`;
+
+    const stampEl = document.createElement("span");
+    stampEl.textContent = `[${stamp}]`;
+    line.appendChild(stampEl);
+    line.appendChild(document.createTextNode(` ${evt.text}`));
+
+    socFeed.appendChild(line);
+
+    while (socFeed.children.length > SOC_MAX_LINES) {
+      socFeed.removeChild(socFeed.firstChild);
+    }
+  }
+
+  for (let i = 0; i < 5; i += 1) {
+    addSocLine();
+  }
+
+  if (!prefersReducedMotion) {
+    setInterval(addSocLine, 1700);
+  }
+}
+
+// Decrypt-style text scramble on section kickers
+if (!prefersReducedMotion) {
+  const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&<>[]";
+
+  function scrambleText(el, finalText, duration) {
+    const start = performance.now();
+
+    function frame(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const settled = Math.floor(finalText.length * progress);
+      let out = finalText.slice(0, settled);
+
+      for (let i = settled; i < finalText.length; i += 1) {
+        out += finalText[i] === " "
+          ? " "
+          : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+      }
+
+      el.textContent = out;
+
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  const scrambleObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        scrambleObserver.unobserve(entry.target);
+        scrambleText(entry.target, entry.target.dataset.scrambleText, 900);
+      });
+    },
+    { threshold: 0.6 }
+  );
+
+  document.querySelectorAll(".kicker").forEach((el) => {
+    el.dataset.scrambleText = el.textContent.trim();
+    scrambleObserver.observe(el);
+  });
+}
+
 // Back to top button
 const backToTop = document.createElement("a");
 backToTop.className = "back-to-top";
