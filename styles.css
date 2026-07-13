@@ -367,13 +367,32 @@ h3 {
 
 .js-ready .reveal {
   opacity: 0;
-  transform: translateY(22px);
-  transition: opacity .65s ease, transform .65s ease;
+  transform: translateY(28px) scale(0.985);
+  transition:
+    opacity .85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform .85s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .js-ready .reveal.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
+}
+
+.cards .card.reveal:nth-child(2),
+.cert-grid .cert-card.reveal:nth-child(2) {
+  transition-delay: .08s;
+}
+
+.cards .card.reveal:nth-child(3),
+.cert-grid .cert-card.reveal:nth-child(3) {
+  transition-delay: .16s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-ready .reveal {
+    transition: opacity .3s ease;
+    transform: none;
+  }
 }
 
 @media (max-width: 920px) {
@@ -2972,85 +2991,307 @@ h2 {
 
 /* Mobile section titles refinement */
 @media (max-width: 920px) {
-  .*ection-head h2 {
-    font-size: cl*mp(1.85rem, 7.6vw, 2.45rem) !impor*ant;
-    line-height: 1.08 !import*nt;
-    letter-spacing: -0.035em !*mportant;
-    max-width: 100% !imp*rtant;
+  .section-head h2 {
+    font-size: clamp(1.85rem, 7.6vw, 2.45rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.035em !important;
+    max-width: 100% !important;
   }
 
   .section-head p {
-  * font-size: 0.98rem !important;
-  * line-height: 1.72 !important;
-   *color: #b8c3d6 !important;
+    font-size: 0.98rem !important;
+    line-height: 1.72 !important;
+    color: #b8c3d6 !important;
   }
 
-  *section-head {
-    margin-bottom: *8px !important;
+  .section-head {
+    margin-bottom: 28px !important;
   }
 
   .kicker {
- *  font-size: 0.72rem !important;
- *  letter-spacing: 0.10em !importan*;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.10em !important;
   }
 
-  #skills .section-head h2,*  #projects .section-head h2,
-  #t*aining .section-head h2,
-  #certif*cations .section-head h2,
-  #conta*t .contact-card h2 {
-    font-size* clamp(1.85rem, 7.4vw, 2.4rem) !im*ortant;
-    line-height: 1.08 !imp*rtant;
-    letter-spacing: -0.035e* !important;
+  #skills .section-head h2,
+  #projects .section-head h2,
+  #training .section-head h2,
+  #certifications .section-head h2,
+  #contact .contact-card h2 {
+    font-size: clamp(1.85rem, 7.4vw, 2.4rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.035em !important;
   }
 
-  #contact .cont*ct-card h2 {
-    margin-bottom: 14*x !important;
+  #contact .contact-card h2 {
+    margin-bottom: 14px !important;
   }
 }
 
-@media (max-w*dth: 520px) {
+@media (max-width: 520px) {
   .section-head h2,
-* #skills .section-head h2,
-  #proj*cts .section-head h2,
-  #training *section-head h2,
-  #certifications*.section-head h2,
-  #contact .cont*ct-card h2 {
-    font-size: clamp(*.7rem, 7.8vw, 2.15rem) !important;*    line-height: 1.1 !important;
- *}
+  #skills .section-head h2,
+  #projects .section-head h2,
+  #training .section-head h2,
+  #certifications .section-head h2,
+  #contact .contact-card h2 {
+    font-size: clamp(1.7rem, 7.8vw, 2.15rem) !important;
+    line-height: 1.1 !important;
+  }
 }
 
 
 /* Final mobile typography scale */
 @media (max-width: 920px) {
-  #a*out .section-head h2,
-  #skills .s*ction-head h2,
-  #projects .sectio*-head h2,
-  #training .section-hea* h2,
-  #certifications .section-he*d h2,
-  #contact .contact-card h2 *
-    font-size: 1.55rem !important*
-    line-height: 1.16 !important;*    letter-spacing: -0.025em !impo*tant;
-    max-width: 100% !importa*t;
+  #about .section-head h2,
+  #skills .section-head h2,
+  #projects .section-head h2,
+  #training .section-head h2,
+  #certifications .section-head h2,
+  #contact .contact-card h2 {
+    font-size: 1.55rem !important;
+    line-height: 1.16 !important;
+    letter-spacing: -0.025em !important;
+    max-width: 100% !important;
   }
 
   #about .section-head p,
-* #skills .section-head p,
-  #proje*ts .section-head p,
-  #training .s*ction-head p,
-  #certifications .s*ction-head p,
-  #contact .contact-*ard p {
-    font-size: 0.92rem !im*ortant;
-    line-height: 1.65 !imp*rtant;
+  #skills .section-head p,
+  #projects .section-head p,
+  #training .section-head p,
+  #certifications .section-head p,
+  #contact .contact-card p {
+    font-size: 0.92rem !important;
+    line-height: 1.65 !important;
   }
 
   .section-head {
-    *argin-bottom: 22px !important;
-  }*
-  .card h3,
-  .skill-category h3,*  .training-clean-card h3,
-  .cert*card h3 {
-    font-size: 1.05rem !*mportant;
-    line-height: 1.25 !i*portant;
+    margin-bottom: 22px !important;
   }
+
+  .card h3,
+  .skill-category h3,
+  .training-clean-card h3,
+  .cert-card h3 {
+    font-size: 1.05rem !important;
+    line-height: 1.25 !important;
+  }
+}
+
+
+/* ==========================================================
+   REDESIGN V2 — hero spectacle, nav indicator, magnetic UI
+   ========================================================== */
+
+/* Hero ambient orbs: parallax parent + independent drift per orb */
+.hero-orbs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.hero .shell.hero-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+  opacity: 0.8;
+}
+
+.hero-orb-a {
+  width: 420px;
+  height: 420px;
+  left: -140px;
+  top: -80px;
+  background: radial-gradient(circle, rgba(122,167,255,0.30), transparent 70%);
+  animation: orbDriftA 13s ease-in-out infinite alternate;
+}
+
+.hero-orb-b {
+  width: 340px;
+  height: 340px;
+  right: -110px;
+  bottom: -60px;
+  background: radial-gradient(circle, rgba(167,139,250,0.26), transparent 70%);
+  animation: orbDriftB 16s ease-in-out infinite alternate;
+}
+
+.hero-orb-c {
+  width: 220px;
+  height: 220px;
+  left: 46%;
+  top: 58%;
+  background: radial-gradient(circle, rgba(94,234,212,0.22), transparent 70%);
+  animation: orbDriftC 11s ease-in-out infinite alternate;
+}
+
+@keyframes orbDriftA {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(30px, 26px, 0) scale(1.08); }
+}
+
+@keyframes orbDriftB {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(-26px, -22px, 0) scale(1.06); }
+}
+
+@keyframes orbDriftC {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
+  to   { transform: translate3d(18px, -30px, 0) scale(1.12); opacity: 0.85; }
+}
+
+@media (max-width: 768px) {
+  .hero-orbs {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb {
+    animation: none !important;
+  }
+
+  .hero-orbs {
+    transition: none !important;
+  }
+}
+
+/* Hero headline: word-by-word entrance (pure CSS animation — no JS timing dependency) */
+.hero h1 .word-reveal {
+  display: inline-block;
+  animation: heroWordIn .8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes heroWordIn {
+  from {
+    opacity: 0;
+    transform: translateY(38px) rotate(2deg);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero h1 .word-reveal {
+    animation: none;
+  }
+}
+
+/* Scroll cue */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #9fb4dd;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  z-index: 1;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.scroll-cue:hover {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.scroll-cue-arrow {
+  width: 16px;
+  height: 16px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: scrollCueBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollCueBounce {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  50% { transform: rotate(45deg) translate(5px, 5px); }
+}
+
+@media (max-width: 768px) {
+  .scroll-cue {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue-arrow {
+    animation: none;
+  }
+}
+
+/* Nav sliding indicator (desktop only — mobile menu keeps its own positioning) */
+@media (min-width: 921px) {
+  .nav-links {
+    position: relative;
+  }
+}
+
+.nav-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 34px;
+  width: 0;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: rgba(122,167,255,0.14);
+  border: 1px solid rgba(122,167,255,0.30);
+  box-shadow: 0 0 22px rgba(122,167,255,0.14);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 0;
+  transition:
+    left .4s cubic-bezier(0.16, 1, 0.3, 1),
+    width .4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity .3s ease;
+}
+
+.nav-indicator.ready {
+  opacity: 1;
+}
+
+@media (max-width: 920px) {
+  .nav-indicator {
+    display: none;
+  }
+}
+
+/* Magnetic buttons: smoother easing so JS-driven transform glides */
+.btn {
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+/* Brand mark micro interaction */
+.brand-mark {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand:hover .brand-mark {
+  transform: rotate(-8deg) scale(1.08);
 }
 

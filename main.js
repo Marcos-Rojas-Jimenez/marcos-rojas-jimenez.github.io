@@ -1,5 +1,7 @@
 ﻿document.body.classList.add("js-ready");
 
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 const navToggle = document.getElementById("navToggle");
 const navLinks = document.getElementById("navLinks");
 
@@ -65,13 +67,56 @@ const cursorGlow = document.createElement("div");
 cursorGlow.className = "cursor-glow";
 document.body.appendChild(cursorGlow);
 
+const cursorTarget = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+const cursorCurrent = { x: cursorTarget.x, y: cursorTarget.y };
+
 window.addEventListener("mousemove", (event) => {
-  cursorGlow.style.left = `${event.clientX}px`;
-  cursorGlow.style.top = `${event.clientY}px`;
+  cursorTarget.x = event.clientX;
+  cursorTarget.y = event.clientY;
 });
+
+function animateCursorGlow() {
+  if (prefersReducedMotion) {
+    cursorGlow.style.left = `${cursorTarget.x}px`;
+    cursorGlow.style.top = `${cursorTarget.y}px`;
+    return;
+  }
+
+  cursorCurrent.x += (cursorTarget.x - cursorCurrent.x) * 0.14;
+  cursorCurrent.y += (cursorTarget.y - cursorCurrent.y) * 0.14;
+
+  cursorGlow.style.left = `${cursorCurrent.x}px`;
+  cursorGlow.style.top = `${cursorCurrent.y}px`;
+
+  requestAnimationFrame(animateCursorGlow);
+}
+
+requestAnimationFrame(animateCursorGlow);
 
 const sectionIds = ["about", "skills", "projects", "training", "contact"];
 const navAnchors = document.querySelectorAll(".nav-links a");
+const navIndicator = document.getElementById("navIndicator");
+const navLinksContainer = document.getElementById("navLinks");
+
+function moveNavIndicator() {
+  if (!navIndicator || !navLinksContainer) {
+    return;
+  }
+
+  const activeLink = navLinksContainer.querySelector("a.active");
+
+  if (!activeLink || window.innerWidth <= 920) {
+    navIndicator.classList.remove("ready");
+    return;
+  }
+
+  const containerRect = navLinksContainer.getBoundingClientRect();
+  const linkRect = activeLink.getBoundingClientRect();
+
+  navIndicator.style.left = `${linkRect.left - containerRect.left}px`;
+  navIndicator.style.width = `${linkRect.width}px`;
+  navIndicator.classList.add("ready");
+}
 
 function updateActiveNav() {
   let current = "";
@@ -96,9 +141,12 @@ function updateActiveNav() {
       link.classList.add("active");
     }
   });
+
+  moveNavIndicator();
 }
 
 window.addEventListener("scroll", updateActiveNav);
+window.addEventListener("resize", moveNavIndicator);
 updateActiveNav();
 
 const projectCard = document.querySelector(".project-card");
@@ -177,5 +225,55 @@ if (skillSearchInput) {
         category.classList.add("skill-dim");
       }
     });
+  });
+}
+
+// Hero headline: word-by-word entrance
+const heroHeading = document.querySelector(".hero h1");
+
+if (heroHeading && !prefersReducedMotion) {
+  const words = heroHeading.textContent.trim().split(/\s+/);
+
+  heroHeading.innerHTML = words
+    .map((word, index) => `<span class="word-reveal" style="animation-delay:${index * 90}ms">${word}</span>`)
+    .join(" ");
+}
+
+// Magnetic buttons
+if (!prefersReducedMotion) {
+  document.querySelectorAll(".btn").forEach((btn) => {
+    btn.addEventListener("mousemove", (event) => {
+      const rect = btn.getBoundingClientRect();
+      const x = event.clientX - rect.left - rect.width / 2;
+      const y = event.clientY - rect.top - rect.height / 2;
+
+      btn.style.transform = `translate(${x * 0.18}px, ${y * 0.35}px) translateY(-2px)`;
+    });
+
+    btn.addEventListener("mouseleave", () => {
+      btn.style.transform = "";
+    });
+  });
+}
+
+// Hero orbs parallax
+const heroOrbs = document.querySelector(".hero-orbs");
+const heroSection = document.getElementById("home");
+
+if (heroOrbs && heroSection && !prefersReducedMotion) {
+  heroSection.addEventListener("mousemove", (event) => {
+    if (window.innerWidth <= 768) {
+      return;
+    }
+
+    const rect = heroSection.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width - 0.5;
+    const py = (event.clientY - rect.top) / rect.height - 0.5;
+
+    heroOrbs.style.transform = `translate3d(${px * -30}px, ${py * -24}px, 0)`;
+  });
+
+  heroSection.addEventListener("mouseleave", () => {
+    heroOrbs.style.transform = "translate3d(0, 0, 0)";
   });
 }
