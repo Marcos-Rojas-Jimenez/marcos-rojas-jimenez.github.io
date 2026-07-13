@@ -494,24 +494,18 @@ if (!prefersReducedMotion) {
   });
 }
 
-// Hero orbs parallax
+// Ambient orbs: page-wide parallax following the cursor
 const heroOrbs = document.querySelector(".hero-orbs");
-const heroSection = document.getElementById("home");
 
-if (heroOrbs && heroSection && !prefersReducedMotion) {
-  heroSection.addEventListener("mousemove", (event) => {
+if (heroOrbs && !prefersReducedMotion) {
+  window.addEventListener("mousemove", (event) => {
     if (window.innerWidth <= 768) {
       return;
     }
 
-    const rect = heroSection.getBoundingClientRect();
-    const px = (event.clientX - rect.left) / rect.width - 0.5;
-    const py = (event.clientY - rect.top) / rect.height - 0.5;
+    const px = event.clientX / window.innerWidth - 0.5;
+    const py = event.clientY / window.innerHeight - 0.5;
 
     heroOrbs.style.transform = `translate3d(${px * -30}px, ${py * -24}px, 0)`;
-  });
-
-  heroSection.addEventListener("mouseleave", () => {
-    heroOrbs.style.transform = "translate3d(0, 0, 0)";
   });
 }

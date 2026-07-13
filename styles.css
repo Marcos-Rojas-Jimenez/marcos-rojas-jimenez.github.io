@@ -3096,13 +3096,14 @@ h2 {
   }
 }
 
-/* Hero ambient orbs: parallax parent + independent drift per orb */
+/* Ambient orbs: fixed full-viewport light layer so the background is one
+   continuous surface across the whole page (no per-section seams) */
 .hero-orbs {
-  position: absolute;
+  position: fixed;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
