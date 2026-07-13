@@ -2969,3 +2969,88 @@ h2 {
   }
 }
 
+
+/* Mobile section titles refinement */
+@media (max-width: 920px) {
+  .*ection-head h2 {
+    font-size: cl*mp(1.85rem, 7.6vw, 2.45rem) !impor*ant;
+    line-height: 1.08 !import*nt;
+    letter-spacing: -0.035em !*mportant;
+    max-width: 100% !imp*rtant;
+  }
+
+  .section-head p {
+  * font-size: 0.98rem !important;
+  * line-height: 1.72 !important;
+   *color: #b8c3d6 !important;
+  }
+
+  *section-head {
+    margin-bottom: *8px !important;
+  }
+
+  .kicker {
+ *  font-size: 0.72rem !important;
+ *  letter-spacing: 0.10em !importan*;
+  }
+
+  #skills .section-head h2,*  #projects .section-head h2,
+  #t*aining .section-head h2,
+  #certif*cations .section-head h2,
+  #conta*t .contact-card h2 {
+    font-size* clamp(1.85rem, 7.4vw, 2.4rem) !im*ortant;
+    line-height: 1.08 !imp*rtant;
+    letter-spacing: -0.035e* !important;
+  }
+
+  #contact .cont*ct-card h2 {
+    margin-bottom: 14*x !important;
+  }
+}
+
+@media (max-w*dth: 520px) {
+  .section-head h2,
+* #skills .section-head h2,
+  #proj*cts .section-head h2,
+  #training *section-head h2,
+  #certifications*.section-head h2,
+  #contact .cont*ct-card h2 {
+    font-size: clamp(*.7rem, 7.8vw, 2.15rem) !important;*    line-height: 1.1 !important;
+ *}
+}
+
+
+/* Final mobile typography scale */
+@media (max-width: 920px) {
+  #a*out .section-head h2,
+  #skills .s*ction-head h2,
+  #projects .sectio*-head h2,
+  #training .section-hea* h2,
+  #certifications .section-he*d h2,
+  #contact .contact-card h2 *
+    font-size: 1.55rem !important*
+    line-height: 1.16 !important;*    letter-spacing: -0.025em !impo*tant;
+    max-width: 100% !importa*t;
+  }
+
+  #about .section-head p,
+* #skills .section-head p,
+  #proje*ts .section-head p,
+  #training .s*ction-head p,
+  #certifications .s*ction-head p,
+  #contact .contact-*ard p {
+    font-size: 0.92rem !im*ortant;
+    line-height: 1.65 !imp*rtant;
+  }
+
+  .section-head {
+    *argin-bottom: 22px !important;
+  }*
+  .card h3,
+  .skill-category h3,*  .training-clean-card h3,
+  .cert*card h3 {
+    font-size: 1.05rem !*mportant;
+    line-height: 1.25 !i*portant;
+  }
+}
+

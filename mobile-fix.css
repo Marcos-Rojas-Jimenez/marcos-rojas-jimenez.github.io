@@ -1,0 +1,35 @@
+﻿@media (max-width: 920px) {
+  #about .section-head h2,
+  #skills .section-head h2,
+  #projects .section-head h2,
+  #training .section-head h2,
+  #certifications .section-head h2,
+  #contact .contact-card h2 {
+    font-size: 1.55rem !important;
+    line-height: 1.16 !important;
+    letter-spacing: -0.025em !important;
+    max-width: 100% !important;
+  }
+
+  #about .section-head p,
+  #skills .section-head p,
+  #projects .section-head p,
+  #training .section-head p,
+  #certifications .section-head p,
+  #contact .contact-card p {
+    font-size: 0.92rem !important;
+    line-height: 1.65 !important;
+  }
+
+  .section-head {
+    margin-bottom: 22px !important;
+  }
+
+  .card h3,
+  .skill-category h3,
+  .training-clean-card h3,
+  .cert-card h3 {
+    font-size: 1.05rem !important;
+    line-height: 1.25 !important;
+  }
+}
