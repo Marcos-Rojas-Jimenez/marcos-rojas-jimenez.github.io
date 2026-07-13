@@ -3083,6 +3083,19 @@ h2 {
    REDESIGN V2 — hero spectacle, nav indicator, magnetic UI
    ========================================================== */
 
+/* Hero fills the viewport from y=0 so its background flows seamlessly
+   under the transparent fixed header */
+.hero {
+  min-height: 100vh;
+  padding: 160px 0 90px;
+}
+
+@media (max-width: 920px) {
+  .hero {
+    padding: 130px 0 70px;
+  }
+}
+
 /* Hero ambient orbs: parallax parent + independent drift per orb */
 .hero-orbs {
   position: absolute;
