@@ -245,28 +245,62 @@ if (skillSearchInput) {
   });
 }
 
-// Hero role: typewriter entrance with blinking caret
+// Hero role: typewriter cycling through roles with blinking caret
 const roleElement = document.querySelector(".hero .role");
 
 if (roleElement && !prefersReducedMotion) {
-  const fullRoleText = roleElement.textContent.trim();
+  const roles = [
+    roleElement.textContent.trim(),
+    "SOC Analyst L1 · in training",
+    "Blue Team Junior",
+    "Email Security · SPF / DKIM / DMARC"
+  ];
 
   roleElement.textContent = "";
   roleElement.classList.add("typing");
 
-  setTimeout(() => {
-    let charIndex = 0;
+  let roleIndex = 0;
 
-    const typeTimer = setInterval(() => {
-      charIndex += 1;
-      roleElement.textContent = fullRoleText.slice(0, charIndex);
+  function typeRole(text, done) {
+    let i = 0;
 
-      if (charIndex >= fullRoleText.length) {
-        clearInterval(typeTimer);
-        setTimeout(() => roleElement.classList.remove("typing"), 2200);
+    const t = setInterval(() => {
+      i += 1;
+      roleElement.textContent = text.slice(0, i);
+
+      if (i >= text.length) {
+        clearInterval(t);
+        done();
       }
     }, 42);
-  }, 700);
+  }
+
+  function deleteRole(done) {
+    const t = setInterval(() => {
+      const current = roleElement.textContent;
+
+      if (!current.length) {
+        clearInterval(t);
+        done();
+        return;
+      }
+
+      roleElement.textContent = current.slice(0, -1);
+    }, 20);
+  }
+
+  function cycleRoles() {
+    typeRole(roles[roleIndex], () => {
+      setTimeout(() => {
+        deleteRole(() => {
+          roleIndex = (roleIndex + 1) % roles.length;
+          cycleRoles();
+        });
+      }, 2600);
+    });
+  }
+
+  setTimeout(cycleRoles, 700);
 }
 
 // Animated counters for project metrics
@@ -620,6 +654,49 @@ if (socFeed) {
       }
     }
 
+    function runMatrixRain(duration) {
+      if (prefersReducedMotion || document.querySelector(".matrix-rain")) {
+        return;
+      }
+
+      const rain = document.createElement("canvas");
+      rain.className = "matrix-rain";
+      document.body.appendChild(rain);
+
+      const rainCtx = rain.getContext("2d");
+      rain.width = window.innerWidth;
+      rain.height = window.innerHeight;
+
+      const fontSize = 16;
+      const columns = Math.max(1, Math.floor(rain.width / fontSize));
+      const drops = new Array(columns).fill(1);
+      const glyphs = "アカサタナハマヤラワ0123456789ABCDEF$#@%&";
+
+      const rainTimer = setInterval(() => {
+        rainCtx.fillStyle = "rgba(4, 7, 15, 0.08)";
+        rainCtx.fillRect(0, 0, rain.width, rain.height);
+        rainCtx.fillStyle = "#4ade80";
+        rainCtx.font = `${fontSize}px monospace`;
+
+        drops.forEach((y, i) => {
+          const ch = glyphs[Math.floor(Math.random() * glyphs.length)];
+          rainCtx.fillText(ch, i * fontSize, y * fontSize);
+
+          if (y * fontSize > rain.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+
+          drops[i] += 1;
+        });
+      }, 50);
+
+      setTimeout(() => {
+        clearInterval(rainTimer);
+        rain.classList.add("fade");
+        setTimeout(() => rain.remove(), 900);
+      }, duration);
+    }
+
     const termCommands = {
       help: () => [
         "available commands:",
@@ -627,8 +704,20 @@ if (socFeed) {
         "  skills    — core technical skills",
         "  project   — featured case study",
         "  contact   — how to reach me",
-        "  clear     — clear the terminal"
+        "  clear     — clear the terminal",
+        "hint: some commands are not listed. try 'sudo'."
       ],
+      sudo: () => [
+        "guest is not in the sudoers file. This incident will be reported."
+      ],
+      matrix: () => {
+        if (prefersReducedMotion) {
+          return ["animations are disabled on this device."];
+        }
+
+        runMatrixRain(6000);
+        return ["wake up, Neo... (6s)"];
+      },
       whoami: () => [
         "Marcos Rojas Jimenez — Junior Cybersecurity Analyst (SOC · Blue Team)"
       ],
@@ -818,11 +907,12 @@ const radarCanvas = document.getElementById("skillRadar");
 if (radarCanvas) {
   const rctx = radarCanvas.getContext("2d");
   const radarAxes = [
-    { label: "SOC", value: 0.85 },
+    { label: "Blue Team / SOC", value: 0.85 },
     { label: "Email Sec", value: 0.9 },
-    { label: "Systems", value: 0.75 },
-    { label: "Automation", value: 0.72 },
-    { label: "Method", value: 0.8 }
+    { label: "Systems", value: 0.72 },
+    { label: "Automation", value: 0.68 },
+    { label: "Reporting", value: 0.8 },
+    { label: "Red Team", value: 0.15 }
   ];
 
   const RADAR_W = 320;
@@ -978,6 +1068,56 @@ if (prefersReducedMotion) {
   document
     .querySelectorAll(".attack-sim animate, .attack-sim animateMotion")
     .forEach((node) => node.remove());
+}
+
+// Certification lightbox: click a certificate image to view it large
+const certLightboxImages = document.querySelectorAll(".cert-image img");
+
+if (certLightboxImages.length) {
+  const lightbox = document.createElement("div");
+  lightbox.className = "cert-lightbox";
+  lightbox.setAttribute("role", "dialog");
+  lightbox.setAttribute("aria-label", "Certificate viewer");
+
+  const lbFigure = document.createElement("figure");
+  const lbImg = document.createElement("img");
+  const lbCaption = document.createElement("figcaption");
+  const lbClose = document.createElement("span");
+
+  lbClose.className = "cert-lightbox-close";
+  lbClose.textContent = "✕";
+  lbFigure.appendChild(lbImg);
+  lbFigure.appendChild(lbCaption);
+  lightbox.appendChild(lbFigure);
+  lightbox.appendChild(lbClose);
+  document.body.appendChild(lightbox);
+
+  function closeLightbox() {
+    lightbox.classList.remove("open");
+  }
+
+  certLightboxImages.forEach((img) => {
+    img.style.cursor = "zoom-in";
+
+    img.addEventListener("click", () => {
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+
+      const card = img.closest(".cert-card");
+      const title = card ? card.querySelector("h3") : null;
+      lbCaption.textContent = title ? title.textContent : "";
+
+      lightbox.classList.add("open");
+    });
+  });
+
+  lightbox.addEventListener("click", closeLightbox);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeLightbox();
+    }
+  });
 }
 
 // Giant watermark typography behind the hero with scroll parallax

@@ -4360,6 +4360,85 @@ summary:focus-visible {
   }
 }
 
+/* Certificate lightbox viewer */
+.cert-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100001;
+  display: grid;
+  place-items: center;
+  background: rgba(4, 7, 15, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  cursor: zoom-out;
+}
+
+.cert-lightbox.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cert-lightbox figure {
+  margin: 0;
+  text-align: center;
+  transform: scale(0.92);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cert-lightbox.open figure {
+  transform: scale(1);
+}
+
+.cert-lightbox img {
+  max-width: 86vw;
+  max-height: 72vh;
+  border-radius: 16px;
+  box-shadow:
+    0 40px 120px rgba(0,0,0,0.6),
+    0 0 60px rgba(122,167,255,0.15);
+  background: #ffffff;
+}
+
+.cert-lightbox figcaption {
+  margin-top: 16px;
+  color: #dbe7ff;
+  font-weight: 850;
+  font-size: 1.05rem;
+}
+
+.cert-lightbox-close {
+  position: absolute;
+  top: 22px;
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+/* Matrix rain overlay (terminal easter egg) */
+.matrix-rain {
+  position: fixed;
+  inset: 0;
+  z-index: 99997;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: opacity 0.8s ease;
+}
+
+.matrix-rain.fade {
+  opacity: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-veil {
     animation-duration: 0.01s;
