@@ -313,6 +313,150 @@ document.querySelectorAll("#skills .skill-pills").forEach((group) => {
   });
 });
 
+// Cyber network particle background
+if (!prefersReducedMotion && window.innerWidth > 768) {
+  const netCanvas = document.createElement("canvas");
+  netCanvas.className = "net-canvas";
+  document.body.appendChild(netCanvas);
+
+  const netCtx = netCanvas.getContext("2d");
+  const netMouse = { x: -9999, y: -9999 };
+  let netParticles = [];
+  let netRunning = true;
+
+  function sizeNetCanvas() {
+    netCanvas.width = window.innerWidth;
+    netCanvas.height = window.innerHeight;
+  }
+
+  function initNetParticles() {
+    const count = Math.min(85, Math.floor(window.innerWidth / 17));
+
+    netParticles = Array.from({ length: count }, () => ({
+      x: Math.random() * netCanvas.width,
+      y: Math.random() * netCanvas.height,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r: 1 + Math.random() * 1.6
+    }));
+  }
+
+  sizeNetCanvas();
+  initNetParticles();
+
+  window.addEventListener("resize", () => {
+    sizeNetCanvas();
+    initNetParticles();
+  });
+
+  window.addEventListener("mousemove", (event) => {
+    netMouse.x = event.clientX;
+    netMouse.y = event.clientY;
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    const wasRunning = netRunning;
+    netRunning = !document.hidden;
+
+    if (netRunning && !wasRunning) {
+      requestAnimationFrame(drawNet);
+    }
+  });
+
+  const LINK_DIST = 135;
+  const MOUSE_DIST = 180;
+
+  function drawNet() {
+    if (!netRunning) {
+      return;
+    }
+
+    netCtx.clearRect(0, 0, netCanvas.width, netCanvas.height);
+
+    netParticles.forEach((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0 || p.x > netCanvas.width) {
+        p.vx *= -1;
+      }
+
+      if (p.y < 0 || p.y > netCanvas.height) {
+        p.vy *= -1;
+      }
+
+      netCtx.beginPath();
+      netCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      netCtx.fillStyle = "rgba(122,167,255,0.55)";
+      netCtx.fill();
+    });
+
+    for (let i = 0; i < netParticles.length; i++) {
+      for (let j = i + 1; j < netParticles.length; j++) {
+        const dx = netParticles[i].x - netParticles[j].x;
+        const dy = netParticles[i].y - netParticles[j].y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < LINK_DIST) {
+          netCtx.strokeStyle = `rgba(122,167,255,${0.15 * (1 - dist / LINK_DIST)})`;
+          netCtx.lineWidth = 1;
+          netCtx.beginPath();
+          netCtx.moveTo(netParticles[i].x, netParticles[i].y);
+          netCtx.lineTo(netParticles[j].x, netParticles[j].y);
+          netCtx.stroke();
+        }
+      }
+
+      const dxm = netParticles[i].x - netMouse.x;
+      const dym = netParticles[i].y - netMouse.y;
+      const dm = Math.hypot(dxm, dym);
+
+      if (dm < MOUSE_DIST) {
+        netCtx.strokeStyle = `rgba(167,139,250,${0.22 * (1 - dm / MOUSE_DIST)})`;
+        netCtx.lineWidth = 1;
+        netCtx.beginPath();
+        netCtx.moveTo(netParticles[i].x, netParticles[i].y);
+        netCtx.lineTo(netMouse.x, netMouse.y);
+        netCtx.stroke();
+      }
+    }
+
+    requestAnimationFrame(drawNet);
+  }
+
+  requestAnimationFrame(drawNet);
+}
+
+// 3D tilt on showcase cards
+if (!prefersReducedMotion) {
+  document.querySelectorAll(".cert-card, .profile-card, .compact-project-card").forEach((card) => {
+    card.addEventListener("mousemove", (event) => {
+      const rect = card.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width - 0.5;
+      const py = (event.clientY - rect.top) / rect.height - 0.5;
+
+      card.style.transform =
+        `perspective(900px) rotateX(${py * -4}deg) rotateY(${px * 4}deg) translateY(-4px)`;
+    });
+
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "";
+    });
+  });
+}
+
+// Back to top button
+const backToTop = document.createElement("a");
+backToTop.className = "back-to-top";
+backToTop.href = "#home";
+backToTop.setAttribute("aria-label", "Back to top");
+backToTop.textContent = "↑";
+document.body.appendChild(backToTop);
+
+window.addEventListener("scroll", () => {
+  backToTop.classList.toggle("show", window.scrollY > 600);
+});
+
 // Magnetic buttons
 if (!prefersReducedMotion) {
   document.querySelectorAll(".btn").forEach((btn) => {
