@@ -566,6 +566,7 @@
     <section id="about" class="section">
   <div class="shell">
     <div class="section-head reveal">
+      <span class="about-stamp" aria-hidden="true">Verified ✓</span>
       <p class="kicker">About Me</p>
       <h2>Junior SOC-focused cybersecurity profile with systems and email security foundations.</h2>
       <p>
@@ -786,6 +787,17 @@
         </div>
       </article>
 
+      <article class="skill-category radar-card">
+        <div class="skill-category-head">
+          <span>06</span>
+          <h3>Skill Radar</h3>
+        </div>
+        <p>
+          Live radar view of the five core skill areas covered above.
+        </p>
+        <canvas id="skillRadar" width="320" height="300" aria-label="Radar chart of the five skill areas"></canvas>
+      </article>
+
     </div>
   </div>
 </section>
@@ -819,6 +831,57 @@
         DNSSEC, MTA-STS, TLS-RPT, SMTP security controls and SOC-style evidence handling
         through a public dashboard.
       </p>
+
+      <div class="attack-sim" aria-label="Animated diagram: spoofed mail is blocked by DMARC, legitimate mail is delivered">
+        <svg viewBox="0 0 720 185" role="img" focusable="false">
+          <text x="12" y="58" class="sim-label sim-red">ATTACKER</text>
+          <text x="12" y="138" class="sim-label sim-green">LEGIT SENDER</text>
+
+          <line x1="110" y1="54" x2="640" y2="54" class="sim-lane" />
+          <line x1="110" y1="134" x2="640" y2="134" class="sim-lane" />
+
+          <g class="sim-gate">
+            <rect x="260" y="30" width="4" height="130" rx="2" />
+            <text x="262" y="20">SPF</text>
+          </g>
+          <g class="sim-gate">
+            <rect x="380" y="30" width="4" height="130" rx="2" />
+            <text x="382" y="20">DKIM</text>
+          </g>
+          <g class="sim-gate sim-gate-dmarc">
+            <rect x="500" y="30" width="4" height="130" rx="2" />
+            <text x="502" y="20">DMARC</text>
+          </g>
+
+          <g class="sim-inbox">
+            <rect x="628" y="112" width="80" height="44" rx="10" />
+            <text x="668" y="139">INBOX</text>
+          </g>
+
+          <circle class="sim-dot sim-dot-red" cx="110" cy="54" r="6">
+            <animateMotion dur="3.8s" repeatCount="indefinite" path="M0,0 L390,0" />
+            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.9;0.94;1" dur="3.8s" repeatCount="indefinite" />
+          </circle>
+
+          <circle class="sim-burst" cx="502" cy="54" r="1">
+            <animate attributeName="r" values="1;1;18" keyTimes="0;0.9;1" dur="3.8s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0;0.9;0" keyTimes="0;0.88;0.94;1" dur="3.8s" repeatCount="indefinite" />
+          </circle>
+
+          <text x="520" y="46" class="sim-blocked">
+            BLOCKED — p=reject
+            <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.88;0.94;1" dur="3.8s" repeatCount="indefinite" />
+          </text>
+
+          <circle class="sim-dot sim-dot-green" cx="110" cy="134" r="6">
+            <animateMotion dur="5s" repeatCount="indefinite" path="M0,0 L530,0" />
+          </circle>
+        </svg>
+        <p class="sim-caption">
+          Live simulation — spoofed mail is rejected at the DMARC gate (p=reject),
+          authenticated mail reaches the inbox.
+        </p>
+      </div>
 
       <div class="compact-metrics">
         <div>
@@ -1064,6 +1127,7 @@
         </div>
         <div class="cert-content">
           <span class="cert-status completed">Completed</span>
+          <div class="cert-progress"><span style="--p: 100%"></span></div>
           <h3>CCNA: Introduction to Networks</h3>
           <p>
             Cisco Networking Academy certification focused on networking fundamentals,
@@ -1078,6 +1142,7 @@
         </div>
         <div class="cert-content">
           <span class="cert-status progress">In progress</span>
+          <div class="cert-progress"><span style="--p: 45%"></span></div>
           <h3>SOC Analyst Level 1</h3>
           <p>
             TryHackMe learning path focused on SOC fundamentals, alert triage,
@@ -1092,6 +1157,7 @@
         </div>
         <div class="cert-content">
           <span class="cert-status planned">Coming soon</span>
+          <div class="cert-progress"><span style="--p: 8%"></span></div>
           <h3>Blue Team Level 1</h3>
           <p>
             Planned certification focused on practical Blue Team skills, defensive analysis,
@@ -1109,6 +1175,11 @@
           <p class="kicker">Contact</p>
           <h2>Open to junior cybersecurity opportunities.</h2>
           <p>Available for junior SOC, Blue Team and cybersecurity roles in Spain or remote.</p>
+
+          <p class="contact-status">
+            <span class="status-dot"></span>
+            Available for new opportunities — usually replies within 24h
+          </p>
 
           <div class="actions center">
             <a class="btn primary" href="mailto:marcosrojasjimenez2@gmail.com">Email me</a>

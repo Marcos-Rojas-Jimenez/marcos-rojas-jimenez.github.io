@@ -812,6 +812,174 @@ if (!prefersReducedMotion && window.matchMedia("(pointer: fine)").matches) {
   });
 }
 
+// Skill radar: animated pentagon chart with rotating sweep
+const radarCanvas = document.getElementById("skillRadar");
+
+if (radarCanvas) {
+  const rctx = radarCanvas.getContext("2d");
+  const radarAxes = [
+    { label: "SOC", value: 0.85 },
+    { label: "Email Sec", value: 0.9 },
+    { label: "Systems", value: 0.75 },
+    { label: "Automation", value: 0.72 },
+    { label: "Method", value: 0.8 }
+  ];
+
+  const RADAR_W = 320;
+  const RADAR_H = 300;
+  const radarDpr = window.devicePixelRatio || 1;
+
+  radarCanvas.width = RADAR_W * radarDpr;
+  radarCanvas.height = RADAR_H * radarDpr;
+  rctx.scale(radarDpr, radarDpr);
+
+  const radarCx = RADAR_W / 2;
+  const radarCy = RADAR_H / 2 + 8;
+  const RADAR_R = 100;
+
+  let radarProgress = prefersReducedMotion ? 1 : 0;
+  let sweepAngle = -Math.PI / 2;
+  let radarRunning = false;
+
+  function radarPoint(index, radius) {
+    const angle = -Math.PI / 2 + index * ((2 * Math.PI) / radarAxes.length);
+    return [radarCx + Math.cos(angle) * radius, radarCy + Math.sin(angle) * radius];
+  }
+
+  function drawRadar() {
+    rctx.clearRect(0, 0, RADAR_W, RADAR_H);
+
+    for (let ring = 1; ring <= 4; ring += 1) {
+      rctx.beginPath();
+
+      for (let i = 0; i <= radarAxes.length; i += 1) {
+        const [x, y] = radarPoint(i % radarAxes.length, (RADAR_R * ring) / 4);
+
+        if (i === 0) {
+          rctx.moveTo(x, y);
+        } else {
+          rctx.lineTo(x, y);
+        }
+      }
+
+      rctx.strokeStyle = "rgba(122,167,255,0.14)";
+      rctx.lineWidth = 1;
+      rctx.stroke();
+    }
+
+    radarAxes.forEach((axis, i) => {
+      const [x, y] = radarPoint(i, RADAR_R);
+      rctx.beginPath();
+      rctx.moveTo(radarCx, radarCy);
+      rctx.lineTo(x, y);
+      rctx.strokeStyle = "rgba(122,167,255,0.12)";
+      rctx.stroke();
+
+      const [lx, ly] = radarPoint(i, RADAR_R + 22);
+      rctx.fillStyle = "#9fb4dd";
+      rctx.font = "700 11px Inter, 'Segoe UI', sans-serif";
+      rctx.textAlign = "center";
+      rctx.textBaseline = "middle";
+      rctx.fillText(axis.label, lx, ly);
+    });
+
+    rctx.beginPath();
+
+    radarAxes.forEach((axis, i) => {
+      const [x, y] = radarPoint(i, RADAR_R * axis.value * radarProgress);
+
+      if (i === 0) {
+        rctx.moveTo(x, y);
+      } else {
+        rctx.lineTo(x, y);
+      }
+    });
+
+    rctx.closePath();
+
+    const radarGrad = rctx.createLinearGradient(
+      radarCx - RADAR_R, radarCy - RADAR_R,
+      radarCx + RADAR_R, radarCy + RADAR_R
+    );
+    radarGrad.addColorStop(0, "rgba(122,167,255,0.32)");
+    radarGrad.addColorStop(1, "rgba(167,139,250,0.26)");
+    rctx.fillStyle = radarGrad;
+    rctx.fill();
+    rctx.strokeStyle = "rgba(122,167,255,0.85)";
+    rctx.lineWidth = 2;
+    rctx.stroke();
+
+    radarAxes.forEach((axis, i) => {
+      const [x, y] = radarPoint(i, RADAR_R * axis.value * radarProgress);
+      rctx.beginPath();
+      rctx.arc(x, y, 3.5, 0, Math.PI * 2);
+      rctx.fillStyle = "#a9c2ff";
+      rctx.fill();
+    });
+
+    if (!prefersReducedMotion) {
+      rctx.save();
+      rctx.beginPath();
+      rctx.moveTo(radarCx, radarCy);
+      rctx.arc(radarCx, radarCy, RADAR_R, sweepAngle - 0.5, sweepAngle);
+      rctx.closePath();
+      rctx.fillStyle = "rgba(94,234,212,0.10)";
+      rctx.fill();
+
+      rctx.beginPath();
+      rctx.moveTo(radarCx, radarCy);
+      rctx.lineTo(
+        radarCx + Math.cos(sweepAngle) * RADAR_R,
+        radarCy + Math.sin(sweepAngle) * RADAR_R
+      );
+      rctx.strokeStyle = "rgba(94,234,212,0.50)";
+      rctx.lineWidth = 1.5;
+      rctx.stroke();
+      rctx.restore();
+    }
+  }
+
+  function radarLoop() {
+    if (!radarRunning) {
+      return;
+    }
+
+    radarProgress = Math.min(radarProgress + 0.03, 1);
+    sweepAngle += 0.018;
+    drawRadar();
+    requestAnimationFrame(radarLoop);
+  }
+
+  drawRadar();
+
+  if (!prefersReducedMotion) {
+    const radarObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (!radarRunning) {
+              radarRunning = true;
+              requestAnimationFrame(radarLoop);
+            }
+          } else {
+            radarRunning = false;
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    radarObserver.observe(radarCanvas);
+  }
+}
+
+// Attack simulation: freeze SMIL animations under reduced motion
+if (prefersReducedMotion) {
+  document
+    .querySelectorAll(".attack-sim animate, .attack-sim animateMotion")
+    .forEach((node) => node.remove());
+}
+
 // Giant watermark typography behind the hero with scroll parallax
 const heroForWatermark = document.querySelector(".hero");
 
