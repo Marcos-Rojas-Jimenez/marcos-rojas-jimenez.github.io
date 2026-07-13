@@ -1120,6 +1120,40 @@ if (certLightboxImages.length) {
   });
 }
 
+// Training timeline: spine fills with scroll, nodes light up as it passes
+const trainingTimeline = document.getElementById("trainingTimeline");
+const trainingFill = document.getElementById("trainingProgressFill");
+
+if (trainingTimeline && trainingFill) {
+  const trainingNodes = trainingTimeline.querySelectorAll(".training-node");
+
+  function updateTrainingProgress() {
+    const rect = trainingTimeline.getBoundingClientRect();
+    const triggerY = window.innerHeight * 0.62;
+    const passed = Math.min(Math.max(triggerY - rect.top, 0), rect.height);
+    const pct = rect.height > 0 ? (passed / rect.height) * 100 : 0;
+
+    trainingFill.style.height = `${pct}%`;
+
+    trainingNodes.forEach((node) => {
+      const nodeRect = node.getBoundingClientRect();
+      const reached = nodeRect.top + nodeRect.height / 2 <= triggerY;
+
+      node.classList.toggle("active", reached);
+
+      const card = node.parentElement.querySelector(".training-clean-card");
+
+      if (card) {
+        card.classList.toggle("lit", reached);
+      }
+    });
+  }
+
+  window.addEventListener("scroll", updateTrainingProgress);
+  window.addEventListener("resize", updateTrainingProgress);
+  updateTrainingProgress();
+}
+
 // Giant watermark typography behind the hero with scroll parallax
 const heroForWatermark = document.querySelector(".hero");
 
