@@ -132,3 +132,50 @@ allCards.forEach((card) => {
     card.style.setProperty("--mouse-y", `${y}px`);
   });
 });
+
+// Skills search filter
+const skillSearchInput = document.getElementById("skillSearchInput");
+
+if (skillSearchInput) {
+  const skillCategories = document.querySelectorAll("#skills .skill-category");
+  const skillPills = document.querySelectorAll("#skills .skill-pills span");
+
+  skillSearchInput.addEventListener("input", () => {
+    const query = skillSearchInput.value.trim().toLowerCase();
+
+    skillPills.forEach((pill) => {
+      pill.classList.remove("skill-match", "skill-dim");
+    });
+
+    skillCategories.forEach((category) => {
+      category.classList.remove("skill-dim", "skill-category-has-match");
+    });
+
+    if (!query) {
+      return;
+    }
+
+    skillCategories.forEach((category) => {
+      const pills = category.querySelectorAll(".skill-pills span");
+      let categoryHasMatch = false;
+
+      pills.forEach((pill) => {
+        const text = pill.textContent.trim().toLowerCase();
+        const isMatch = text.includes(query);
+
+        if (isMatch) {
+          pill.classList.add("skill-match");
+          categoryHasMatch = true;
+        } else {
+          pill.classList.add("skill-dim");
+        }
+      });
+
+      if (categoryHasMatch) {
+        category.classList.add("skill-category-has-match");
+      } else {
+        category.classList.add("skill-dim");
+      }
+    });
+  });
+}
