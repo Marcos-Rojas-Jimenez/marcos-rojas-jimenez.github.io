@@ -3107,29 +3107,29 @@ h2 {
 }
 
 .hero-orb-a {
-  width: 420px;
-  height: 420px;
-  left: -140px;
-  top: -80px;
-  background: radial-gradient(circle, rgba(122,167,255,0.30), transparent 70%);
+  width: 540px;
+  height: 540px;
+  left: -160px;
+  top: -100px;
+  background: radial-gradient(circle, rgba(122,167,255,0.42), transparent 70%);
   animation: orbDriftA 13s ease-in-out infinite alternate;
 }
 
 .hero-orb-b {
-  width: 340px;
-  height: 340px;
-  right: -110px;
-  bottom: -60px;
-  background: radial-gradient(circle, rgba(167,139,250,0.26), transparent 70%);
+  width: 440px;
+  height: 440px;
+  right: -130px;
+  bottom: -80px;
+  background: radial-gradient(circle, rgba(167,139,250,0.36), transparent 70%);
   animation: orbDriftB 16s ease-in-out infinite alternate;
 }
 
 .hero-orb-c {
-  width: 220px;
-  height: 220px;
+  width: 280px;
+  height: 280px;
   left: 46%;
-  top: 58%;
-  background: radial-gradient(circle, rgba(94,234,212,0.22), transparent 70%);
+  top: 56%;
+  background: radial-gradient(circle, rgba(94,234,212,0.30), transparent 70%);
   animation: orbDriftC 11s ease-in-out infinite alternate;
 }
 
@@ -3164,29 +3164,151 @@ h2 {
   }
 }
 
-/* Hero headline: word-by-word entrance (pure CSS animation — no JS timing dependency) */
-.hero h1 .word-reveal {
-  display: inline-block;
-  animation: heroWordIn .8s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes heroWordIn {
+/* Hero entrance cascade: kicker -> headline -> role -> text -> actions */
+@keyframes heroRise {
   from {
     opacity: 0;
-    transform: translateY(38px) rotate(2deg);
-    filter: blur(6px);
+    transform: translateY(36px);
+    filter: blur(10px);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0) rotate(0deg);
+    transform: translateY(0);
     filter: blur(0);
   }
 }
 
+.hero-copy .kicker {
+  animation: heroRise .8s cubic-bezier(0.16, 1, 0.3, 1) .05s both;
+}
+
+.hero-copy h1 {
+  animation:
+    heroRise .95s cubic-bezier(0.16, 1, 0.3, 1) .18s both,
+    heroTitleGradient 8s ease-in-out infinite alternate;
+}
+
+.hero-copy .role {
+  animation: heroRise .85s cubic-bezier(0.16, 1, 0.3, 1) .36s both;
+}
+
+.hero-copy .hero-text {
+  animation: heroRise .85s cubic-bezier(0.16, 1, 0.3, 1) .5s both;
+}
+
+.hero-copy .actions {
+  animation: heroRise .85s cubic-bezier(0.16, 1, 0.3, 1) .64s both;
+}
+
+/* Typewriter caret on the role line */
+.role.typing::after {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  margin-left: 7px;
+  vertical-align: -0.12em;
+  background: linear-gradient(180deg, #7aa7ff, #a78bfa);
+  box-shadow: 0 0 14px rgba(122,167,255,0.65);
+  animation: caretBlink 0.95s steps(1) infinite;
+}
+
+@keyframes caretBlink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+
+/* Aurora light band sweeping across the hero */
+.hero-orbs::after {
+  content: "";
+  position: absolute;
+  left: -20%;
+  top: 8%;
+  width: 140%;
+  height: 300px;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(122,167,255,0.16) 30%,
+    rgba(167,139,250,0.18) 52%,
+    rgba(94,234,212,0.12) 72%,
+    transparent
+  );
+  filter: blur(34px);
+  transform: rotate(-8deg);
+  animation: auroraSweep 13s ease-in-out infinite alternate;
+}
+
+@keyframes auroraSweep {
+  from {
+    transform: rotate(-8deg) translateX(-7%);
+    opacity: 0.55;
+  }
+
+  to {
+    transform: rotate(-5deg) translateX(7%);
+    opacity: 1;
+  }
+}
+
+/* Skill pills: staggered pop-in when the matrix scrolls into view */
+@keyframes pillPop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.88);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.js-ready .skills-matrix.reveal.visible .skill-pills span {
+  animation: pillPop .55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(0.15s + var(--pill-i, 0) * 0.045s);
+}
+
+/* Section titles: gradient underline sweeps in on reveal */
+.section-head h2,
+.contact-card h2 {
+  background-image: linear-gradient(90deg, #7aa7ff, #a78bfa 55%, #5eead4);
+  background-repeat: no-repeat;
+  background-position: left 100%;
+  background-size: 0% 4px;
+  padding-bottom: 18px;
+  transition: background-size 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+}
+
+.section-head.reveal.visible h2,
+.contact-card.reveal.visible h2 {
+  background-size: 92px 4px;
+}
+
+/* Metric counters: glow while counting up */
+.compact-metrics strong.counting {
+  text-shadow:
+    0 0 24px rgba(94,234,212,0.55),
+    0 0 48px rgba(34,197,94,0.30);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero h1 .word-reveal {
-    animation: none;
+  .hero-copy .kicker,
+  .hero-copy h1,
+  .hero-copy .role,
+  .hero-copy .hero-text,
+  .hero-copy .actions,
+  .hero-orbs::after,
+  .role.typing::after,
+  .js-ready .skills-matrix.reveal.visible .skill-pills span {
+    animation: none !important;
+  }
+
+  .section-head h2,
+  .contact-card h2 {
+    transition: none;
+    background-size: 92px 4px;
   }
 }
 

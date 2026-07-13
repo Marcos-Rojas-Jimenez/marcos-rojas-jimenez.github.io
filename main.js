@@ -93,7 +93,7 @@ function animateCursorGlow() {
 
 requestAnimationFrame(animateCursorGlow);
 
-const sectionIds = ["about", "skills", "projects", "training", "contact"];
+const sectionIds = ["about", "skills", "projects", "training", "certifications", "contact"];
 const navAnchors = document.querySelectorAll(".nav-links a");
 const navIndicator = document.getElementById("navIndicator");
 const navLinksContainer = document.getElementById("navLinks");
@@ -113,8 +113,8 @@ function moveNavIndicator() {
   const containerRect = navLinksContainer.getBoundingClientRect();
   const linkRect = activeLink.getBoundingClientRect();
 
-  navIndicator.style.left = `${linkRect.left - containerRect.left}px`;
-  navIndicator.style.width = `${linkRect.width}px`;
+  navIndicator.style.left = `${linkRect.left - containerRect.left - 12}px`;
+  navIndicator.style.width = `${linkRect.width + 24}px`;
   navIndicator.classList.add("ready");
 }
 
@@ -133,6 +133,13 @@ function updateActiveNav() {
       current = id;
     }
   });
+
+  const scrolledToBottom =
+    window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8;
+
+  if (scrolledToBottom) {
+    current = "contact";
+  }
 
   navAnchors.forEach((link) => {
     link.classList.remove("active");
@@ -228,16 +235,83 @@ if (skillSearchInput) {
   });
 }
 
-// Hero headline: word-by-word entrance
-const heroHeading = document.querySelector(".hero h1");
+// Hero role: typewriter entrance with blinking caret
+const roleElement = document.querySelector(".hero .role");
 
-if (heroHeading && !prefersReducedMotion) {
-  const words = heroHeading.textContent.trim().split(/\s+/);
+if (roleElement && !prefersReducedMotion) {
+  const fullRoleText = roleElement.textContent.trim();
 
-  heroHeading.innerHTML = words
-    .map((word, index) => `<span class="word-reveal" style="animation-delay:${index * 90}ms">${word}</span>`)
-    .join(" ");
+  roleElement.textContent = "";
+  roleElement.classList.add("typing");
+
+  setTimeout(() => {
+    let charIndex = 0;
+
+    const typeTimer = setInterval(() => {
+      charIndex += 1;
+      roleElement.textContent = fullRoleText.slice(0, charIndex);
+
+      if (charIndex >= fullRoleText.length) {
+        clearInterval(typeTimer);
+        setTimeout(() => roleElement.classList.remove("typing"), 2200);
+      }
+    }, 42);
+  }, 700);
 }
+
+// Animated counters for project metrics
+const metricNumbers = document.querySelectorAll(".compact-metrics strong");
+
+const counterObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) {
+        return;
+      }
+
+      const el = entry.target;
+      counterObserver.unobserve(el);
+
+      const raw = el.textContent.trim();
+
+      if (!/^\d+$/.test(raw) || prefersReducedMotion) {
+        return;
+      }
+
+      const target = parseInt(raw, 10);
+      const duration = 1400;
+      const startTime = performance.now();
+
+      el.classList.add("counting");
+
+      function tickCounter(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+
+        el.textContent = `${Math.round(target * eased)}`;
+
+        if (progress < 1) {
+          requestAnimationFrame(tickCounter);
+        } else {
+          el.textContent = `${target}`;
+          el.classList.remove("counting");
+        }
+      }
+
+      requestAnimationFrame(tickCounter);
+    });
+  },
+  { threshold: 0.4 }
+);
+
+metricNumbers.forEach((el) => counterObserver.observe(el));
+
+// Stagger index for skill pills entrance
+document.querySelectorAll("#skills .skill-pills").forEach((group) => {
+  group.querySelectorAll("span").forEach((pill, index) => {
+    pill.style.setProperty("--pill-i", index);
+  });
+});
 
 // Magnetic buttons
 if (!prefersReducedMotion) {
