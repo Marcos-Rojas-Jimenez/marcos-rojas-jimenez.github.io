@@ -2932,3 +2932,40 @@ h2 {
   }
 }
 
+
+/* Mobile About section refinement */
+@media (max-width: 920px) {
+  #about {
+    padding-top: 64px !important;
+  }
+
+  #about .section-head h2 {
+    font-size: clamp(1.85rem, 7.8vw, 2.45rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.035em !important;
+  }
+
+  #about .section-head p {
+    font-size: 0.98rem !important;
+    line-height: 1.75 !important;
+    color: #b8c3d6 !important;
+  }
+
+  #about .cards.three {
+    gap: 18px !important;
+  }
+
+  #about .card {
+    padding: 24px !important;
+  }
+
+  #about .card h3 {
+    font-size: 1.18rem !important;
+  }
+
+  #about .card p {
+    font-size: 0.98rem !important;
+    line-height: 1.7 !important;
+  }
+}
+
