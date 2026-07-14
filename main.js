@@ -1444,11 +1444,11 @@ if (planetSlots.length && window.innerWidth > 900) {
       for (let i = 0; i < count; i += 1) {
         const r = minR + Math.random() * (maxR - minR);
         ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-        ctx.globalAlpha = alpha;
+        ctx.globalAlpha = alpha * (0.6 + Math.random() * 0.4);
         ctx.beginPath();
         ctx.ellipse(
           Math.random() * w, Math.random() * h,
-          r * (0.7 + Math.random()), r,
+          r * (0.7 + Math.random() * 0.8), r,
           Math.random() * Math.PI, 0, Math.PI * 2
         );
         ctx.fill();
@@ -1456,155 +1456,381 @@ if (planetSlots.length && window.innerWidth > 900) {
       ctx.globalAlpha = 1;
     }
 
-    function sunTexture() {
-      const c = makeCanvas(512, 256);
+    // Soft radial glow sprite texture, tinted to the page palette
+    function glowTexture(inner, outer) {
+      const c = makeCanvas(256, 256);
       const x = c.getContext("2d");
-      const g = x.createLinearGradient(0, 0, 0, 256);
-      g.addColorStop(0, "#ffb23e");
-      g.addColorStop(0.5, "#ff9500");
-      g.addColorStop(1, "#ff8a00");
+      const g = x.createRadialGradient(128, 128, 10, 128, 128, 128);
+      g.addColorStop(0, inner);
+      g.addColorStop(0.4, outer);
+      g.addColorStop(1, "rgba(0,0,0,0)");
       x.fillStyle = g;
-      x.fillRect(0, 0, 512, 256);
-      spots(x, 512, 256, 90, 6, 30, ["#ffd76a", "#ffc14d"], 0.35);
-      spots(x, 512, 256, 60, 4, 18, ["#e07b00", "#c96a00"], 0.3);
+      x.fillRect(0, 0, 256, 256);
       return new THREE.CanvasTexture(c);
     }
 
-    function saturnTexture() {
-      const c = makeCanvas(512, 256);
+    function sunTexture() {
+      const c = makeCanvas(1024, 512);
       const x = c.getContext("2d");
-      const bands = ["#e8d3a8", "#d9bf8a", "#caa96f", "#e2c992", "#bfa066", "#d8c290"];
-      let y = 0;
-      let bi = 0;
-      while (y < 256) {
-        const h = 10 + Math.random() * 24;
-        x.fillStyle = bands[bi % bands.length];
-        x.fillRect(0, y, 512, h);
-        y += h;
-        bi += 1;
+      const g = x.createLinearGradient(0, 0, 0, 512);
+      g.addColorStop(0, "#ffc65e");
+      g.addColorStop(0.35, "#ffab2e");
+      g.addColorStop(0.65, "#ff9500");
+      g.addColorStop(1, "#f57f17");
+      x.fillStyle = g;
+      x.fillRect(0, 0, 1024, 512);
+
+      // convection cells: bright granules over darker pores
+      spots(x, 1024, 512, 260, 6, 26, ["#ffdf8a", "#ffd166", "#ffca4f"], 0.30);
+      spots(x, 1024, 512, 180, 3, 12, ["#e07b00", "#cc6a00", "#b35c00"], 0.25);
+      spots(x, 1024, 512, 26, 10, 34, ["#8a3d00", "#7a3600"], 0.30);
+
+      // hot filament streaks
+      for (let i = 0; i < 40; i += 1) {
+        const sy = Math.random() * 512;
+        const sx = Math.random() * 1024;
+        const len = 40 + Math.random() * 140;
+        const grad = x.createLinearGradient(sx, sy, sx + len, sy);
+        grad.addColorStop(0, "rgba(255,224,130,0)");
+        grad.addColorStop(0.5, "rgba(255,224,130,0.35)");
+        grad.addColorStop(1, "rgba(255,224,130,0)");
+        x.fillStyle = grad;
+        x.fillRect(sx, sy, len, 2 + Math.random() * 3);
       }
-      spots(x, 512, 256, 40, 8, 60, ["#f0e0bb", "#b3945c"], 0.12);
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      return tex;
+    }
+
+    function saturnTexture() {
+      const c = makeCanvas(1024, 512);
+      const x = c.getContext("2d");
+
+      // smooth latitudinal bands via a many-stop vertical gradient
+      const g = x.createLinearGradient(0, 0, 0, 512);
+      const bandStops = [
+        [0.0, "#a98f63"], [0.06, "#c4a878"], [0.13, "#e3cd9d"],
+        [0.2, "#d3b988"], [0.27, "#efdcae"], [0.35, "#cdb384"],
+        [0.42, "#e8d3a4"], [0.5, "#f2e2b8"], [0.58, "#dfc697"],
+        [0.66, "#c9ad7d"], [0.74, "#e5cf9f"], [0.82, "#cfb586"],
+        [0.9, "#bda173"], [1.0, "#a08657"]
+      ];
+      bandStops.forEach((s) => g.addColorStop(s[0], s[1]));
+      x.fillStyle = g;
+      x.fillRect(0, 0, 1024, 512);
+
+      // subtle horizontal flow streaks
+      for (let i = 0; i < 90; i += 1) {
+        const sy = Math.random() * 512;
+        x.fillStyle = Math.random() > 0.5 ? "#f5e7c0" : "#a68a5c";
+        x.globalAlpha = 0.05 + Math.random() * 0.06;
+        x.fillRect(0, sy, 1024, 1 + Math.random() * 3);
+      }
+      x.globalAlpha = 1;
+
+      // a few storm ovals
+      spots(x, 1024, 512, 10, 5, 16, ["#f7ecc9", "#9c7f52"], 0.25);
+      return new THREE.CanvasTexture(c);
+    }
+
+    // radial ring strip: bright A/B rings, Cassini division, faint C ring
+    function ringTexture() {
+      const c = makeCanvas(512, 8);
+      const x = c.getContext("2d");
+
+      for (let px = 0; px < 512; px += 1) {
+        const t = px / 512;
+        let alpha = 0;
+        let col = "#d8c49a";
+
+        if (t < 0.1) {
+          alpha = 0.05 + t * 0.8; // faint C ring fading in
+          col = "#b6a078";
+        } else if (t < 0.44) {
+          alpha = 0.55 + Math.sin(t * 90) * 0.14; // B ring, grooved
+          col = "#dcc9a0";
+        } else if (t < 0.52) {
+          alpha = 0.05; // Cassini division
+        } else if (t < 0.78) {
+          alpha = 0.42 + Math.sin(t * 70) * 0.1; // A ring
+          col = "#c3ac80";
+        } else if (t < 0.84) {
+          alpha = 0.1; // Encke-ish gap
+        } else if (t < 0.94) {
+          alpha = 0.3;
+          col = "#cdb88e";
+        } else {
+          alpha = 0.08;
+        }
+
+        alpha += (Math.random() - 0.5) * 0.05;
+        x.fillStyle = col;
+        x.globalAlpha = Math.max(0, Math.min(1, alpha));
+        x.fillRect(px, 0, 1, 8);
+      }
+      x.globalAlpha = 1;
       return new THREE.CanvasTexture(c);
     }
 
     function earthTexture() {
-      const c = makeCanvas(512, 256);
+      const c = makeCanvas(1024, 512);
       const x = c.getContext("2d");
-      const g = x.createLinearGradient(0, 0, 0, 256);
-      g.addColorStop(0, "#16457f");
-      g.addColorStop(0.5, "#1c5a9e");
-      g.addColorStop(1, "#123c6f");
+
+      // deep ocean with subtle banding
+      const g = x.createLinearGradient(0, 0, 0, 512);
+      g.addColorStop(0, "#153e74");
+      g.addColorStop(0.5, "#1d5da4");
+      g.addColorStop(1, "#123663");
       x.fillStyle = g;
-      x.fillRect(0, 0, 512, 256);
-      spots(x, 512, 256, 26, 14, 46, ["#2e7d4f", "#3c8f5a", "#8a7a4a"], 0.92);
-      spots(x, 512, 256, 40, 3, 10, ["#2e7d4f", "#3c8f5a"], 0.8);
+      x.fillRect(0, 0, 1024, 512);
+
+      // continents: clustered blobs so they read as landmasses
+      for (let k = 0; k < 7; k += 1) {
+        const cx = Math.random() * 1024;
+        const cy = 90 + Math.random() * 330;
+        for (let i = 0; i < 26; i += 1) {
+          const r = 8 + Math.random() * 34;
+          x.fillStyle = ["#2f7d4e", "#39905b", "#4a9a55", "#8a7a4a"][Math.floor(Math.random() * 4)];
+          x.globalAlpha = 0.9;
+          x.beginPath();
+          x.ellipse(
+            cx + (Math.random() - 0.5) * 150,
+            cy + (Math.random() - 0.5) * 90,
+            r * (0.7 + Math.random() * 0.9), r,
+            Math.random() * Math.PI, 0, Math.PI * 2
+          );
+          x.fill();
+        }
+        // mountain/desert accents on top of the landmass
+        for (let i = 0; i < 8; i += 1) {
+          x.fillStyle = ["#a08d5a", "#6f8f4e"][i % 2];
+          x.globalAlpha = 0.55;
+          x.beginPath();
+          x.ellipse(
+            cx + (Math.random() - 0.5) * 120,
+            cy + (Math.random() - 0.5) * 70,
+            5 + Math.random() * 14, 4 + Math.random() * 9,
+            Math.random() * Math.PI, 0, Math.PI * 2
+          );
+          x.fill();
+        }
+      }
+      x.globalAlpha = 1;
+
+      // polar ice caps with ragged edges
       x.fillStyle = "#eef4f8";
       x.globalAlpha = 0.95;
-      x.fillRect(0, 0, 512, 14);
-      x.fillRect(0, 242, 512, 14);
+      x.fillRect(0, 0, 1024, 26);
+      x.fillRect(0, 486, 1024, 26);
       x.globalAlpha = 1;
-      spots(x, 512, 24, 14, 4, 12, ["#eef4f8"], 0.85);
-      spots(x, 512, 256, 30, 8, 30, ["#ffffff"], 0.14);
+      spots(x, 1024, 44, 26, 5, 16, ["#eef4f8"], 0.9);
+      for (let i = 0; i < 26; i += 1) {
+        x.fillStyle = "#eef4f8";
+        x.globalAlpha = 0.85;
+        x.beginPath();
+        x.ellipse(Math.random() * 1024, 470 + Math.random() * 40, 6 + Math.random() * 14, 5 + Math.random() * 8, 0, 0, Math.PI * 2);
+        x.fill();
+      }
+      x.globalAlpha = 1;
+      return new THREE.CanvasTexture(c);
+    }
+
+    function cloudTexture() {
+      const c = makeCanvas(1024, 512);
+      const x = c.getContext("2d");
+      x.clearRect(0, 0, 1024, 512);
+
+      for (let i = 0; i < 90; i += 1) {
+        const cy = Math.random() * 512;
+        const cx = Math.random() * 1024;
+        const r = 6 + Math.random() * 22;
+        x.fillStyle = "#ffffff";
+        x.globalAlpha = 0.10 + Math.random() * 0.22;
+        x.beginPath();
+        x.ellipse(cx, cy, r * (1.6 + Math.random() * 2.2), r, 0, 0, Math.PI * 2);
+        x.fill();
+      }
+      x.globalAlpha = 1;
       return new THREE.CanvasTexture(c);
     }
 
     function moonTexture() {
-      const c = makeCanvas(512, 256);
+      const c = makeCanvas(1024, 512);
       const x = c.getContext("2d");
-      const g = x.createLinearGradient(0, 0, 0, 256);
-      g.addColorStop(0, "#c2c5cb");
-      g.addColorStop(1, "#a7abb3");
+      const g = x.createLinearGradient(0, 0, 0, 512);
+      g.addColorStop(0, "#c9ccd3");
+      g.addColorStop(0.5, "#b4b8c0");
+      g.addColorStop(1, "#a3a7b0");
       x.fillStyle = g;
-      x.fillRect(0, 0, 512, 256);
-      spots(x, 512, 256, 16, 16, 50, ["#8e939c", "#7f858f"], 0.4);
-      for (let i = 0; i < 70; i += 1) {
-        const cx = Math.random() * 512;
-        const cy = Math.random() * 256;
-        const r = 2 + Math.random() * 8;
-        x.fillStyle = "#8b909a";
-        x.globalAlpha = 0.55;
+      x.fillRect(0, 0, 1024, 512);
+
+      // maria: large dark basaltic plains
+      spots(x, 1024, 512, 14, 30, 95, ["#82878f", "#767b85", "#8c919b"], 0.5);
+      // regolith mottling
+      spots(x, 1024, 512, 240, 2, 8, ["#d4d7dc", "#9ba0a9"], 0.25);
+
+      // craters with shaded floors and lit rims
+      for (let i = 0; i < 130; i += 1) {
+        const cx = Math.random() * 1024;
+        const cy = Math.random() * 512;
+        const r = 2 + Math.random() * 14;
+
+        const grad = x.createRadialGradient(cx - r * 0.25, cy - r * 0.25, r * 0.1, cx, cy, r);
+        grad.addColorStop(0, "rgba(110,115,124,0.85)");
+        grad.addColorStop(0.75, "rgba(140,145,154,0.55)");
+        grad.addColorStop(1, "rgba(150,155,164,0)");
+        x.fillStyle = grad;
         x.beginPath();
         x.arc(cx, cy, r, 0, Math.PI * 2);
         x.fill();
-        x.globalAlpha = 0.5;
-        x.strokeStyle = "#d7dade";
-        x.lineWidth = 1;
+
+        x.strokeStyle = "rgba(225,228,233,0.6)";
+        x.lineWidth = Math.max(1, r * 0.16);
         x.beginPath();
-        x.arc(cx, cy, r, Math.PI * 0.9, Math.PI * 1.7);
+        x.arc(cx, cy, r * 0.92, Math.PI * 0.85, Math.PI * 1.8);
         x.stroke();
       }
-      x.globalAlpha = 1;
       return new THREE.CanvasTexture(c);
+    }
+
+    function addStars(scene) {
+      const count = 80;
+      const positions = new Float32Array(count * 3);
+
+      for (let i = 0; i < count; i += 1) {
+        const radius = 7 + Math.random() * 5;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+        positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+        positions[i * 3 + 2] = radius * Math.cos(phi);
+      }
+
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      const mat = new THREE.PointsMaterial({
+        color: 0x9db4e8,
+        size: 0.06,
+        transparent: true,
+        opacity: 0.85,
+        depthWrite: false
+      });
+      const stars = new THREE.Points(geo, mat);
+      scene.add(stars);
+      return stars;
+    }
+
+    function addHalo(scene, inner, outer, scale, opacity) {
+      const mat = new THREE.SpriteMaterial({
+        map: glowTexture(inner, outer),
+        transparent: true,
+        opacity: opacity,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const sprite = new THREE.Sprite(mat);
+      sprite.scale.set(scale, scale, 1);
+      sprite.position.z = -0.4;
+      scene.add(sprite);
+      return sprite;
     }
 
     function buildBody(kind, scene) {
       if (kind === "sun") {
+        addHalo(scene, "rgba(255,190,80,0.85)", "rgba(255,140,20,0.30)", 2.9, 0.9);
+        const map = sunTexture();
         const mesh = new THREE.Mesh(
-          new THREE.SphereGeometry(1.05, 48, 48),
-          new THREE.MeshBasicMaterial({ map: sunTexture() })
+          new THREE.SphereGeometry(1.02, 64, 64),
+          new THREE.MeshBasicMaterial({ map })
         );
         scene.add(mesh);
-        return { spin: mesh, speed: 0.004 };
+        return { spin: mesh, speed: 0.0035, scrollMap: map };
       }
 
       if (kind === "saturn") {
+        addHalo(scene, "rgba(232,211,168,0.5)", "rgba(122,167,255,0.14)", 5.6, 0.5);
         const tilt = new THREE.Group();
         const inner = new THREE.Group();
+
         const body = new THREE.Mesh(
-          new THREE.SphereGeometry(0.82, 48, 48),
-          new THREE.MeshStandardMaterial({ map: saturnTexture(), roughness: 1 })
+          new THREE.SphereGeometry(0.85, 64, 64),
+          new THREE.MeshStandardMaterial({ map: saturnTexture(), roughness: 0.95 })
         );
         inner.add(body);
 
-        const ringDefs = [
-          [1.05, 1.35, "#c9b083", 0.55],
-          [1.4, 1.72, "#a68a5f", 0.4],
-          [1.78, 1.92, "#e8d9b5", 0.25]
-        ];
+        const RING_IN = 1.12;
+        const RING_OUT = 2.0;
+        const ringGeo = new THREE.RingGeometry(RING_IN, RING_OUT, 160, 1);
+        const rpos = ringGeo.attributes.position;
+        const ruv = ringGeo.attributes.uv;
+        const v3 = new THREE.Vector3();
 
-        ringDefs.forEach((def) => {
-          const ring = new THREE.Mesh(
-            new THREE.RingGeometry(def[0], def[1], 96),
-            new THREE.MeshBasicMaterial({
-              color: def[2],
-              transparent: true,
-              opacity: def[3],
-              side: THREE.DoubleSide
-            })
-          );
-          ring.rotation.x = -Math.PI / 2;
-          inner.add(ring);
-        });
+        for (let i = 0; i < rpos.count; i += 1) {
+          v3.fromBufferAttribute(rpos, i);
+          ruv.setXY(i, (v3.length() - RING_IN) / (RING_OUT - RING_IN), 0.5);
+        }
 
-        tilt.rotation.z = 0.38;
-        tilt.rotation.x = 0.32;
+        const ring = new THREE.Mesh(
+          ringGeo,
+          new THREE.MeshBasicMaterial({
+            map: ringTexture(),
+            transparent: true,
+            side: THREE.DoubleSide,
+            depthWrite: false
+          })
+        );
+        ring.rotation.x = -Math.PI / 2;
+        inner.add(ring);
+
+        tilt.rotation.z = 0.4;
+        tilt.rotation.x = 0.34;
         tilt.add(inner);
         scene.add(tilt);
-        return { spin: inner, speed: 0.004 };
+        return { spin: inner, speed: 0.0035 };
       }
 
       if (kind === "earth") {
-        const mesh = new THREE.Mesh(
-          new THREE.SphereGeometry(1, 48, 48),
-          new THREE.MeshStandardMaterial({ map: earthTexture(), roughness: 0.9 })
+        addHalo(scene, "rgba(122,167,255,0.7)", "rgba(122,167,255,0.18)", 3.9, 0.7);
+        const group = new THREE.Group();
+
+        const globe = new THREE.Mesh(
+          new THREE.SphereGeometry(1, 64, 64),
+          new THREE.MeshPhongMaterial({
+            map: earthTexture(),
+            specular: new THREE.Color(0x4a6fa5),
+            shininess: 16
+          })
         );
-        scene.add(mesh);
-        return { spin: mesh, speed: 0.0045 };
+        group.add(globe);
+
+        const clouds = new THREE.Mesh(
+          new THREE.SphereGeometry(1.028, 64, 64),
+          new THREE.MeshLambertMaterial({
+            map: cloudTexture(),
+            transparent: true,
+            depthWrite: false
+          })
+        );
+        group.add(clouds);
+        scene.add(group);
+        return { spin: group, speed: 0.004, clouds };
       }
 
+      addHalo(scene, "rgba(190,205,235,0.5)", "rgba(122,167,255,0.12)", 3.4, 0.55);
       const mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(0.95, 48, 48),
+        new THREE.SphereGeometry(0.95, 64, 64),
         new THREE.MeshStandardMaterial({ map: moonTexture(), roughness: 1 })
       );
       scene.add(mesh);
-      return { spin: mesh, speed: 0.003 };
+      return { spin: mesh, speed: 0.0028 };
     }
 
     const planetItems = [];
 
     planetSlots.forEach((slot) => {
       const kind = slot.dataset.body;
-      const size = slot.clientWidth || 240;
+      const size = slot.clientWidth || 300;
 
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -1612,21 +1838,28 @@ if (planetSlots.length && window.innerWidth > 900) {
       slot.appendChild(renderer.domElement);
 
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
-      camera.position.z = kind === "saturn" ? 4.6 : 3.2;
+      const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 60);
+      camera.position.z = kind === "saturn" ? 6.4 : 3.4;
 
-      scene.add(new THREE.AmbientLight(0x9db4e8, 0.6));
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1.7);
-      dirLight.position.set(4, 2, 5);
-      scene.add(dirLight);
+      scene.add(new THREE.AmbientLight(0x8fa5d8, 0.55));
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
+      keyLight.position.set(4, 2, 5);
+      scene.add(keyLight);
+      const rimLight = new THREE.DirectionalLight(0x7aa7ff, 1.1);
+      rimLight.position.set(-5, -1, -4);
+      scene.add(rimLight);
 
       const built = buildBody(kind, scene);
+      const stars = addStars(scene);
 
       const state = {
         renderer,
         scene,
         camera,
         target: built.spin,
+        clouds: built.clouds || null,
+        scrollMap: built.scrollMap || null,
+        stars,
         autoSpeed: prefersReducedMotion ? 0 : built.speed,
         rotX: 0,
         rotY: 0,
@@ -1691,6 +1924,16 @@ if (planetSlots.length && window.innerWidth > 900) {
         }
         s.target.rotation.y = s.rotY;
         s.target.rotation.x = s.rotX;
+
+        if (s.clouds) {
+          s.clouds.rotation.y += 0.0016;
+        }
+
+        if (s.scrollMap) {
+          s.scrollMap.offset.x += 0.00045;
+        }
+
+        s.stars.rotation.y += 0.0004;
         s.renderer.render(s.scene, s.camera);
       });
     })();

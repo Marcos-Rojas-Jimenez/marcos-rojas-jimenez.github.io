@@ -5200,3 +5200,9 @@ summary:focus-visible {
     display: none;
   }
 }
+
+/* Bigger planet stages so Saturn's rings breathe */
+.training-item .planet-slot {
+  width: 300px;
+  height: 300px;
+}
