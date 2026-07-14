@@ -5129,3 +5129,32 @@ summary:focus-visible {
     width: min(56vw, 640px);
   }
 }
+
+/* Hero portrait v3: top-cropped by the page edge, duotone-tinted to the
+   background, no rectangular overlays (edges come only from the alpha) */
+.hero-portrait {
+  top: 0;
+  bottom: auto;
+  right: 17%;
+  width: min(48vw, 660px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 52%, transparent 92%);
+  mask-image: linear-gradient(to bottom, #000 52%, transparent 92%);
+}
+
+.hero-portrait img {
+  filter: grayscale(1) sepia(1) hue-rotate(182deg) saturate(1.6) brightness(0.5) contrast(1.06);
+  opacity: 0.88;
+}
+
+.hero-portrait::after {
+  display: none;
+}
+
+.hero-portrait::before {
+  top: 42%;
+  background:
+    radial-gradient(circle,
+      rgba(122,167,255,0.20),
+      rgba(167,139,250,0.10) 45%,
+      transparent 70%);
+}
