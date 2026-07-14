@@ -834,6 +834,34 @@
         <canvas id="skillRadar" width="320" height="300" aria-label="Radar chart of skill areas, defensive focus"></canvas>
       </article>
 
+      <article class="skill-category game-card">
+        <div class="skill-category-head">
+          <span>07</span>
+          <h3>Alert Triage — Minigame</h3>
+        </div>
+        <p>
+          You are the SOC. Alerts come in — allow the legit ones, block the
+          threats. 45 seconds on the clock.
+        </p>
+        <div class="triage-game" id="triageGame">
+          <div class="triage-hud">
+            <span id="triageScore">Score 0</span>
+            <span id="triageStreak">Streak ×0</span>
+            <span id="triageTime">45s</span>
+          </div>
+          <div class="triage-alert" id="triageAlert">
+            <p id="triageAlertText">Press START SHIFT to go on duty.</p>
+            <p class="triage-reason" id="triageReason"></p>
+          </div>
+          <div class="triage-actions">
+            <button type="button" id="triageAllow">✓ ALLOW</button>
+            <button type="button" id="triageBlock">✖ BLOCK</button>
+          </div>
+          <button type="button" class="triage-start" id="triageStart">▶ START SHIFT</button>
+          <p class="triage-best" id="triageBest"></p>
+        </div>
+      </article>
+
     </div>
   </div>
 </section>

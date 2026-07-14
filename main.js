@@ -1754,3 +1754,211 @@ if (planetSlots.length && window.innerWidth > 900) {
 
   planetsTrigger.observe(document.getElementById("training"));
 }
+
+// Alert Triage minigame: allow legit events, block threats
+const triageGame = document.getElementById("triageGame");
+
+if (triageGame) {
+  const triageThreats = [
+    { text: "From: security@paypa1-support.xyz — \"Your account is suspended, verify now\"", why: "Typosquatted domain (paypa1) + urgency = phishing." },
+    { text: "Inbound mail: SPF fail · DKIM none — sender claims to be your bank", why: "Failed authentication on a sensitive sender." },
+    { text: "Impossible travel: same user logged in from Madrid and Tokyo in 9 min", why: "Physically impossible — credentials are compromised." },
+    { text: "Attachment: invoice_march.pdf.exe (28 KB) from unknown sender", why: "Double extension hiding an executable." },
+    { text: "DMARC p=reject hit: spoof of ceo@yourcompany.com via bulk relay", why: "Classic CEO spoofing attempt." },
+    { text: "One external IP probed 200+ ports in 30 seconds", why: "Port scan — reconnaissance activity." },
+    { text: "Password spray: 40 accounts, 1 source IP, 2-minute window", why: "Coordinated credential attack." },
+    { text: "Email link resolves to a login page hosted on a raw IP address", why: "Credential harvesting page." },
+    { text: "Word doc asks to \"Enable content\" to display an invoice", why: "Macro malware delivery technique." },
+    { text: "New inbox rule created: auto-forward all mail to external address", why: "Data exfiltration via mailbox rule." },
+    { text: "PowerShell spawned by Excel process on a finance workstation", why: "Office spawning shells = malicious macro." },
+    { text: "Login success after 62 failed attempts on admin account", why: "Successful brute force — act now." }
+  ];
+
+  const triageLegit = [
+    { text: "Vendor newsletter — SPF pass · DKIM pass · From aligned" },
+    { text: "VPN login from user's usual city, MFA approved" },
+    { text: "Nightly backup completed — checksum verified" },
+    { text: "Patch deployed from the signed internal repository" },
+    { text: "Password reset matches an open helpdesk ticket" },
+    { text: "TLS-RPT aggregate report delivered from google.com" },
+    { text: "IMAPS login OK from a known device fingerprint" },
+    { text: "Log rotation cron finished on the mail server" },
+    { text: "File shared through the corporate drive, internal recipients" },
+    { text: "Monitoring heartbeat: all services report green" },
+    { text: "Certificate renewed 30 days before expiry by automation" },
+    { text: "HR calendar invite from internal domain, no attachments" }
+  ];
+
+  const scoreEl = document.getElementById("triageScore");
+  const streakEl = document.getElementById("triageStreak");
+  const timeEl = document.getElementById("triageTime");
+  const alertBox = document.getElementById("triageAlert");
+  const alertText = document.getElementById("triageAlertText");
+  const reasonEl = document.getElementById("triageReason");
+  const allowBtn = document.getElementById("triageAllow");
+  const blockBtn = document.getElementById("triageBlock");
+  const startBtn = document.getElementById("triageStart");
+  const bestEl = document.getElementById("triageBest");
+
+  const GAME_SECONDS = 45;
+  let playing = false;
+  let score = 0;
+  let streak = 0;
+  let timeLeft = GAME_SECONDS;
+  let currentIsThreat = false;
+  let currentWhy = "";
+  let lastText = "";
+  let timerId = null;
+  let locked = false;
+
+  function readBest() {
+    try {
+      return parseInt(localStorage.getItem("triageBest") || "0", 10);
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function writeBest(value) {
+    try {
+      localStorage.setItem("triageBest", String(value));
+    } catch (e) { /* private mode: no persistence */ }
+  }
+
+  function showBest() {
+    const best = readBest();
+    bestEl.textContent = best > 0 ? "Best shift: " + best + " pts" : "";
+  }
+
+  function updateHud() {
+    scoreEl.textContent = "Score " + score;
+    streakEl.textContent = "Streak ×" + streak;
+    timeEl.textContent = timeLeft + "s";
+  }
+
+  function nextAlert() {
+    let pick;
+
+    do {
+      currentIsThreat = Math.random() < 0.5;
+      const pool = currentIsThreat ? triageThreats : triageLegit;
+      pick = pool[Math.floor(Math.random() * pool.length)];
+    } while (pick.text === lastText);
+
+    lastText = pick.text;
+    currentWhy = pick.why || "";
+    alertText.textContent = pick.text;
+    reasonEl.textContent = "";
+    alertBox.classList.remove("good", "bad");
+  }
+
+  function rankFor(points) {
+    if (points >= 1800) return "Verdict: Blue Team material 🛡";
+    if (points >= 1200) return "Verdict: solid analyst instincts";
+    if (points >= 700) return "Verdict: junior triage — keep training";
+    return "Verdict: more coffee needed ☕";
+  }
+
+  function endGame() {
+    playing = false;
+    clearInterval(timerId);
+    allowBtn.disabled = true;
+    blockBtn.disabled = true;
+
+    const best = readBest();
+    if (score > best) {
+      writeBest(score);
+    }
+
+    alertText.textContent = "Shift over — " + score + " pts. " + rankFor(score);
+    reasonEl.textContent = score > best ? "New personal best!" : "";
+    alertBox.classList.remove("good", "bad");
+    startBtn.textContent = "▶ PLAY AGAIN";
+    startBtn.style.display = "";
+    showBest();
+  }
+
+  function answer(action) {
+    if (!playing || locked) {
+      return;
+    }
+
+    const correct =
+      (currentIsThreat && action === "block") ||
+      (!currentIsThreat && action === "allow");
+
+    if (correct) {
+      streak += 1;
+      score += 100 + (streak - 1) * 15;
+      alertBox.classList.add("good");
+      updateHud();
+      locked = true;
+      setTimeout(() => {
+        locked = false;
+        if (playing) nextAlert();
+      }, 160);
+    } else {
+      streak = 0;
+      score = Math.max(0, score - 75);
+      alertBox.classList.add("bad");
+      reasonEl.textContent = currentIsThreat
+        ? currentWhy
+        : "That one was legitimate traffic.";
+      updateHud();
+      locked = true;
+      setTimeout(() => {
+        locked = false;
+        if (playing) nextAlert();
+      }, 1100);
+    }
+  }
+
+  function startGame() {
+    playing = true;
+    score = 0;
+    streak = 0;
+    timeLeft = GAME_SECONDS;
+    lastText = "";
+    allowBtn.disabled = false;
+    blockBtn.disabled = false;
+    startBtn.style.display = "none";
+    updateHud();
+    nextAlert();
+
+    timerId = setInterval(() => {
+      timeLeft -= 1;
+      updateHud();
+
+      if (timeLeft <= 0) {
+        endGame();
+      }
+    }, 1000);
+  }
+
+  allowBtn.disabled = true;
+  blockBtn.disabled = true;
+  showBest();
+
+  startBtn.addEventListener("click", startGame);
+  allowBtn.addEventListener("click", () => answer("allow"));
+  blockBtn.addEventListener("click", () => answer("block"));
+
+  document.addEventListener("keydown", (event) => {
+    if (!playing) {
+      return;
+    }
+
+    const tag = document.activeElement ? document.activeElement.tagName : "";
+    if (tag === "INPUT" || tag === "TEXTAREA") {
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      answer("allow");
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      answer("block");
+    }
+  });
+}

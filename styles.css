@@ -5214,3 +5214,126 @@ summary:focus-visible {
   z-index: -1;
   pointer-events: none;
 }
+
+/* Alert Triage minigame */
+.game-card::before {
+  background: linear-gradient(180deg, #7aa7ff, #a78bfa) !important;
+}
+
+.triage-game {
+  margin-top: 6px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+}
+
+.triage-hud {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.triage-hud span {
+  flex: 1;
+  text-align: center;
+  padding: 7px 6px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: #c7d7ff;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.triage-alert {
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(7, 11, 20, 0.85);
+  border: 1px solid rgba(122,167,255,0.22);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.triage-alert p {
+  margin: 0;
+  color: #e7eefc;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.triage-alert .triage-reason {
+  color: #fca5a5;
+  font-size: 0.76rem;
+}
+
+.triage-alert.good {
+  border-color: rgba(74,222,128,0.65);
+  box-shadow: 0 0 22px rgba(74,222,128,0.20);
+}
+
+.triage-alert.bad {
+  border-color: rgba(248,113,113,0.70);
+  box-shadow: 0 0 22px rgba(248,113,113,0.22);
+}
+
+.triage-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.triage-actions button,
+.triage-start {
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: #e7eefc;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#triageAllow:not(:disabled):hover {
+  background: rgba(74,222,128,0.16);
+  border-color: rgba(74,222,128,0.55);
+  transform: translateY(-2px);
+}
+
+#triageBlock:not(:disabled):hover {
+  background: rgba(248,113,113,0.16);
+  border-color: rgba(248,113,113,0.55);
+  transform: translateY(-2px);
+}
+
+.triage-actions button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.triage-start {
+  width: 100%;
+  margin-top: 12px;
+  background: linear-gradient(135deg, rgba(122,167,255,0.22), rgba(167,139,250,0.22));
+  border-color: rgba(122,167,255,0.45);
+}
+
+.triage-start:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 26px rgba(122,167,255,0.25);
+}
+
+.triage-best {
+  margin: 10px 0 0;
+  text-align: center;
+  color: #8fb5ff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
