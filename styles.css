@@ -5158,3 +5158,15 @@ summary:focus-visible {
       rgba(167,139,250,0.10) 45%,
       transparent 70%);
 }
+
+/* Hero portrait v4: no aura, no glow boxes — just the clean silhouette */
+.hero-portrait::before {
+  display: none;
+}
+
+.hero-portrait {
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
