@@ -1,15 +1,15 @@
 ﻿html,
 body {
-  background: #050914 !important;
+  background: #0d0d12 !important;
   overflow-x: hidden !important;
 }
 
 body {
   background:
-    radial-gradient(circle at 15% 8%, rgba(59,130,246,0.24), transparent 30%),
-    radial-gradient(circle at 86% 10%, rgba(124,58,237,0.22), transparent 32%),
-    radial-gradient(circle at 50% 55%, rgba(20,184,166,0.08), transparent 38%),
-    linear-gradient(180deg, #050914 0%, #08111f 42%, #070b14 100%) !important;
+    radial-gradient(circle at 15% 8%, rgba(255,152,0,0.24), transparent 30%),
+    radial-gradient(circle at 86% 10%, rgba(255,221,48,0.22), transparent 32%),
+    radial-gradient(circle at 50% 55%, rgba(0,153,255,0.08), transparent 38%),
+    linear-gradient(180deg, #0d0d12 0%, #15151c 42%, #0f0f14 100%) !important;
   background-attachment: fixed !important;
 }
 
@@ -44,7 +44,7 @@ main,
   z-index: 9999 !important;
   opacity: 0.38 !important;
   background:
-    radial-gradient(circle, rgba(122,167,255,0.26), rgba(167,139,250,0.12) 34%, transparent 68%) !important;
+    radial-gradient(circle, rgba(255,152,0,0.26), rgba(255,221,48,0.12) 34%, transparent 68%) !important;
   filter: blur(10px) !important;
   mix-blend-mode: screen !important;
 }
@@ -57,7 +57,7 @@ main,
 .skills-search label {
   display: block;
   margin-bottom: 10px;
-  color: #8fb5ff;
+  color: #ffb340;
   font-size: 0.78rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -71,7 +71,7 @@ main,
   border-radius: 999px;
   color: #f4f7fb;
   background: rgba(255,255,255,0.075);
-  border: 1px solid rgba(122,167,255,0.24);
+  border: 1px solid rgba(255,152,0,0.24);
   outline: none;
   box-shadow:
     0 18px 44px rgba(0,0,0,0.24),
@@ -85,10 +85,10 @@ main,
 }
 
 .skills-search input:focus {
-  border-color: rgba(122,167,255,0.52);
+  border-color: rgba(255,152,0,0.52);
   box-shadow:
     0 20px 55px rgba(0,0,0,0.32),
-    0 0 34px rgba(122,167,255,0.12);
+    0 0 34px rgba(255,152,0,0.12);
 }
 
 .skill-pills span {
@@ -102,7 +102,7 @@ main,
 .skill-pills span.skill-match {
   opacity: 1 !important;
   transform: translateY(-2px);
-  color: #08111f !important;
+  color: #15151c !important;
   background: linear-gradient(135deg, #facc15, #f59e0b) !important;
   border-color: rgba(250,204,21,0.85) !important;
   box-shadow: 0 14px 34px rgba(250,204,21,0.20);
@@ -256,7 +256,7 @@ header nav {
 }
 
 header.scrolled {
-  background: rgba(5, 9, 20, 0.82) !important;
+  background: rgba(13, 13, 19, 0.82) !important;
   backdrop-filter: blur(18px) !important;
   -webkit-backdrop-filter: blur(18px) !important;
   border-bottom: 1px solid rgba(255,255,255,0.10) !important;
@@ -276,7 +276,7 @@ main section[id] {
 
 @media (max-width: 920px) {
   header.scrolled {
-    background: rgba(5, 9, 20, 0.94) !important;
+    background: rgba(13, 13, 19, 0.94) !important;
   }
 
   header nav {
