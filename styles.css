@@ -5037,3 +5037,41 @@ summary:focus-visible {
     animation: none;
   }
 }
+
+/* Hero background portrait: blended into the dark scene */
+.hero-portrait {
+  position: absolute;
+  right: -30px;
+  bottom: 0;
+  width: min(46vw, 620px);
+  height: 88%;
+  margin: 0;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 62% 68% at 52% 42%, #000 34%, transparent 76%);
+  mask-image: radial-gradient(ellipse 62% 68% at 52% 42%, #000 34%, transparent 76%);
+}
+
+.hero-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  filter: brightness(0.62) saturate(0.7) contrast(1.08);
+  opacity: 0.6;
+}
+
+.hero-portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(122,167,255,0.12), transparent 62%),
+    linear-gradient(180deg, rgba(7,10,17,0.05), rgba(7,10,17,0.55) 88%);
+}
+
+@media (max-width: 900px) {
+  .hero-portrait {
+    display: none;
+  }
+}

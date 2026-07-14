@@ -1404,3 +1404,12 @@ document.querySelectorAll(".section-head h2, .contact-card h2").forEach((heading
   heading.appendChild(inner);
   heading.classList.add("h2-mask");
 });
+
+// Hero portrait: gentle scroll parallax
+const heroPortrait = document.querySelector(".hero-portrait");
+
+if (heroPortrait && !prefersReducedMotion) {
+  window.addEventListener("scroll", () => {
+    heroPortrait.style.transform = `translateY(${window.scrollY * 0.12}px)`;
+  });
+}
