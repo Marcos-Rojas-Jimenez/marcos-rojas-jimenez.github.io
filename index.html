@@ -834,34 +834,42 @@
         <canvas id="skillRadar" width="320" height="300" aria-label="Radar chart of skill areas, defensive focus"></canvas>
       </article>
 
-      <article class="skill-category game-card">
-        <div class="skill-category-head">
-          <span>07</span>
-          <h3>Alert Triage — Minigame</h3>
-        </div>
-        <p>
-          You are the SOC. Alerts come in — allow the legit ones, block the
-          threats. 45 seconds on the clock.
-        </p>
-        <div class="triage-game" id="triageGame">
-          <div class="triage-hud">
-            <span id="triageScore">Score 0</span>
-            <span id="triageStreak">Streak ×0</span>
-            <span id="triageTime">45s</span>
-          </div>
-          <div class="triage-alert" id="triageAlert">
-            <p id="triageAlertText">Press START SHIFT to go on duty.</p>
-            <p class="triage-reason" id="triageReason"></p>
-          </div>
-          <div class="triage-actions">
-            <button type="button" id="triageAllow">✓ ALLOW</button>
-            <button type="button" id="triageBlock">✖ BLOCK</button>
-          </div>
-          <button type="button" class="triage-start" id="triageStart">▶ START SHIFT</button>
-          <p class="triage-best" id="triageBest"></p>
-        </div>
-      </article>
+    </div>
+  </div>
+</section>
 
+<section class="section game-section" aria-label="Firewall Defense minigame">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Bonus Level</p>
+      <h2>Firewall Defense.</h2>
+      <p>
+        Malicious packets are heading for the server. Zap the red ones before
+        they hit — let the legitimate green traffic through. Blue shields
+        repair the firewall.
+      </p>
+    </div>
+
+    <div class="fw-frame reveal">
+      <div class="fw-hud">
+        <span class="fw-chip" id="fwScore">SCORE 0</span>
+        <span class="fw-chip" id="fwCombo">COMBO ×1</span>
+        <span class="fw-integrity">
+          <i id="fwIntegrityFill"></i>
+          <b id="fwIntegrityLabel">FIREWALL 100%</b>
+        </span>
+      </div>
+      <div class="fw-stage" id="fwStage">
+        <canvas id="fwCanvas"></canvas>
+        <div class="fw-overlay" id="fwOverlay">
+          <p class="fw-title">FIREWALL DEFENSE</p>
+          <p class="fw-sub">
+            ✖ zap red malware &nbsp;·&nbsp; ✓ let green traffic pass &nbsp;·&nbsp; ⛨ click blue shields to repair
+          </p>
+          <button type="button" id="fwStart">▶ DEPLOY FIREWALL</button>
+          <p class="fw-best" id="fwBest"></p>
+        </div>
+      </div>
     </div>
   </div>
 </section>

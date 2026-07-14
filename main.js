@@ -1755,210 +1755,458 @@ if (planetSlots.length && window.innerWidth > 900) {
   planetsTrigger.observe(document.getElementById("training"));
 }
 
-// Alert Triage minigame: allow legit events, block threats
-const triageGame = document.getElementById("triageGame");
 
-if (triageGame) {
-  const triageThreats = [
-    { text: "From: security@paypa1-support.xyz — \"Your account is suspended, verify now\"", why: "Typosquatted domain (paypa1) + urgency = phishing." },
-    { text: "Inbound mail: SPF fail · DKIM none — sender claims to be your bank", why: "Failed authentication on a sensitive sender." },
-    { text: "Impossible travel: same user logged in from Madrid and Tokyo in 9 min", why: "Physically impossible — credentials are compromised." },
-    { text: "Attachment: invoice_march.pdf.exe (28 KB) from unknown sender", why: "Double extension hiding an executable." },
-    { text: "DMARC p=reject hit: spoof of ceo@yourcompany.com via bulk relay", why: "Classic CEO spoofing attempt." },
-    { text: "One external IP probed 200+ ports in 30 seconds", why: "Port scan — reconnaissance activity." },
-    { text: "Password spray: 40 accounts, 1 source IP, 2-minute window", why: "Coordinated credential attack." },
-    { text: "Email link resolves to a login page hosted on a raw IP address", why: "Credential harvesting page." },
-    { text: "Word doc asks to \"Enable content\" to display an invoice", why: "Macro malware delivery technique." },
-    { text: "New inbox rule created: auto-forward all mail to external address", why: "Data exfiltration via mailbox rule." },
-    { text: "PowerShell spawned by Excel process on a finance workstation", why: "Office spawning shells = malicious macro." },
-    { text: "Login success after 62 failed attempts on admin account", why: "Successful brute force — act now." }
+// Hero portrait: image "generates" top-to-bottom behind lines of code
+const revealImg = document.querySelector(".hero-portrait img");
+
+if (revealImg && !prefersReducedMotion && window.innerWidth > 900) {
+  const revealFig = revealImg.closest(".hero-portrait");
+  const codeScan = document.createElement("div");
+  codeScan.className = "code-scan";
+
+  for (let i = 0; i < 4; i += 1) {
+    codeScan.appendChild(document.createElement("span"));
+  }
+
+  revealFig.appendChild(codeScan);
+  revealImg.style.clipPath = "inset(0 0 100% 0)";
+
+  const SCAN_CHARS = "01<>/{}[]=+*#$&%@!;:._ABCDEF";
+  const SCAN_TOKENS = [
+    "render_px(x,y)", "decrypt(row)", "0x7AA7FF", "img.write()",
+    "sha256: ok", "alloc(24kb)", "scanline++", "gpu.flush()",
+    "decode(base64)", "identity: MRJ"
   ];
 
-  const triageLegit = [
-    { text: "Vendor newsletter — SPF pass · DKIM pass · From aligned" },
-    { text: "VPN login from user's usual city, MFA approved" },
-    { text: "Nightly backup completed — checksum verified" },
-    { text: "Patch deployed from the signed internal repository" },
-    { text: "Password reset matches an open helpdesk ticket" },
-    { text: "TLS-RPT aggregate report delivered from google.com" },
-    { text: "IMAPS login OK from a known device fingerprint" },
-    { text: "Log rotation cron finished on the mail server" },
-    { text: "File shared through the corporate drive, internal recipients" },
-    { text: "Monitoring heartbeat: all services report green" },
-    { text: "Certificate renewed 30 days before expiry by automation" },
-    { text: "HR calendar invite from internal domain, no attachments" }
-  ];
+  function scanLine(len) {
+    let s = "";
+    for (let i = 0; i < len; i += 1) {
+      s += Math.random() < 0.12 ? " " : SCAN_CHARS[Math.floor(Math.random() * SCAN_CHARS.length)];
+    }
+    return s;
+  }
 
-  const scoreEl = document.getElementById("triageScore");
-  const streakEl = document.getElementById("triageStreak");
-  const timeEl = document.getElementById("triageTime");
-  const alertBox = document.getElementById("triageAlert");
-  const alertText = document.getElementById("triageAlertText");
-  const reasonEl = document.getElementById("triageReason");
-  const allowBtn = document.getElementById("triageAllow");
-  const blockBtn = document.getElementById("triageBlock");
-  const startBtn = document.getElementById("triageStart");
-  const bestEl = document.getElementById("triageBest");
+  function startReveal() {
+    const start = performance.now();
+    const DURATION = 2400;
 
-  const GAME_SECONDS = 45;
-  let playing = false;
-  let score = 0;
-  let streak = 0;
-  let timeLeft = GAME_SECONDS;
-  let currentIsThreat = false;
-  let currentWhy = "";
-  let lastText = "";
-  let timerId = null;
-  let locked = false;
+    function step(now) {
+      const p = Math.min((now - start) / DURATION, 1);
+      const eased = 1 - Math.pow(1 - p, 2);
+      const pct = eased * 100;
 
-  function readBest() {
+      revealImg.style.clipPath = "inset(0 0 " + (100 - pct) + "% 0)";
+      codeScan.style.top = "calc(" + pct + "% - 36px)";
+
+      codeScan.querySelectorAll("span").forEach((line) => {
+        const token = Math.random() < 0.2
+          ? SCAN_TOKENS[Math.floor(Math.random() * SCAN_TOKENS.length)] + "  "
+          : "";
+        line.textContent = token + scanLine(36);
+      });
+
+      if (p < 1) {
+        requestAnimationFrame(step);
+      } else {
+        codeScan.remove();
+        revealImg.style.clipPath = "";
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  const kickReveal = () => setTimeout(startReveal, 600);
+
+  if (revealImg.complete && revealImg.naturalWidth > 0) {
+    kickReveal();
+  } else {
+    revealImg.addEventListener("load", kickReveal, { once: true });
+  }
+}
+
+// Firewall Defense: arcade minigame with its own interface
+const fwCanvas = document.getElementById("fwCanvas");
+
+if (fwCanvas) {
+  const fwStage = document.getElementById("fwStage");
+  const fwOverlay = document.getElementById("fwOverlay");
+  const fwStartBtn = document.getElementById("fwStart");
+  const fwTitle = fwOverlay.querySelector(".fw-title");
+  const fwSub = fwOverlay.querySelector(".fw-sub");
+  const fwBestEl = document.getElementById("fwBest");
+  const fwScoreEl = document.getElementById("fwScore");
+  const fwComboEl = document.getElementById("fwCombo");
+  const fwFillEl = document.getElementById("fwIntegrityFill");
+  const fwLabelEl = document.getElementById("fwIntegrityLabel");
+
+  const fx = fwCanvas.getContext("2d");
+  let fwW = 0;
+  let fwH = 0;
+
+  function sizeFw() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    fwW = fwStage.clientWidth;
+    fwH = fwStage.clientHeight;
+    fwCanvas.width = fwW * dpr;
+    fwCanvas.height = fwH * dpr;
+    fx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  sizeFw();
+  window.addEventListener("resize", sizeFw);
+
+  const fw = {
+    playing: false,
+    packets: [],
+    particles: [],
+    floats: [],
+    integrity: 100,
+    score: 0,
+    combo: 1,
+    elapsed: 0,
+    spawnIn: 0,
+    shakeT: 0,
+    scanY: 0,
+    last: 0
+  };
+
+  function fwReadBest() {
     try {
-      return parseInt(localStorage.getItem("triageBest") || "0", 10);
+      return parseInt(localStorage.getItem("fwBest") || "0", 10);
     } catch (e) {
       return 0;
     }
   }
 
-  function writeBest(value) {
+  function fwWriteBest(v) {
     try {
-      localStorage.setItem("triageBest", String(value));
-    } catch (e) { /* private mode: no persistence */ }
+      localStorage.setItem("fwBest", String(v));
+    } catch (e) { /* no persistence */ }
   }
 
-  function showBest() {
-    const best = readBest();
-    bestEl.textContent = best > 0 ? "Best shift: " + best + " pts" : "";
+  function fwShowBest() {
+    const b = fwReadBest();
+    fwBestEl.textContent = b > 0 ? "BEST RUN: " + b + " PTS" : "";
   }
 
-  function updateHud() {
-    scoreEl.textContent = "Score " + score;
-    streakEl.textContent = "Streak ×" + streak;
-    timeEl.textContent = timeLeft + "s";
+  function fwHud() {
+    fwScoreEl.textContent = "SCORE " + fw.score;
+    fwComboEl.textContent = "COMBO ×" + fw.combo;
+    const pct = Math.max(0, Math.round(fw.integrity));
+    fwFillEl.style.width = pct + "%";
+    fwLabelEl.textContent = "FIREWALL " + pct + "%";
+    fwFillEl.style.background = pct > 55
+      ? "linear-gradient(90deg, #4ade80, #22c55e)"
+      : pct > 25
+        ? "linear-gradient(90deg, #facc15, #f59e0b)"
+        : "linear-gradient(90deg, #f87171, #dc2626)";
   }
 
-  function nextAlert() {
-    let pick;
+  function spawnPacket() {
+    const roll = Math.random();
+    let type = "red";
 
-    do {
-      currentIsThreat = Math.random() < 0.5;
-      const pool = currentIsThreat ? triageThreats : triageLegit;
-      pick = pool[Math.floor(Math.random() * pool.length)];
-    } while (pick.text === lastText);
-
-    lastText = pick.text;
-    currentWhy = pick.why || "";
-    alertText.textContent = pick.text;
-    reasonEl.textContent = "";
-    alertBox.classList.remove("good", "bad");
-  }
-
-  function rankFor(points) {
-    if (points >= 1800) return "Verdict: Blue Team material 🛡";
-    if (points >= 1200) return "Verdict: solid analyst instincts";
-    if (points >= 700) return "Verdict: junior triage — keep training";
-    return "Verdict: more coffee needed ☕";
-  }
-
-  function endGame() {
-    playing = false;
-    clearInterval(timerId);
-    allowBtn.disabled = true;
-    blockBtn.disabled = true;
-
-    const best = readBest();
-    if (score > best) {
-      writeBest(score);
+    if (roll < 0.08 && fw.integrity < 95) {
+      type = "blue";
+    } else if (roll < 0.45) {
+      type = "green";
     }
 
-    alertText.textContent = "Shift over — " + score + " pts. " + rankFor(score);
-    reasonEl.textContent = score > best ? "New personal best!" : "";
-    alertBox.classList.remove("good", "bad");
-    startBtn.textContent = "▶ PLAY AGAIN";
-    startBtn.style.display = "";
-    showBest();
+    const speedBase = 62 + Math.min(fw.elapsed * 2.4, 190);
+
+    fw.packets.push({
+      type,
+      x: 34 + Math.random() * (fwW - 68),
+      y: -18,
+      r: 15,
+      vy: speedBase * (0.85 + Math.random() * 0.4),
+      wob: Math.random() * Math.PI * 2,
+      wobAmp: 6 + Math.random() * 14
+    });
   }
 
-  function answer(action) {
-    if (!playing || locked) {
-      return;
-    }
-
-    const correct =
-      (currentIsThreat && action === "block") ||
-      (!currentIsThreat && action === "allow");
-
-    if (correct) {
-      streak += 1;
-      score += 100 + (streak - 1) * 15;
-      alertBox.classList.add("good");
-      updateHud();
-      locked = true;
-      setTimeout(() => {
-        locked = false;
-        if (playing) nextAlert();
-      }, 160);
-    } else {
-      streak = 0;
-      score = Math.max(0, score - 75);
-      alertBox.classList.add("bad");
-      reasonEl.textContent = currentIsThreat
-        ? currentWhy
-        : "That one was legitimate traffic.";
-      updateHud();
-      locked = true;
-      setTimeout(() => {
-        locked = false;
-        if (playing) nextAlert();
-      }, 1100);
+  function boom(x, y, color, n) {
+    for (let i = 0; i < n; i += 1) {
+      const a = Math.random() * Math.PI * 2;
+      const v = 40 + Math.random() * 160;
+      fw.particles.push({
+        x, y,
+        vx: Math.cos(a) * v,
+        vy: Math.sin(a) * v,
+        life: 0.5 + Math.random() * 0.4,
+        color
+      });
     }
   }
 
-  function startGame() {
-    playing = true;
-    score = 0;
-    streak = 0;
-    timeLeft = GAME_SECONDS;
-    lastText = "";
-    allowBtn.disabled = false;
-    blockBtn.disabled = false;
-    startBtn.style.display = "none";
-    updateHud();
-    nextAlert();
+  function floatText(x, y, txt, color) {
+    fw.floats.push({ x, y, txt, color, life: 0.9 });
+  }
 
-    timerId = setInterval(() => {
-      timeLeft -= 1;
-      updateHud();
+  function damage(amount) {
+    fw.integrity -= amount;
+    fw.combo = 1;
+    if (!prefersReducedMotion) {
+      fw.shakeT = 0.28;
+    }
+    if (fw.integrity <= 0) {
+      fw.integrity = 0;
+      endFw();
+    }
+  }
 
-      if (timeLeft <= 0) {
-        endGame();
+  function fwRank(points) {
+    if (points >= 6000) return "RANK: FIREWALL COMMANDER 🛡";
+    if (points >= 3500) return "RANK: PACKET SNIPER";
+    if (points >= 1500) return "RANK: TRAFFIC COP";
+    return "RANK: INTERN ON DUTY ☕";
+  }
+
+  function endFw() {
+    fw.playing = false;
+    const best = fwReadBest();
+    if (fw.score > best) {
+      fwWriteBest(fw.score);
+    }
+    fwTitle.textContent = "BREACH — " + fw.score + " PTS";
+    fwSub.textContent = fwRank(fw.score) + (fw.score > best ? "  ·  NEW PERSONAL BEST!" : "");
+    fwStartBtn.textContent = "▶ REDEPLOY";
+    fwOverlay.classList.remove("hidden");
+    fwShowBest();
+  }
+
+  function update(dt) {
+    fw.elapsed += dt;
+    fw.spawnIn -= dt;
+    fw.scanY = (fw.scanY + dt * 60) % fwH;
+
+    if (fw.spawnIn <= 0) {
+      spawnPacket();
+      fw.spawnIn = Math.max(0.28, 0.95 - fw.elapsed * 0.012);
+    }
+
+    if (fw.shakeT > 0) {
+      fw.shakeT -= dt;
+    }
+
+    const baseline = fwH - 30;
+
+    for (let i = fw.packets.length - 1; i >= 0; i -= 1) {
+      const p = fw.packets[i];
+      p.y += p.vy * dt;
+      p.wob += dt * 3;
+
+      if (p.y >= baseline) {
+        fw.packets.splice(i, 1);
+
+        if (p.type === "red") {
+          boom(p.x, baseline, "#f87171", 26);
+          floatText(p.x, baseline - 20, "-12%", "#f87171");
+          damage(12);
+        } else if (p.type === "green") {
+          fw.score += 5 ;
+          floatText(p.x, baseline - 20, "+5", "#4ade80");
+        }
       }
-    }, 1000);
+    }
+
+    for (let i = fw.particles.length - 1; i >= 0; i -= 1) {
+      const pt = fw.particles[i];
+      pt.life -= dt;
+      pt.x += pt.vx * dt;
+      pt.y += pt.vy * dt;
+      pt.vy += 220 * dt;
+      if (pt.life <= 0) {
+        fw.particles.splice(i, 1);
+      }
+    }
+
+    for (let i = fw.floats.length - 1; i >= 0; i -= 1) {
+      const f = fw.floats[i];
+      f.life -= dt;
+      f.y -= 34 * dt;
+      if (f.life <= 0) {
+        fw.floats.splice(i, 1);
+      }
+    }
   }
 
-  allowBtn.disabled = true;
-  blockBtn.disabled = true;
-  showBest();
+  function drawPacket(p) {
+    const wobX = p.x + Math.sin(p.wob) * p.wobAmp * 0.4;
+    const colors = { red: "#f87171", green: "#4ade80", blue: "#7aa7ff" };
+    const glyphs = { red: "✖", green: "✓", blue: "⛨" };
 
-  startBtn.addEventListener("click", startGame);
-  allowBtn.addEventListener("click", () => answer("allow"));
-  blockBtn.addEventListener("click", () => answer("block"));
+    fx.save();
+    fx.translate(wobX, p.y);
+    fx.shadowColor = colors[p.type];
+    fx.shadowBlur = 16;
 
-  document.addEventListener("keydown", (event) => {
-    if (!playing) {
+    fx.beginPath();
+    for (let i = 0; i < 6; i += 1) {
+      const a = Math.PI / 6 + (i * Math.PI) / 3;
+      const px = Math.cos(a) * p.r;
+      const py = Math.sin(a) * p.r;
+      if (i === 0) fx.moveTo(px, py);
+      else fx.lineTo(px, py);
+    }
+    fx.closePath();
+
+    fx.fillStyle = "rgba(10,15,28,0.9)";
+    fx.fill();
+    fx.lineWidth = 2;
+    fx.strokeStyle = colors[p.type];
+    fx.stroke();
+
+    fx.shadowBlur = 0;
+    fx.fillStyle = colors[p.type];
+    fx.font = "700 13px 'Segoe UI', sans-serif";
+    fx.textAlign = "center";
+    fx.textBaseline = "middle";
+    fx.fillText(glyphs[p.type], 0, 1);
+    fx.restore();
+  }
+
+  function draw() {
+    fx.clearRect(0, 0, fwW, fwH);
+    fx.save();
+
+    if (fw.shakeT > 0) {
+      fx.translate((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8);
+    }
+
+    // faint grid
+    fx.strokeStyle = "rgba(122,167,255,0.06)";
+    fx.lineWidth = 1;
+    for (let gx = 0; gx <= fwW; gx += 46) {
+      fx.beginPath(); fx.moveTo(gx, 0); fx.lineTo(gx, fwH); fx.stroke();
+    }
+    for (let gy = 0; gy <= fwH; gy += 46) {
+      fx.beginPath(); fx.moveTo(0, gy); fx.lineTo(fwW, gy); fx.stroke();
+    }
+
+    // radar scan sweep
+    const grad = fx.createLinearGradient(0, fw.scanY - 40, 0, fw.scanY);
+    grad.addColorStop(0, "rgba(122,167,255,0)");
+    grad.addColorStop(1, "rgba(122,167,255,0.06)");
+    fx.fillStyle = grad;
+    fx.fillRect(0, fw.scanY - 40, fwW, 40);
+
+    // server baseline
+    const pulse = 0.55 + Math.sin(fw.elapsed * 3) * 0.2;
+    fx.shadowColor = "rgba(122,167,255," + pulse + ")";
+    fx.shadowBlur = 18;
+    fx.fillStyle = "rgba(122,167,255,0.75)";
+    fx.fillRect(14, fwH - 26, fwW - 28, 3);
+    fx.shadowBlur = 0;
+    fx.fillStyle = "rgba(199,215,255,0.75)";
+    fx.font = "700 10px Consolas, monospace";
+    fx.textAlign = "center";
+    fx.fillText("▍▍ SERVER ▍▍", fwW / 2, fwH - 10);
+
+    fw.packets.forEach(drawPacket);
+
+    fw.particles.forEach((pt) => {
+      fx.globalAlpha = Math.max(0, pt.life * 1.6);
+      fx.fillStyle = pt.color;
+      fx.fillRect(pt.x - 2, pt.y - 2, 4, 4);
+    });
+    fx.globalAlpha = 1;
+
+    fw.floats.forEach((f) => {
+      fx.globalAlpha = Math.max(0, f.life);
+      fx.fillStyle = f.color;
+      fx.font = "800 15px Consolas, monospace";
+      fx.textAlign = "center";
+      fx.fillText(f.txt, f.x, f.y);
+    });
+    fx.globalAlpha = 1;
+
+    fx.restore();
+  }
+
+  function frame(now) {
+    if (!fw.playing) {
       return;
     }
 
-    const tag = document.activeElement ? document.activeElement.tagName : "";
-    if (tag === "INPUT" || tag === "TEXTAREA") {
+    const dt = Math.min((now - fw.last) / 1000, 0.05);
+    fw.last = now;
+
+    update(dt);
+    draw();
+    fwHud();
+    requestAnimationFrame(frame);
+  }
+
+  function startFw() {
+    sizeFw();
+    fw.playing = true;
+    fw.packets = [];
+    fw.particles = [];
+    fw.floats = [];
+    fw.integrity = 100;
+    fw.score = 0;
+    fw.combo = 1;
+    fw.elapsed = 0;
+    fw.spawnIn = 0.4;
+    fw.shakeT = 0;
+    fwOverlay.classList.add("hidden");
+    fwHud();
+    fw.last = performance.now();
+    requestAnimationFrame(frame);
+  }
+
+  function fwHit(x, y) {
+    if (!fw.playing) {
       return;
     }
 
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      answer("allow");
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      answer("block");
+    for (let i = fw.packets.length - 1; i >= 0; i -= 1) {
+      const p = fw.packets[i];
+      const wobX = p.x + Math.sin(p.wob) * p.wobAmp * 0.4;
+      const dx = x - wobX;
+      const dy = y - p.y;
+
+      if (dx * dx + dy * dy <= (p.r + 12) * (p.r + 12)) {
+        fw.packets.splice(i, 1);
+
+        if (p.type === "red") {
+          const pts = 100 * fw.combo;
+          fw.score += pts;
+          fw.combo = Math.min(fw.combo + 1, 9);
+          boom(wobX, p.y, "#f87171", 22);
+          floatText(wobX, p.y - 10, "+" + pts, "#ffd166");
+        } else if (p.type === "green") {
+          boom(wobX, p.y, "#4ade80", 14);
+          floatText(wobX, p.y - 10, "FALSE POSITIVE -8%", "#facc15");
+          damage(8);
+        } else {
+          fw.integrity = Math.min(100, fw.integrity + 14);
+          boom(wobX, p.y, "#7aa7ff", 18);
+          floatText(wobX, p.y - 10, "+14% FIREWALL", "#7aa7ff");
+        }
+
+        fwHud();
+        return;
+      }
+    }
+  }
+
+  fwCanvas.addEventListener("pointerdown", (event) => {
+    const rect = fwCanvas.getBoundingClientRect();
+    fwHit(event.clientX - rect.left, event.clientY - rect.top);
+  });
+
+  fwStartBtn.addEventListener("click", startFw);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && fw.playing) {
+      fw.last = performance.now();
     }
   });
+
+  fwShowBest();
+
+  window.__fwDebug = { fw, update, draw, spawnPacket, fwHit };
 }
