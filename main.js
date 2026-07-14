@@ -1391,3 +1391,16 @@ if (heroOrbs && !prefersReducedMotion) {
     heroOrbs.style.transform = `translate3d(${px * -30}px, ${py * -24}px, 0)`;
   });
 }
+
+// Omnira-style masked slide-up reveal for section titles
+document.querySelectorAll(".section-head h2, .contact-card h2").forEach((heading) => {
+  const inner = document.createElement("span");
+  inner.className = "h2-mask-inner";
+
+  while (heading.firstChild) {
+    inner.appendChild(heading.firstChild);
+  }
+
+  heading.appendChild(inner);
+  heading.classList.add("h2-mask");
+});

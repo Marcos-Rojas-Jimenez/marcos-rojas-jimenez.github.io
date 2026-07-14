@@ -4933,3 +4933,107 @@ summary:focus-visible {
   transform: rotate(-8deg) scale(1.08);
 }
 
+
+/* ==========================================================
+   FRAMER-STYLE BIG ANIMATIONS + PROFILE PHOTO
+   ========================================================== */
+
+/* Profile photo in the hero card */
+.profile-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.profile-photo {
+  width: 74px;
+  height: 74px;
+  min-width: 74px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(122,167,255,0.65);
+  box-shadow:
+    0 0 24px rgba(122,167,255,0.35),
+    0 12px 30px rgba(0,0,0,0.35);
+}
+
+.profile-photo-row strong {
+  display: block;
+  color: #ffffff;
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.profile-photo-row span {
+  display: block;
+  margin-top: 3px;
+  color: #8fb5ff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+}
+
+/* Section titles: masked slide-up reveal (Framer style) */
+.h2-mask {
+  overflow: hidden;
+}
+
+.h2-mask .h2-mask-inner {
+  display: block;
+}
+
+.js-ready .h2-mask .h2-mask-inner {
+  transform: translateY(112%);
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+
+.js-ready .reveal.visible .h2-mask-inner {
+  transform: translateY(0);
+}
+
+/* Giant outlined text marquee */
+.giant-marquee {
+  overflow: hidden;
+  padding: 34px 0 12px;
+  pointer-events: none;
+}
+
+.giant-marquee-track {
+  display: flex;
+  gap: 56px;
+  width: max-content;
+  animation: marqueeMove 40s linear infinite;
+}
+
+.giant-marquee span {
+  white-space: nowrap;
+  text-transform: uppercase;
+  font-weight: 950;
+  font-size: clamp(3.4rem, 8vw, 6.6rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(122,167,255,0.22);
+}
+
+.giant-marquee span::after {
+  content: "·";
+  margin-left: 56px;
+  -webkit-text-stroke: 0;
+  color: rgba(122,167,255,0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-ready .h2-mask .h2-mask-inner {
+    transform: none;
+    transition: none;
+  }
+
+  .giant-marquee-track {
+    animation: none;
+  }
+}
