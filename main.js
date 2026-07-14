@@ -431,7 +431,7 @@ if (!prefersReducedMotion && window.innerWidth > 768) {
 
       netCtx.beginPath();
       netCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      netCtx.fillStyle = "rgba(255,152,0,0.55)";
+      netCtx.fillStyle = "rgba(122,167,255,0.55)";
       netCtx.fill();
     });
 
@@ -442,7 +442,7 @@ if (!prefersReducedMotion && window.innerWidth > 768) {
         const dist = Math.hypot(dx, dy);
 
         if (dist < LINK_DIST) {
-          netCtx.strokeStyle = `rgba(255,152,0,${0.15 * (1 - dist / LINK_DIST)})`;
+          netCtx.strokeStyle = `rgba(122,167,255,${0.15 * (1 - dist / LINK_DIST)})`;
           netCtx.lineWidth = 1;
           netCtx.beginPath();
           netCtx.moveTo(netParticles[i].x, netParticles[i].y);
@@ -456,7 +456,7 @@ if (!prefersReducedMotion && window.innerWidth > 768) {
       const dm = Math.hypot(dxm, dym);
 
       if (dm < MOUSE_DIST) {
-        netCtx.strokeStyle = `rgba(255,221,48,${0.22 * (1 - dm / MOUSE_DIST)})`;
+        netCtx.strokeStyle = `rgba(167,139,250,${0.22 * (1 - dm / MOUSE_DIST)})`;
         netCtx.lineWidth = 1;
         netCtx.beginPath();
         netCtx.moveTo(netParticles[i].x, netParticles[i].y);
@@ -673,7 +673,7 @@ if (socFeed) {
       const glyphs = "アカサタナハマヤラワ0123456789ABCDEF$#@%&";
 
       const rainTimer = setInterval(() => {
-        rainCtx.fillStyle = "rgba(10, 10, 15, 0.08)";
+        rainCtx.fillStyle = "rgba(4, 7, 15, 0.08)";
         rainCtx.fillRect(0, 0, rain.width, rain.height);
         rainCtx.fillStyle = "#4ade80";
         rainCtx.font = `${fontSize}px monospace`;
@@ -954,7 +954,7 @@ if (radarCanvas) {
         }
       }
 
-      rctx.strokeStyle = "rgba(255,152,0,0.14)";
+      rctx.strokeStyle = "rgba(122,167,255,0.14)";
       rctx.lineWidth = 1;
       rctx.stroke();
     }
@@ -964,11 +964,11 @@ if (radarCanvas) {
       rctx.beginPath();
       rctx.moveTo(radarCx, radarCy);
       rctx.lineTo(x, y);
-      rctx.strokeStyle = "rgba(255,152,0,0.12)";
+      rctx.strokeStyle = "rgba(122,167,255,0.12)";
       rctx.stroke();
 
       const [lx, ly] = radarPoint(i, RADAR_R + 22);
-      rctx.fillStyle = "#b7b7c4";
+      rctx.fillStyle = "#9fb4dd";
       rctx.font = "700 11px Inter, 'Segoe UI', sans-serif";
       rctx.textAlign = "center";
       rctx.textBaseline = "middle";
@@ -993,11 +993,11 @@ if (radarCanvas) {
       radarCx - RADAR_R, radarCy - RADAR_R,
       radarCx + RADAR_R, radarCy + RADAR_R
     );
-    radarGrad.addColorStop(0, "rgba(255,152,0,0.32)");
-    radarGrad.addColorStop(1, "rgba(255,221,48,0.26)");
+    radarGrad.addColorStop(0, "rgba(122,167,255,0.32)");
+    radarGrad.addColorStop(1, "rgba(167,139,250,0.26)");
     rctx.fillStyle = radarGrad;
     rctx.fill();
-    rctx.strokeStyle = "rgba(255,152,0,0.85)";
+    rctx.strokeStyle = "rgba(122,167,255,0.85)";
     rctx.lineWidth = 2;
     rctx.stroke();
 
@@ -1005,7 +1005,7 @@ if (radarCanvas) {
       const [x, y] = radarPoint(i, RADAR_R * axis.value * radarProgress);
       rctx.beginPath();
       rctx.arc(x, y, 3.5, 0, Math.PI * 2);
-      rctx.fillStyle = "#ffd089";
+      rctx.fillStyle = "#a9c2ff";
       rctx.fill();
     });
 
@@ -1015,7 +1015,7 @@ if (radarCanvas) {
       rctx.moveTo(radarCx, radarCy);
       rctx.arc(radarCx, radarCy, RADAR_R, sweepAngle - 0.5, sweepAngle);
       rctx.closePath();
-      rctx.fillStyle = "rgba(0,153,255,0.10)";
+      rctx.fillStyle = "rgba(94,234,212,0.10)";
       rctx.fill();
 
       rctx.beginPath();
@@ -1024,7 +1024,7 @@ if (radarCanvas) {
         radarCx + Math.cos(sweepAngle) * RADAR_R,
         radarCy + Math.sin(sweepAngle) * RADAR_R
       );
-      rctx.strokeStyle = "rgba(0,153,255,0.50)";
+      rctx.strokeStyle = "rgba(94,234,212,0.50)";
       rctx.lineWidth = 1.5;
       rctx.stroke();
       rctx.restore();
