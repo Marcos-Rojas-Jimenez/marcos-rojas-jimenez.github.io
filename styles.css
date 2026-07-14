@@ -5206,3 +5206,11 @@ summary:focus-visible {
   width: 300px;
   height: 300px;
 }
+
+/* Subtle page-wide starfield */
+.star-field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}

@@ -1414,7 +1414,52 @@ if (heroPortrait && !prefersReducedMotion) {
   });
 }
 
+// Subtle page-wide starfield (tiny static stars behind every section)
+const starField = document.createElement("canvas");
+starField.className = "star-field";
+starField.setAttribute("aria-hidden", "true");
+document.body.appendChild(starField);
+
+function drawStarField() {
+  const ctx = starField.getContext("2d");
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  starField.width = window.innerWidth * dpr;
+  starField.height = window.innerHeight * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  ctx.clearRect(0, 0, w, h);
+
+  const count = Math.round((w * h) / 13000);
+
+  for (let i = 0; i < count; i += 1) {
+    const sx = Math.random() * w;
+    const sy = Math.random() * h;
+    const r = 0.3 + Math.random() * 0.9;
+    const a = 0.07 + Math.random() * 0.24;
+    const tint = Math.random();
+
+    if (tint > 0.92) {
+      ctx.fillStyle = "rgba(167,139,250," + a.toFixed(2) + ")";
+    } else if (tint > 0.84) {
+      ctx.fillStyle = "rgba(122,167,255," + a.toFixed(2) + ")";
+    } else {
+      ctx.fillStyle = "rgba(205,218,245," + a.toFixed(2) + ")";
+    }
+
+    ctx.beginPath();
+    ctx.arc(sx, sy, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+drawStarField();
+window.addEventListener("resize", drawStarField);
+
 // 3D celestial bodies in the training timeline (Sun, Saturn, Earth, Moon)
+// Planet textures: Solar System Scope (solarsystemscope.com/textures),
+// licensed CC BY 4.0 — photo-based maps distributed for reuse with credit.
 const planetSlots = document.querySelectorAll(".planet-slot");
 
 if (planetSlots.length && window.innerWidth > 900) {
@@ -1427,10 +1472,33 @@ if (planetSlots.length && window.innerWidth > 900) {
     planetsStarted = true;
 
     let THREE;
+    let tex;
+
     try {
       THREE = await import("https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js");
+
+      const loader = new THREE.TextureLoader();
+
+      const loadTex = async (file, srgb) => {
+        const t = await loader.loadAsync("assets/planets/" + file);
+        if (srgb) {
+          t.colorSpace = THREE.SRGBColorSpace;
+        }
+        return t;
+      };
+
+      const [sunT, saturnT, ringT, earthT, cloudsT, moonT] = await Promise.all([
+        loadTex("2k_sun.jpg", true),
+        loadTex("2k_saturn.jpg", true),
+        loadTex("2k_saturn_ring_alpha.png", true),
+        loadTex("2k_earth_daymap.jpg", true),
+        loadTex("2k_earth_clouds.jpg", true),
+        loadTex("2k_moon.jpg", true)
+      ]);
+
+      tex = { sunT, saturnT, ringT, earthT, cloudsT, moonT };
     } catch (e) {
-      return; // CDN unavailable: slots simply stay empty
+      return; // CDN or texture unavailable: slots simply stay empty
     }
 
     function makeCanvas(w, h) {
@@ -1440,23 +1508,7 @@ if (planetSlots.length && window.innerWidth > 900) {
       return c;
     }
 
-    function spots(ctx, w, h, count, minR, maxR, colors, alpha) {
-      for (let i = 0; i < count; i += 1) {
-        const r = minR + Math.random() * (maxR - minR);
-        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-        ctx.globalAlpha = alpha * (0.6 + Math.random() * 0.4);
-        ctx.beginPath();
-        ctx.ellipse(
-          Math.random() * w, Math.random() * h,
-          r * (0.7 + Math.random() * 0.8), r,
-          Math.random() * Math.PI, 0, Math.PI * 2
-        );
-        ctx.fill();
-      }
-      ctx.globalAlpha = 1;
-    }
-
-    // Soft radial glow sprite texture, tinted to the page palette
+    // Soft radial glow sprite, tinted to the page palette
     function glowTexture(inner, outer) {
       const c = makeCanvas(256, 256);
       const x = c.getContext("2d");
@@ -1467,258 +1519,6 @@ if (planetSlots.length && window.innerWidth > 900) {
       x.fillStyle = g;
       x.fillRect(0, 0, 256, 256);
       return new THREE.CanvasTexture(c);
-    }
-
-    function sunTexture() {
-      const c = makeCanvas(1024, 512);
-      const x = c.getContext("2d");
-      const g = x.createLinearGradient(0, 0, 0, 512);
-      g.addColorStop(0, "#ffc65e");
-      g.addColorStop(0.35, "#ffab2e");
-      g.addColorStop(0.65, "#ff9500");
-      g.addColorStop(1, "#f57f17");
-      x.fillStyle = g;
-      x.fillRect(0, 0, 1024, 512);
-
-      // convection cells: bright granules over darker pores
-      spots(x, 1024, 512, 260, 6, 26, ["#ffdf8a", "#ffd166", "#ffca4f"], 0.30);
-      spots(x, 1024, 512, 180, 3, 12, ["#e07b00", "#cc6a00", "#b35c00"], 0.25);
-      spots(x, 1024, 512, 26, 10, 34, ["#8a3d00", "#7a3600"], 0.30);
-
-      // hot filament streaks
-      for (let i = 0; i < 40; i += 1) {
-        const sy = Math.random() * 512;
-        const sx = Math.random() * 1024;
-        const len = 40 + Math.random() * 140;
-        const grad = x.createLinearGradient(sx, sy, sx + len, sy);
-        grad.addColorStop(0, "rgba(255,224,130,0)");
-        grad.addColorStop(0.5, "rgba(255,224,130,0.35)");
-        grad.addColorStop(1, "rgba(255,224,130,0)");
-        x.fillStyle = grad;
-        x.fillRect(sx, sy, len, 2 + Math.random() * 3);
-      }
-
-      const tex = new THREE.CanvasTexture(c);
-      tex.wrapS = THREE.RepeatWrapping;
-      return tex;
-    }
-
-    function saturnTexture() {
-      const c = makeCanvas(1024, 512);
-      const x = c.getContext("2d");
-
-      // smooth latitudinal bands via a many-stop vertical gradient
-      const g = x.createLinearGradient(0, 0, 0, 512);
-      const bandStops = [
-        [0.0, "#a98f63"], [0.06, "#c4a878"], [0.13, "#e3cd9d"],
-        [0.2, "#d3b988"], [0.27, "#efdcae"], [0.35, "#cdb384"],
-        [0.42, "#e8d3a4"], [0.5, "#f2e2b8"], [0.58, "#dfc697"],
-        [0.66, "#c9ad7d"], [0.74, "#e5cf9f"], [0.82, "#cfb586"],
-        [0.9, "#bda173"], [1.0, "#a08657"]
-      ];
-      bandStops.forEach((s) => g.addColorStop(s[0], s[1]));
-      x.fillStyle = g;
-      x.fillRect(0, 0, 1024, 512);
-
-      // subtle horizontal flow streaks
-      for (let i = 0; i < 90; i += 1) {
-        const sy = Math.random() * 512;
-        x.fillStyle = Math.random() > 0.5 ? "#f5e7c0" : "#a68a5c";
-        x.globalAlpha = 0.05 + Math.random() * 0.06;
-        x.fillRect(0, sy, 1024, 1 + Math.random() * 3);
-      }
-      x.globalAlpha = 1;
-
-      // a few storm ovals
-      spots(x, 1024, 512, 10, 5, 16, ["#f7ecc9", "#9c7f52"], 0.25);
-      return new THREE.CanvasTexture(c);
-    }
-
-    // radial ring strip: bright A/B rings, Cassini division, faint C ring
-    function ringTexture() {
-      const c = makeCanvas(512, 8);
-      const x = c.getContext("2d");
-
-      for (let px = 0; px < 512; px += 1) {
-        const t = px / 512;
-        let alpha = 0;
-        let col = "#d8c49a";
-
-        if (t < 0.1) {
-          alpha = 0.05 + t * 0.8; // faint C ring fading in
-          col = "#b6a078";
-        } else if (t < 0.44) {
-          alpha = 0.55 + Math.sin(t * 90) * 0.14; // B ring, grooved
-          col = "#dcc9a0";
-        } else if (t < 0.52) {
-          alpha = 0.05; // Cassini division
-        } else if (t < 0.78) {
-          alpha = 0.42 + Math.sin(t * 70) * 0.1; // A ring
-          col = "#c3ac80";
-        } else if (t < 0.84) {
-          alpha = 0.1; // Encke-ish gap
-        } else if (t < 0.94) {
-          alpha = 0.3;
-          col = "#cdb88e";
-        } else {
-          alpha = 0.08;
-        }
-
-        alpha += (Math.random() - 0.5) * 0.05;
-        x.fillStyle = col;
-        x.globalAlpha = Math.max(0, Math.min(1, alpha));
-        x.fillRect(px, 0, 1, 8);
-      }
-      x.globalAlpha = 1;
-      return new THREE.CanvasTexture(c);
-    }
-
-    function earthTexture() {
-      const c = makeCanvas(1024, 512);
-      const x = c.getContext("2d");
-
-      // deep ocean with subtle banding
-      const g = x.createLinearGradient(0, 0, 0, 512);
-      g.addColorStop(0, "#153e74");
-      g.addColorStop(0.5, "#1d5da4");
-      g.addColorStop(1, "#123663");
-      x.fillStyle = g;
-      x.fillRect(0, 0, 1024, 512);
-
-      // continents: clustered blobs so they read as landmasses
-      for (let k = 0; k < 7; k += 1) {
-        const cx = Math.random() * 1024;
-        const cy = 90 + Math.random() * 330;
-        for (let i = 0; i < 26; i += 1) {
-          const r = 8 + Math.random() * 34;
-          x.fillStyle = ["#2f7d4e", "#39905b", "#4a9a55", "#8a7a4a"][Math.floor(Math.random() * 4)];
-          x.globalAlpha = 0.9;
-          x.beginPath();
-          x.ellipse(
-            cx + (Math.random() - 0.5) * 150,
-            cy + (Math.random() - 0.5) * 90,
-            r * (0.7 + Math.random() * 0.9), r,
-            Math.random() * Math.PI, 0, Math.PI * 2
-          );
-          x.fill();
-        }
-        // mountain/desert accents on top of the landmass
-        for (let i = 0; i < 8; i += 1) {
-          x.fillStyle = ["#a08d5a", "#6f8f4e"][i % 2];
-          x.globalAlpha = 0.55;
-          x.beginPath();
-          x.ellipse(
-            cx + (Math.random() - 0.5) * 120,
-            cy + (Math.random() - 0.5) * 70,
-            5 + Math.random() * 14, 4 + Math.random() * 9,
-            Math.random() * Math.PI, 0, Math.PI * 2
-          );
-          x.fill();
-        }
-      }
-      x.globalAlpha = 1;
-
-      // polar ice caps with ragged edges
-      x.fillStyle = "#eef4f8";
-      x.globalAlpha = 0.95;
-      x.fillRect(0, 0, 1024, 26);
-      x.fillRect(0, 486, 1024, 26);
-      x.globalAlpha = 1;
-      spots(x, 1024, 44, 26, 5, 16, ["#eef4f8"], 0.9);
-      for (let i = 0; i < 26; i += 1) {
-        x.fillStyle = "#eef4f8";
-        x.globalAlpha = 0.85;
-        x.beginPath();
-        x.ellipse(Math.random() * 1024, 470 + Math.random() * 40, 6 + Math.random() * 14, 5 + Math.random() * 8, 0, 0, Math.PI * 2);
-        x.fill();
-      }
-      x.globalAlpha = 1;
-      return new THREE.CanvasTexture(c);
-    }
-
-    function cloudTexture() {
-      const c = makeCanvas(1024, 512);
-      const x = c.getContext("2d");
-      x.clearRect(0, 0, 1024, 512);
-
-      for (let i = 0; i < 90; i += 1) {
-        const cy = Math.random() * 512;
-        const cx = Math.random() * 1024;
-        const r = 6 + Math.random() * 22;
-        x.fillStyle = "#ffffff";
-        x.globalAlpha = 0.10 + Math.random() * 0.22;
-        x.beginPath();
-        x.ellipse(cx, cy, r * (1.6 + Math.random() * 2.2), r, 0, 0, Math.PI * 2);
-        x.fill();
-      }
-      x.globalAlpha = 1;
-      return new THREE.CanvasTexture(c);
-    }
-
-    function moonTexture() {
-      const c = makeCanvas(1024, 512);
-      const x = c.getContext("2d");
-      const g = x.createLinearGradient(0, 0, 0, 512);
-      g.addColorStop(0, "#c9ccd3");
-      g.addColorStop(0.5, "#b4b8c0");
-      g.addColorStop(1, "#a3a7b0");
-      x.fillStyle = g;
-      x.fillRect(0, 0, 1024, 512);
-
-      // maria: large dark basaltic plains
-      spots(x, 1024, 512, 14, 30, 95, ["#82878f", "#767b85", "#8c919b"], 0.5);
-      // regolith mottling
-      spots(x, 1024, 512, 240, 2, 8, ["#d4d7dc", "#9ba0a9"], 0.25);
-
-      // craters with shaded floors and lit rims
-      for (let i = 0; i < 130; i += 1) {
-        const cx = Math.random() * 1024;
-        const cy = Math.random() * 512;
-        const r = 2 + Math.random() * 14;
-
-        const grad = x.createRadialGradient(cx - r * 0.25, cy - r * 0.25, r * 0.1, cx, cy, r);
-        grad.addColorStop(0, "rgba(110,115,124,0.85)");
-        grad.addColorStop(0.75, "rgba(140,145,154,0.55)");
-        grad.addColorStop(1, "rgba(150,155,164,0)");
-        x.fillStyle = grad;
-        x.beginPath();
-        x.arc(cx, cy, r, 0, Math.PI * 2);
-        x.fill();
-
-        x.strokeStyle = "rgba(225,228,233,0.6)";
-        x.lineWidth = Math.max(1, r * 0.16);
-        x.beginPath();
-        x.arc(cx, cy, r * 0.92, Math.PI * 0.85, Math.PI * 1.8);
-        x.stroke();
-      }
-      return new THREE.CanvasTexture(c);
-    }
-
-    function addStars(scene) {
-      const count = 80;
-      const positions = new Float32Array(count * 3);
-
-      for (let i = 0; i < count; i += 1) {
-        const radius = 7 + Math.random() * 5;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-        positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-        positions[i * 3 + 2] = radius * Math.cos(phi);
-      }
-
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-      const mat = new THREE.PointsMaterial({
-        color: 0x9db4e8,
-        size: 0.06,
-        transparent: true,
-        opacity: 0.85,
-        depthWrite: false
-      });
-      const stars = new THREE.Points(geo, mat);
-      scene.add(stars);
-      return stars;
     }
 
     function addHalo(scene, inner, outer, scale, opacity) {
@@ -1739,29 +1539,29 @@ if (planetSlots.length && window.innerWidth > 900) {
     function buildBody(kind, scene) {
       if (kind === "sun") {
         addHalo(scene, "rgba(255,190,80,0.85)", "rgba(255,140,20,0.30)", 2.9, 0.9);
-        const map = sunTexture();
+        tex.sunT.wrapS = THREE.RepeatWrapping;
         const mesh = new THREE.Mesh(
           new THREE.SphereGeometry(1.02, 64, 64),
-          new THREE.MeshBasicMaterial({ map })
+          new THREE.MeshBasicMaterial({ map: tex.sunT })
         );
         scene.add(mesh);
-        return { spin: mesh, speed: 0.0035, scrollMap: map };
+        return { spin: mesh, speed: 0.0035, scrollMap: tex.sunT };
       }
 
       if (kind === "saturn") {
-        addHalo(scene, "rgba(232,211,168,0.5)", "rgba(122,167,255,0.14)", 5.6, 0.5);
+        addHalo(scene, "rgba(232,211,168,0.40)", "rgba(122,167,255,0.12)", 4.6, 0.45);
         const tilt = new THREE.Group();
         const inner = new THREE.Group();
 
         const body = new THREE.Mesh(
           new THREE.SphereGeometry(0.85, 64, 64),
-          new THREE.MeshStandardMaterial({ map: saturnTexture(), roughness: 0.95 })
+          new THREE.MeshStandardMaterial({ map: tex.saturnT, roughness: 0.95 })
         );
         inner.add(body);
 
-        const RING_IN = 1.12;
-        const RING_OUT = 2.0;
-        const ringGeo = new THREE.RingGeometry(RING_IN, RING_OUT, 160, 1);
+        const RING_IN = 1.1;
+        const RING_OUT = 2.02;
+        const ringGeo = new THREE.RingGeometry(RING_IN, RING_OUT, 180, 1);
         const rpos = ringGeo.attributes.position;
         const ruv = ringGeo.attributes.uv;
         const v3 = new THREE.Vector3();
@@ -1774,7 +1574,7 @@ if (planetSlots.length && window.innerWidth > 900) {
         const ring = new THREE.Mesh(
           ringGeo,
           new THREE.MeshBasicMaterial({
-            map: ringTexture(),
+            map: tex.ringT,
             transparent: true,
             side: THREE.DoubleSide,
             depthWrite: false
@@ -1791,24 +1591,26 @@ if (planetSlots.length && window.innerWidth > 900) {
       }
 
       if (kind === "earth") {
-        addHalo(scene, "rgba(122,167,255,0.7)", "rgba(122,167,255,0.18)", 3.9, 0.7);
+        addHalo(scene, "rgba(122,167,255,0.65)", "rgba(122,167,255,0.16)", 3.2, 0.65);
         const group = new THREE.Group();
 
         const globe = new THREE.Mesh(
           new THREE.SphereGeometry(1, 64, 64),
           new THREE.MeshPhongMaterial({
-            map: earthTexture(),
-            specular: new THREE.Color(0x4a6fa5),
-            shininess: 16
+            map: tex.earthT,
+            specular: new THREE.Color(0x2f4d7a),
+            shininess: 14
           })
         );
         group.add(globe);
 
         const clouds = new THREE.Mesh(
-          new THREE.SphereGeometry(1.028, 64, 64),
-          new THREE.MeshLambertMaterial({
-            map: cloudTexture(),
+          new THREE.SphereGeometry(1.025, 64, 64),
+          new THREE.MeshBasicMaterial({
+            map: tex.cloudsT,
             transparent: true,
+            opacity: 0.65,
+            blending: THREE.AdditiveBlending,
             depthWrite: false
           })
         );
@@ -1817,10 +1619,10 @@ if (planetSlots.length && window.innerWidth > 900) {
         return { spin: group, speed: 0.004, clouds };
       }
 
-      addHalo(scene, "rgba(190,205,235,0.5)", "rgba(122,167,255,0.12)", 3.4, 0.55);
+      addHalo(scene, "rgba(190,205,235,0.45)", "rgba(122,167,255,0.10)", 2.9, 0.5);
       const mesh = new THREE.Mesh(
         new THREE.SphereGeometry(0.95, 64, 64),
-        new THREE.MeshStandardMaterial({ map: moonTexture(), roughness: 1 })
+        new THREE.MeshStandardMaterial({ map: tex.moonT, roughness: 1 })
       );
       scene.add(mesh);
       return { spin: mesh, speed: 0.0028 };
@@ -1841,16 +1643,15 @@ if (planetSlots.length && window.innerWidth > 900) {
       const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 60);
       camera.position.z = kind === "saturn" ? 6.4 : 3.4;
 
-      scene.add(new THREE.AmbientLight(0x8fa5d8, 0.55));
-      const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
+      scene.add(new THREE.AmbientLight(0x8fa5d8, 0.6));
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.7);
       keyLight.position.set(4, 2, 5);
       scene.add(keyLight);
-      const rimLight = new THREE.DirectionalLight(0x7aa7ff, 1.1);
+      const rimLight = new THREE.DirectionalLight(0x7aa7ff, 1.0);
       rimLight.position.set(-5, -1, -4);
       scene.add(rimLight);
 
       const built = buildBody(kind, scene);
-      const stars = addStars(scene);
 
       const state = {
         renderer,
@@ -1859,7 +1660,6 @@ if (planetSlots.length && window.innerWidth > 900) {
         target: built.spin,
         clouds: built.clouds || null,
         scrollMap: built.scrollMap || null,
-        stars,
         autoSpeed: prefersReducedMotion ? 0 : built.speed,
         rotX: 0,
         rotY: 0,
@@ -1926,14 +1726,13 @@ if (planetSlots.length && window.innerWidth > 900) {
         s.target.rotation.x = s.rotX;
 
         if (s.clouds) {
-          s.clouds.rotation.y += 0.0016;
+          s.clouds.rotation.y += 0.0014;
         }
 
         if (s.scrollMap) {
-          s.scrollMap.offset.x += 0.00045;
+          s.scrollMap.offset.x += 0.00035;
         }
 
-        s.stars.rotation.y += 0.0004;
         s.renderer.render(s.scene, s.camera);
       });
     })();
