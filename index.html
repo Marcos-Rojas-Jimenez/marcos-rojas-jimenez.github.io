@@ -834,6 +834,24 @@
         <canvas id="skillRadar" width="320" height="300" aria-label="Radar chart of skill areas, defensive focus"></canvas>
       </article>
 
+      <article class="skill-category threatmap-card">
+        <div class="skill-category-head">
+          <span>07</span>
+          <h3>Global Threat Activity</h3>
+        </div>
+        <p>
+          Simulated live feed — attack traffic arcs across the globe and gets
+          blocked in real time. Green marker: home SOC, Madrid.
+        </p>
+        <div class="tm-wrap">
+          <canvas id="threatMap" aria-label="Simulated world map with attack arcs being blocked"></canvas>
+          <div class="tm-hud">
+            <span class="tm-live"><i></i>SIMULATED FEED</span>
+            <span id="tmCount">BLOCKED 0000</span>
+          </div>
+        </div>
+      </article>
+
     </div>
   </div>
 </section>

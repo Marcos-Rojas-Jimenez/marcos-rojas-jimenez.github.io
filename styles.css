@@ -5436,3 +5436,148 @@ summary:focus-visible {
     order: 3;
   }
 }
+
+/* Firewall Defense v2: HUD corners, breathing glow, richer overlay */
+@keyframes fwBreathe {
+  0%, 100% {
+    box-shadow:
+      0 34px 90px rgba(0,0,0,0.5),
+      0 0 40px rgba(122,167,255,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  50% {
+    box-shadow:
+      0 34px 90px rgba(0,0,0,0.5),
+      0 0 64px rgba(122,167,255,0.16),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+}
+
+.fw-frame {
+  animation: fwBreathe 6s ease-in-out infinite;
+}
+
+.fw-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.6;
+  background:
+    linear-gradient(#7aa7ff, #7aa7ff) left 12px top 12px / 20px 2px,
+    linear-gradient(#7aa7ff, #7aa7ff) left 12px top 12px / 2px 20px,
+    linear-gradient(#7aa7ff, #7aa7ff) right 12px top 12px / 20px 2px,
+    linear-gradient(#7aa7ff, #7aa7ff) right 12px top 12px / 2px 20px,
+    linear-gradient(#7aa7ff, #7aa7ff) left 12px bottom 12px / 20px 2px,
+    linear-gradient(#7aa7ff, #7aa7ff) left 12px bottom 12px / 2px 20px,
+    linear-gradient(#7aa7ff, #7aa7ff) right 12px bottom 12px / 20px 2px,
+    linear-gradient(#7aa7ff, #7aa7ff) right 12px bottom 12px / 2px 20px;
+  background-repeat: no-repeat;
+}
+
+.fw-overlay::before {
+  content: "⛨";
+  font-size: 58px;
+  line-height: 1;
+  color: #7aa7ff;
+  text-shadow:
+    0 0 26px rgba(122,167,255,0.8),
+    0 0 70px rgba(167,139,250,0.4);
+  animation: shieldFloat 3.4s ease-in-out infinite;
+}
+
+@keyframes shieldFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+.fw-title {
+  background: linear-gradient(120deg, #ffffff, #c7d7ff 45%, #ffdd94 70%, #ffffff);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: fwTitleShine 4s linear infinite;
+}
+
+@keyframes fwTitleShine {
+  to { background-position: 200% 0; }
+}
+
+#fwStart {
+  animation: ctaPulse 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fw-frame,
+  .fw-overlay::before,
+  .fw-title,
+  #fwStart {
+    animation: none;
+  }
+
+  .fw-title {
+    color: #ffffff;
+    background: none;
+  }
+}
+
+/* Global Threat Activity card */
+.threatmap-card::before {
+  background: linear-gradient(180deg, #f87171, #7aa7ff) !important;
+}
+
+.tm-wrap {
+  margin-top: 8px;
+}
+
+#threatMap {
+  display: block;
+  width: 100%;
+  height: 240px;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(122,167,255,0.05), transparent 70%),
+    rgba(7, 11, 20, 0.72);
+  border: 1px solid rgba(122,167,255,0.16);
+}
+
+.tm-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+}
+
+.tm-hud span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: #c7d7ff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.tm-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f87171;
+  box-shadow: 0 0 10px rgba(248,113,113,0.8);
+  animation: statusPulse 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tm-live i {
+    animation: none;
+  }
+}
