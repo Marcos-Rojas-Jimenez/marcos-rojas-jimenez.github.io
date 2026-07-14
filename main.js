@@ -2383,284 +2383,237 @@ if (fwCanvas) {
   window.__fwDebug = { fw, update, draw, spawnPacket, fwHit };
 }
 
-// Global Threat Activity: simulated attack arcs over a dotted world map
-const tmCanvas = document.getElementById("threatMap");
 
-if (tmCanvas) {
-  const tmCtx = tmCanvas.getContext("2d");
-  const tmCountEl = document.getElementById("tmCount");
+// Defense Core: interactive 3D centerpiece in the skills matrix
+const coreCanvas = document.getElementById("defenseCore");
 
-  const MADRID = { u: (180 - 3.7) / 360, v: (90 - 40.4) / 180 };
+if (coreCanvas) {
+  let coreStarted = false;
 
-  const tm = {
-    inited: false,
-    visible: false,
-    dots: [],
-    arcs: [],
-    ripples: [],
-    labels: [],
-    blocked: 0,
-    spawnIn: 0.6,
-    time: 0,
-    last: 0,
-    w: 0,
-    h: 0
-  };
-
-  function tmSize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    tm.w = tmCanvas.clientWidth;
-    tm.h = tmCanvas.clientHeight;
-    tmCanvas.width = tm.w * dpr;
-    tmCanvas.height = tm.h * dpr;
-    tmCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  async function tmInit() {
-    if (tm.inited) {
+  async function initCore() {
+    if (coreStarted) {
       return;
     }
-    tm.inited = true;
-    tmSize();
+    coreStarted = true;
 
-    // sample the Earth daymap to place land dots
-    const img = new Image();
-    img.src = "assets/planets/2k_earth_daymap.jpg";
-
+    let THREE;
     try {
-      await img.decode();
+      THREE = await import("https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js");
     } catch (e) {
-      return;
+      return; // CDN unavailable: slot simply stays empty
     }
 
-    const SW = 220;
-    const SH = 110;
-    const sample = document.createElement("canvas");
-    sample.width = SW;
-    sample.height = SH;
-    const sctx = sample.getContext("2d");
-    sctx.drawImage(img, 0, 0, SW, SH);
-    const data = sctx.getImageData(0, 0, SW, SH).data;
+    const size = coreCanvas.clientWidth || 300;
+    const renderer = new THREE.WebGLRenderer({ canvas: coreCanvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(size, size, false);
 
-    for (let y = 4; y < SH - 2; y += 2) {
-      for (let x = 0; x < SW; x += 2) {
-        const idx = (y * SW + x) * 4;
-        const r = data[idx];
-        const g = data[idx + 1];
-        const b = data[idx + 2];
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
+    camera.position.z = 4.4;
 
-        // land reads warmer/greener than the deep blue ocean
-        if (r + g > b * 1.65 && r + g + b > 60) {
-          tm.dots.push({
-            u: x / SW,
-            v: y / SH,
-            tw: Math.random() * Math.PI * 2
-          });
-        }
-      }
+    scene.add(new THREE.AmbientLight(0x8fa5d8, 0.55));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
+    keyLight.position.set(3, 4, 5);
+    scene.add(keyLight);
+    const rimLight = new THREE.DirectionalLight(0xa78bfa, 0.9);
+    rimLight.position.set(-4, -2, -3);
+    scene.add(rimLight);
+
+    // soft glow behind the core
+    const glowCanvas = document.createElement("canvas");
+    glowCanvas.width = 256;
+    glowCanvas.height = 256;
+    const gctx = glowCanvas.getContext("2d");
+    const gGrad = gctx.createRadialGradient(128, 128, 8, 128, 128, 128);
+    gGrad.addColorStop(0, "rgba(122,167,255,0.55)");
+    gGrad.addColorStop(0.45, "rgba(167,139,250,0.18)");
+    gGrad.addColorStop(1, "rgba(0,0,0,0)");
+    gctx.fillStyle = gGrad;
+    gctx.fillRect(0, 0, 256, 256);
+
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: new THREE.CanvasTexture(glowCanvas),
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
+    glow.scale.set(4.4, 4.4, 1);
+    glow.position.z = -0.6;
+    scene.add(glow);
+
+    const root = new THREE.Group();
+
+    const cage = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.22, 1),
+      new THREE.MeshBasicMaterial({
+        color: 0x7aa7ff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.45
+      })
+    );
+    root.add(cage);
+
+    const nucleus = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(0.6, 0),
+      new THREE.MeshPhongMaterial({
+        color: 0x27335c,
+        emissive: 0x4b3fa0,
+        emissiveIntensity: 0.9,
+        shininess: 60,
+        flatShading: true
+      })
+    );
+    root.add(nucleus);
+
+    const ringA = new THREE.Mesh(
+      new THREE.TorusGeometry(1.55, 0.024, 12, 96),
+      new THREE.MeshBasicMaterial({ color: 0x7aa7ff, transparent: true, opacity: 0.8 })
+    );
+    ringA.rotation.x = Math.PI / 2.4;
+    root.add(ringA);
+
+    const ringB = new THREE.Mesh(
+      new THREE.TorusGeometry(1.82, 0.016, 12, 96),
+      new THREE.MeshBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.5 })
+    );
+    ringB.rotation.x = Math.PI / 1.7;
+    ringB.rotation.y = 0.6;
+    root.add(ringB);
+
+    scene.add(root);
+
+    // orbiting particle swarm
+    const P_COUNT = 90;
+    const pPositions = new Float32Array(P_COUNT * 3);
+
+    for (let i = 0; i < P_COUNT; i += 1) {
+      const radius = 1.9 + Math.random() * 0.55;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      pPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      pPositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      pPositions[i * 3 + 2] = radius * Math.cos(phi);
     }
 
-    window.addEventListener("resize", tmSize);
-    tm.last = performance.now();
-    requestAnimationFrame(tmFrame);
-  }
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
+    const swarm = new THREE.Points(pGeo, new THREE.PointsMaterial({
+      color: 0xc7d7ff,
+      size: 0.035,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false
+    }));
+    scene.add(swarm);
 
-  function px(u) { return 8 + u * (tm.w - 16); }
-  function py(v) { return 6 + v * (tm.h - 12); }
-
-  function randomLandPoint() {
-    const d = tm.dots[Math.floor(Math.random() * tm.dots.length)];
-    return { u: d.u, v: d.v };
-  }
-
-  function spawnArc() {
-    const from = randomLandPoint();
-    const toMadrid = Math.random() < 0.22;
-    let to = toMadrid ? MADRID : randomLandPoint();
-    let guard = 0;
-
-    while (!toMadrid && Math.hypot(to.u - from.u, to.v - from.v) < 0.18 && guard < 12) {
-      to = randomLandPoint();
-      guard += 1;
-    }
-
-    tm.arcs.push({
-      from,
-      to,
-      toMadrid,
+    const core = {
+      rotX: 0,
+      rotY: 0,
+      dragging: false,
+      lastX: 0,
+      lastY: 0,
       t: 0,
-      dur: 1.3 + Math.random() * 0.9
-    });
-  }
-
-  function arcPoint(arc, t) {
-    const x1 = px(arc.from.u);
-    const y1 = py(arc.from.v);
-    const x2 = px(arc.to.u);
-    const y2 = py(arc.to.v);
-    const mx = (x1 + x2) / 2;
-    const lift = Math.min(70, Math.hypot(x2 - x1, y2 - y1) * 0.35 + 14);
-    const my = (y1 + y2) / 2 - lift;
-    const a = 1 - t;
-    return {
-      x: a * a * x1 + 2 * a * t * mx + t * t * x2,
-      y: a * a * y1 + 2 * a * t * my + t * t * y2
+      visible: true
     };
-  }
 
-  function tmUpdate(dt) {
-    tm.time += dt;
-    tm.spawnIn -= dt;
+    coreCanvas.addEventListener("pointerdown", (event) => {
+      core.dragging = true;
+      core.lastX = event.clientX;
+      core.lastY = event.clientY;
+      coreCanvas.setPointerCapture(event.pointerId);
+    });
 
-    if (tm.spawnIn <= 0 && tm.arcs.length < 6) {
-      spawnArc();
-      tm.spawnIn = 0.55 + Math.random() * 0.8;
-    }
+    coreCanvas.addEventListener("pointermove", (event) => {
+      if (!core.dragging) {
+        return;
+      }
+      core.rotY += (event.clientX - core.lastX) * 0.012;
+      core.rotX += (event.clientY - core.lastY) * 0.012;
+      core.rotX = Math.max(-1.4, Math.min(1.4, core.rotX));
+      core.lastX = event.clientX;
+      core.lastY = event.clientY;
+    });
 
-    for (let i = tm.arcs.length - 1; i >= 0; i -= 1) {
-      const arc = tm.arcs[i];
-      arc.t += dt / arc.dur;
+    const endCoreDrag = () => {
+      core.dragging = false;
+    };
 
-      if (arc.t >= 1) {
-        tm.arcs.splice(i, 1);
-        tm.blocked += 1;
-        tmCountEl.textContent = "BLOCKED " + String(tm.blocked).padStart(4, "0");
+    coreCanvas.addEventListener("pointerup", endCoreDrag);
+    coreCanvas.addEventListener("pointercancel", endCoreDrag);
 
-        const end = arcPoint(arc, 1);
-        tm.ripples.push({
-          x: end.x,
-          y: end.y,
-          r: 3,
-          life: 1,
-          color: arc.toMadrid ? "#4ade80" : "#f87171"
+    const coreVis = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          core.visible = entry.isIntersecting;
         });
+      },
+      { rootMargin: "200px" }
+    );
+    coreVis.observe(coreCanvas);
 
-        if (arc.toMadrid) {
-          tm.labels.push({ x: end.x, y: end.y - 10, txt: "p=reject", life: 1.2 });
-        }
+    function coreStep(dt) {
+      core.t += dt;
+
+      if (!core.dragging && !prefersReducedMotion) {
+        core.rotY += dt * 0.35;
+      }
+
+      root.rotation.y = core.rotY;
+      root.rotation.x = core.rotX;
+
+      if (!prefersReducedMotion) {
+        ringA.rotation.z += dt * 0.7;
+        ringB.rotation.z -= dt * 0.5;
+        swarm.rotation.y += dt * 0.12;
+        swarm.rotation.x += dt * 0.04;
+
+        const pulse = 1 + Math.sin(core.t * 2.2) * 0.07;
+        nucleus.scale.set(pulse, pulse, pulse);
+        nucleus.material.emissiveIntensity = 0.75 + Math.sin(core.t * 2.2) * 0.3;
+        cage.material.opacity = 0.38 + Math.sin(core.t * 1.6) * 0.1;
+        glow.material.opacity = 0.7 + Math.sin(core.t * 2.2) * 0.15;
       }
     }
 
-    for (let i = tm.ripples.length - 1; i >= 0; i -= 1) {
-      const rp = tm.ripples[i];
-      rp.life -= dt * 1.6;
-      rp.r += 26 * dt;
-      if (rp.life <= 0) tm.ripples.splice(i, 1);
+    function coreRender() {
+      renderer.render(scene, camera);
     }
 
-    for (let i = tm.labels.length - 1; i >= 0; i -= 1) {
-      const lb = tm.labels[i];
-      lb.life -= dt;
-      lb.y -= 12 * dt;
-      if (lb.life <= 0) tm.labels.splice(i, 1);
-    }
-  }
+    let coreLast = performance.now();
 
-  function tmDraw() {
-    tmCtx.clearRect(0, 0, tm.w, tm.h);
+    (function coreFrame(now) {
+      requestAnimationFrame(coreFrame);
 
-    // dotted continents, gently twinkling
-    tm.dots.forEach((d, i) => {
-      const a = 0.22 + 0.13 * Math.sin(tm.time * 1.4 + d.tw);
-      tmCtx.fillStyle = "rgba(122,167,255," + a.toFixed(2) + ")";
-      tmCtx.fillRect(px(d.u), py(d.v), 1.6, 1.6);
-    });
-
-    // Madrid home marker
-    const hx = px(MADRID.u);
-    const hy = py(MADRID.v);
-    const hp = 0.5 + Math.sin(tm.time * 3) * 0.3;
-    tmCtx.fillStyle = "rgba(74,222,128," + (0.55 + hp * 0.3) + ")";
-    tmCtx.beginPath();
-    tmCtx.arc(hx, hy, 2.6, 0, Math.PI * 2);
-    tmCtx.fill();
-    tmCtx.strokeStyle = "rgba(74,222,128," + (0.35 * hp) + ")";
-    tmCtx.beginPath();
-    tmCtx.arc(hx, hy, 6 + hp * 3, 0, Math.PI * 2);
-    tmCtx.stroke();
-
-    // attack arcs
-    tm.arcs.forEach((arc) => {
-      const tail = Math.max(0, arc.t - 0.3);
-      tmCtx.strokeStyle = arc.toMadrid ? "rgba(248,113,113,0.75)" : "rgba(248,113,113,0.5)";
-      tmCtx.lineWidth = 1.4;
-      tmCtx.beginPath();
-
-      for (let s = 0; s <= 24; s += 1) {
-        const tt = tail + (arc.t - tail) * (s / 24);
-        const pt = arcPoint(arc, Math.min(tt, 1));
-        if (s === 0) tmCtx.moveTo(pt.x, pt.y);
-        else tmCtx.lineTo(pt.x, pt.y);
+      if (!core.visible || document.hidden) {
+        coreLast = now;
+        return;
       }
-      tmCtx.stroke();
 
-      const head = arcPoint(arc, Math.min(arc.t, 1));
-      tmCtx.save();
-      tmCtx.shadowColor = "#ffd166";
-      tmCtx.shadowBlur = 8;
-      tmCtx.fillStyle = "#ffd166";
-      tmCtx.beginPath();
-      tmCtx.arc(head.x, head.y, 2.2, 0, Math.PI * 2);
-      tmCtx.fill();
-      tmCtx.restore();
-    });
+      const dt = Math.min((now - coreLast) / 1000, 0.05);
+      coreLast = now;
+      coreStep(dt);
+      coreRender();
+    })(performance.now());
 
-    // impact ripples
-    tm.ripples.forEach((rp) => {
-      tmCtx.globalAlpha = Math.max(0, rp.life) * 0.8;
-      tmCtx.strokeStyle = rp.color;
-      tmCtx.lineWidth = 1.6;
-      tmCtx.beginPath();
-      tmCtx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
-      tmCtx.stroke();
-    });
-    tmCtx.globalAlpha = 1;
-
-    // p=reject labels
-    tm.labels.forEach((lb) => {
-      tmCtx.globalAlpha = Math.max(0, lb.life);
-      tmCtx.font = "700 10px Consolas, monospace";
-      tmCtx.textAlign = "center";
-      tmCtx.lineWidth = 3;
-      tmCtx.strokeStyle = "rgba(7,10,17,0.9)";
-      tmCtx.strokeText(lb.txt, lb.x, lb.y);
-      tmCtx.fillStyle = "#4ade80";
-      tmCtx.fillText(lb.txt, lb.x, lb.y);
-    });
-    tmCtx.globalAlpha = 1;
+    window.__coreDebug = { core, coreStep, coreRender };
   }
 
-  function tmFrame(now) {
-    requestAnimationFrame(tmFrame);
+  window.__initCore = initCore;
 
-    if (!tm.visible || document.hidden) {
-      tm.last = now;
-      return;
-    }
-
-    const dt = Math.min((now - tm.last) / 1000, 0.05);
-    tm.last = now;
-
-    if (!prefersReducedMotion) {
-      tmUpdate(dt);
-    }
-
-    tmDraw();
-  }
-
-  const tmObserver = new IntersectionObserver(
+  const coreTrigger = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        tm.visible = entry.isIntersecting;
         if (entry.isIntersecting) {
-          tmInit();
+          coreTrigger.disconnect();
+          initCore();
         }
       });
     },
-    { rootMargin: "400px" }
+    { rootMargin: "600px" }
   );
 
-  tmObserver.observe(tmCanvas);
-
-  window.__tmDebug = { tm, tmInit, tmUpdate, tmDraw };
+  coreTrigger.observe(coreCanvas);
 }
