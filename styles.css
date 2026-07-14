@@ -5170,3 +5170,33 @@ summary:focus-visible {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
+
+/* 3D celestial bodies in the training timeline */
+.training-item .planet-slot {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: center;
+  align-self: center;
+  width: 240px;
+  height: 240px;
+}
+
+.training-item:nth-child(odd) .planet-slot {
+  grid-column: 1;
+}
+
+.planet-slot canvas {
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.planet-slot canvas:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 900px) {
+  .planet-slot {
+    display: none;
+  }
+}
