@@ -1845,23 +1845,21 @@ if (revealImg && !prefersReducedMotion && window.innerWidth > 900) {
 
 
 
-// Defense Core: interactive 3D centerpiece in the skills matrix
+// Defense Core: interactive 3D energy reactor centerpiece
 const coreCanvas = document.getElementById("defenseCore");
 
 if (coreCanvas) {
   let coreStarted = false;
 
   async function initCore() {
-    if (coreStarted) {
-      return;
-    }
+    if (coreStarted) return;
     coreStarted = true;
 
     let THREE;
     try {
       THREE = await import("https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js");
     } catch (e) {
-      return; // CDN unavailable: slot simply stays empty
+      return;
     }
 
     const size = coreCanvas.clientWidth || 300;
@@ -1870,212 +1868,231 @@ if (coreCanvas) {
     renderer.setSize(size, size, false);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
-    camera.position.z = 4.4;
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    camera.position.z = 5;
 
-    scene.add(new THREE.AmbientLight(0x8fa5d8, 0.55));
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
-    keyLight.position.set(3, 4, 5);
-    scene.add(keyLight);
-    const rimLight = new THREE.DirectionalLight(0xa78bfa, 0.9);
-    rimLight.position.set(-4, -2, -3);
-    scene.add(rimLight);
+    scene.add(new THREE.AmbientLight(0x8fa5d8, 0.5));
+    const key = new THREE.DirectionalLight(0xffffff, 1.3);
+    key.position.set(3, 4, 5);
+    scene.add(key);
+    const rim = new THREE.DirectionalLight(0xa78bfa, 1.0);
+    rim.position.set(-4, -2, -3);
+    scene.add(rim);
 
-    // soft glow behind the core
-    const glowCanvas = document.createElement("canvas");
-    glowCanvas.width = 256;
-    glowCanvas.height = 256;
-    const gctx = glowCanvas.getContext("2d");
-    const gGrad = gctx.createRadialGradient(128, 128, 8, 128, 128, 128);
-    gGrad.addColorStop(0, "rgba(122,167,255,0.55)");
-    gGrad.addColorStop(0.45, "rgba(167,139,250,0.18)");
-    gGrad.addColorStop(1, "rgba(0,0,0,0)");
-    gctx.fillStyle = gGrad;
-    gctx.fillRect(0, 0, 256, 256);
+    function glowTex(inner, mid) {
+      const cv = document.createElement("canvas");
+      cv.width = 256; cv.height = 256;
+      const c = cv.getContext("2d");
+      const grd = c.createRadialGradient(128, 128, 3, 128, 128, 128);
+      grd.addColorStop(0, inner);
+      grd.addColorStop(0.35, mid);
+      grd.addColorStop(1, "rgba(0,0,0,0)");
+      c.fillStyle = grd;
+      c.fillRect(0, 0, 256, 256);
+      return new THREE.CanvasTexture(cv);
+    }
+    function addGlow(inner, mid, scale, opacity, z) {
+      const s = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: glowTex(inner, mid), transparent: true, opacity,
+        blending: THREE.AdditiveBlending, depthWrite: false
+      }));
+      s.scale.set(scale, scale, 1);
+      s.position.z = z || 0;
+      scene.add(s);
+      return s;
+    }
 
-    const glow = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: new THREE.CanvasTexture(glowCanvas),
-      transparent: true,
-      opacity: 0.8,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    }));
-    glow.scale.set(4.4, 4.4, 1);
-    glow.position.z = -0.6;
-    scene.add(glow);
+    // volumetric aura + core bloom (fake-bloom via layered additive sprites)
+    addGlow("rgba(122,167,255,0.5)", "rgba(122,167,255,0.14)", 5.2, 0.7, -1.2);
+    const coreGlow = addGlow("rgba(210,230,255,0.95)", "rgba(122,167,255,0.4)", 1.9, 0.9, 0);
+    const coreGlow2 = addGlow("rgba(180,150,255,0.7)", "rgba(167,139,250,0.25)", 3.0, 0.6, -0.4);
 
     const root = new THREE.Group();
+    scene.add(root);
 
+    // outer icosahedron cage
     const cage = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.22, 1),
-      new THREE.MeshBasicMaterial({
-        color: 0x7aa7ff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.45
-      })
+      new THREE.IcosahedronGeometry(1.45, 1),
+      new THREE.MeshBasicMaterial({ color: 0x7aa7ff, wireframe: true, transparent: true, opacity: 0.55 })
     );
     root.add(cage);
 
+    // mid dodecahedron cage (counter-rotates)
+    const cage2 = new THREE.Group();
+    const cage2mesh = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(1.12, 0),
+      new THREE.MeshBasicMaterial({ color: 0xa78bfa, wireframe: true, transparent: true, opacity: 0.4 })
+    );
+    cage2.add(cage2mesh);
+    root.add(cage2);
+
+    // energy nucleus: emissive icosahedron + bright wire overlay
     const nucleus = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(0.6, 0),
-      new THREE.MeshPhongMaterial({
-        color: 0x27335c,
-        emissive: 0x4b3fa0,
-        emissiveIntensity: 0.9,
-        shininess: 60,
-        flatShading: true
+      new THREE.IcosahedronGeometry(0.58, 1),
+      new THREE.MeshStandardMaterial({
+        color: 0x2a2f66, emissive: 0x5b4fe0, emissiveIntensity: 1.2,
+        flatShading: true, roughness: 0.35, metalness: 0.2
       })
     );
     root.add(nucleus);
-
-    const ringA = new THREE.Mesh(
-      new THREE.TorusGeometry(1.55, 0.024, 12, 96),
-      new THREE.MeshBasicMaterial({ color: 0x7aa7ff, transparent: true, opacity: 0.8 })
+    const nucleusWire = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(0.6, 1),
+      new THREE.MeshBasicMaterial({ color: 0xbfd4ff, wireframe: true, transparent: true, opacity: 0.5 })
     );
-    ringA.rotation.x = Math.PI / 2.4;
-    root.add(ringA);
+    root.add(nucleusWire);
 
-    const ringB = new THREE.Mesh(
-      new THREE.TorusGeometry(1.82, 0.016, 12, 96),
-      new THREE.MeshBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.5 })
-    );
-    ringB.rotation.x = Math.PI / 1.7;
-    ringB.rotation.y = 0.6;
-    root.add(ringB);
+    // gyro rings
+    function makeRing(r, tube, color, opacity, rx, ry) {
+      const m = new THREE.Mesh(
+        new THREE.TorusGeometry(r, tube, 14, 120),
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending })
+      );
+      m.rotation.x = rx; m.rotation.y = ry;
+      root.add(m);
+      return m;
+    }
+    const ringA = makeRing(1.72, 0.02, 0x7aa7ff, 0.9, Math.PI / 2.3, 0);
+    const ringB = makeRing(1.95, 0.014, 0xa78bfa, 0.6, Math.PI / 1.6, 0.6);
 
-    scene.add(root);
-
-    // orbiting particle swarm
-    const P_COUNT = 90;
-    const pPositions = new Float32Array(P_COUNT * 3);
-
-    for (let i = 0; i < P_COUNT; i += 1) {
-      const radius = 1.9 + Math.random() * 0.55;
+    // orbiting spark particles
+    const P = 150;
+    const pPos = new Float32Array(P * 3);
+    const pBase = [];
+    for (let i = 0; i < P; i += 1) {
+      const radius = 1.7 + Math.random() * 0.9;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      pPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      pPositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      pPositions[i * 3 + 2] = radius * Math.cos(phi);
+      const x = radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi) * Math.sin(theta);
+      const z = radius * Math.cos(phi);
+      pPos[i * 3] = x; pPos[i * 3 + 1] = y; pPos[i * 3 + 2] = z;
+      pBase.push({ x, y, z, sp: 0.2 + Math.random() * 0.6 });
     }
-
     const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
     const swarm = new THREE.Points(pGeo, new THREE.PointsMaterial({
-      color: 0xc7d7ff,
-      size: 0.035,
-      transparent: true,
-      opacity: 0.85,
-      depthWrite: false
+      color: 0xcfe0ff, size: 0.05, transparent: true, opacity: 0.9,
+      blending: THREE.AdditiveBlending, depthWrite: false
     }));
     scene.add(swarm);
 
-    const core = {
-      rotX: 0,
-      rotY: 0,
-      dragging: false,
-      lastX: 0,
-      lastY: 0,
-      t: 0,
-      visible: true
-    };
+    // electric arcs from nucleus to cage vertices
+    const cageVerts = [];
+    const cg = cage.geometry.attributes.position;
+    for (let i = 0; i < cg.count; i += 1) {
+      cageVerts.push(new THREE.Vector3().fromBufferAttribute(cg, i));
+    }
+    const ARC_N = 7;
+    const arcs = [];
+    for (let i = 0; i < ARC_N; i += 1) {
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(4 * 3), 3));
+      const mat = new THREE.LineBasicMaterial({
+        color: 0xdff0ff, transparent: true, opacity: 0,
+        blending: THREE.AdditiveBlending, depthWrite: false
+      });
+      const line = new THREE.Line(geo, mat);
+      root.add(line);
+      arcs.push({ line, next: 0, target: cageVerts[0] });
+    }
 
-    coreCanvas.addEventListener("pointerdown", (event) => {
-      core.dragging = true;
-      core.lastX = event.clientX;
-      core.lastY = event.clientY;
-      coreCanvas.setPointerCapture(event.pointerId);
-    });
-
-    coreCanvas.addEventListener("pointermove", (event) => {
-      if (!core.dragging) {
-        return;
+    function retargetArc(arc) {
+      arc.target = cageVerts[Math.floor(Math.random() * cageVerts.length)];
+      const pos = arc.line.geometry.attributes.position;
+      const t = arc.target;
+      for (let s = 0; s < 4; s += 1) {
+        const f = s / 3;
+        const jitter = (s === 0 || s === 3) ? 0 : 0.22;
+        pos.setXYZ(
+          s,
+          t.x * f + (Math.random() - 0.5) * jitter,
+          t.y * f + (Math.random() - 0.5) * jitter,
+          t.z * f + (Math.random() - 0.5) * jitter
+        );
       }
-      core.rotY += (event.clientX - core.lastX) * 0.012;
-      core.rotX += (event.clientY - core.lastY) * 0.012;
+      pos.needsUpdate = true;
+      arc.line.material.opacity = 0.5 + Math.random() * 0.5;
+      arc.next = 0.06 + Math.random() * 0.16;
+    }
+
+    const core = { rotX: 0, rotY: 0, dragging: false, lastX: 0, lastY: 0, t: 0, visible: true };
+
+    coreCanvas.addEventListener("pointerdown", (e) => {
+      core.dragging = true; core.lastX = e.clientX; core.lastY = e.clientY;
+      coreCanvas.setPointerCapture(e.pointerId);
+    });
+    coreCanvas.addEventListener("pointermove", (e) => {
+      if (!core.dragging) return;
+      core.rotY += (e.clientX - core.lastX) * 0.012;
+      core.rotX += (e.clientY - core.lastY) * 0.012;
       core.rotX = Math.max(-1.4, Math.min(1.4, core.rotX));
-      core.lastX = event.clientX;
-      core.lastY = event.clientY;
+      core.lastX = e.clientX; core.lastY = e.clientY;
     });
+    const endDrag = () => { core.dragging = false; };
+    coreCanvas.addEventListener("pointerup", endDrag);
+    coreCanvas.addEventListener("pointercancel", endDrag);
 
-    const endCoreDrag = () => {
-      core.dragging = false;
-    };
+    const vis = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { core.visible = en.isIntersecting; });
+    }, { rootMargin: "200px" });
+    vis.observe(coreCanvas);
 
-    coreCanvas.addEventListener("pointerup", endCoreDrag);
-    coreCanvas.addEventListener("pointercancel", endCoreDrag);
-
-    const coreVis = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          core.visible = entry.isIntersecting;
-        });
-      },
-      { rootMargin: "200px" }
-    );
-    coreVis.observe(coreCanvas);
-
-    function coreStep(dt) {
+    function step(dt) {
       core.t += dt;
-
-      if (!core.dragging && !prefersReducedMotion) {
-        core.rotY += dt * 0.35;
-      }
-
+      if (!core.dragging && !prefersReducedMotion) core.rotY += dt * 0.3;
       root.rotation.y = core.rotY;
       root.rotation.x = core.rotX;
 
       if (!prefersReducedMotion) {
+        cage.rotation.y += dt * 0.12;
+        cage.rotation.x += dt * 0.05;
+        cage2.rotation.y -= dt * 0.28;
+        cage2.rotation.z += dt * 0.1;
+        nucleus.rotation.y -= dt * 0.4;
+        nucleus.rotation.x += dt * 0.15;
+        nucleusWire.rotation.y += dt * 0.5;
         ringA.rotation.z += dt * 0.7;
         ringB.rotation.z -= dt * 0.5;
-        swarm.rotation.y += dt * 0.12;
-        swarm.rotation.x += dt * 0.04;
+        swarm.rotation.y += dt * 0.14;
+        swarm.rotation.x += dt * 0.05;
 
-        const pulse = 1 + Math.sin(core.t * 2.2) * 0.07;
-        nucleus.scale.set(pulse, pulse, pulse);
-        nucleus.material.emissiveIntensity = 0.75 + Math.sin(core.t * 2.2) * 0.3;
-        cage.material.opacity = 0.38 + Math.sin(core.t * 1.6) * 0.1;
-        glow.material.opacity = 0.7 + Math.sin(core.t * 2.2) * 0.15;
+        const pulse = 1 + Math.sin(core.t * 2.4) * 0.1;
+        nucleus.scale.setScalar(pulse);
+        nucleusWire.scale.setScalar(pulse);
+        nucleus.material.emissiveIntensity = 1.0 + Math.sin(core.t * 2.4) * 0.5;
+        coreGlow.material.opacity = 0.75 + Math.sin(core.t * 2.4) * 0.2;
+        coreGlow.scale.setScalar(1.9 * pulse);
+        coreGlow2.material.opacity = 0.5 + Math.sin(core.t * 1.7) * 0.15;
+        cage.material.opacity = 0.45 + Math.sin(core.t * 1.6) * 0.12;
+
+        arcs.forEach((arc) => {
+          arc.next -= dt;
+          if (arc.next <= 0) retargetArc(arc);
+          else arc.line.material.opacity = Math.max(0, arc.line.material.opacity - dt * 3.2);
+        });
       }
     }
 
-    function coreRender() {
+    let last = performance.now();
+    (function loop(now) {
+      requestAnimationFrame(loop);
+      if (!core.visible || document.hidden) { last = now; return; }
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      step(dt);
       renderer.render(scene, camera);
-    }
-
-    let coreLast = performance.now();
-
-    (function coreFrame(now) {
-      requestAnimationFrame(coreFrame);
-
-      if (!core.visible || document.hidden) {
-        coreLast = now;
-        return;
-      }
-
-      const dt = Math.min((now - coreLast) / 1000, 0.05);
-      coreLast = now;
-      coreStep(dt);
-      coreRender();
     })(performance.now());
 
-    window.__coreDebug = { core, coreStep, coreRender };
+    window.__coreDebug = { core, step, render: () => renderer.render(scene, camera) };
   }
 
   window.__initCore = initCore;
 
-  const coreTrigger = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          coreTrigger.disconnect();
-          initCore();
-        }
-      });
-    },
-    { rootMargin: "600px" }
-  );
-
+  const coreTrigger = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (en.isIntersecting) { coreTrigger.disconnect(); initCore(); }
+    });
+  }, { rootMargin: "600px" });
   coreTrigger.observe(coreCanvas);
 }
 
