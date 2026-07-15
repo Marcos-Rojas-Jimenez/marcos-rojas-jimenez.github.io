@@ -2843,14 +2843,14 @@ if (fwCanvas) {
   const DETAILS = {
     "Technical Background": {
       kicker: "Foundations",
-      lead: "A layered technical base built over several years before and during the cybersecurity specialization — networking and systems first, defensive security on top.",
+      lead: "A cybersecurity-first profile: defensive security is the focus, standing on a solid networking and systems foundation.",
       sections: [
         {
           title: "Where it comes from",
           items: [
-            "<strong>Higher Technician in Telecommunication & Computer Systems</strong> (2022–2024): networks, connectivity, infrastructure and audiovisual/telephony systems.",
-            "<strong>Cybersecurity specialization</strong> (2025–2026): threat analysis, forensics, hardening and secure deployment.",
-            "<strong>Continuous self-study:</strong> CCNA, TryHackMe SOC path and hands-on home-lab work."
+            "<strong>Cybersecurity specialization</strong> (2025–2026, DigitechFP): incident handling, forensics, hardening, secure deployment and ethical hacking — the core of my profile.",
+            "<strong>Continuous cybersecurity training:</strong> TryHackMe SOC Analyst L1 path, Blue Team learning and the PhisDefense home-lab project.",
+            "<strong>Higher Technician in Telecommunication & Computer Systems</strong> (2022–2024): the networking and infrastructure base underneath it all."
           ]
         },
         {
