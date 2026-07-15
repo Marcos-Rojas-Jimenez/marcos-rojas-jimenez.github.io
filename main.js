@@ -115,28 +115,47 @@ document.body.appendChild(cursorGlow);
 const cursorTarget = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 const cursorCurrent = { x: cursorTarget.x, y: cursorTarget.y };
 
+let glowRunning = false;
+
+function animateCursorGlow() {
+  const dx = cursorTarget.x - cursorCurrent.x;
+  const dy = cursorTarget.y - cursorCurrent.y;
+
+  cursorCurrent.x += dx * 0.14;
+  cursorCurrent.y += dy * 0.14;
+
+  cursorGlow.style.left = `${cursorCurrent.x}px`;
+  cursorGlow.style.top = `${cursorCurrent.y}px`;
+
+  // stop looping once the glow has caught up to the pointer; a mousemove
+  // restarts it. Avoids a permanent rAF loop while the pointer is still.
+  if (Math.abs(dx) < 0.4 && Math.abs(dy) < 0.4) {
+    glowRunning = false;
+    return;
+  }
+
+  requestAnimationFrame(animateCursorGlow);
+}
+
+function kickCursorGlow() {
+  if (!glowRunning) {
+    glowRunning = true;
+    requestAnimationFrame(animateCursorGlow);
+  }
+}
+
 window.addEventListener("mousemove", (event) => {
   cursorTarget.x = event.clientX;
   cursorTarget.y = event.clientY;
-});
 
-function animateCursorGlow() {
   if (prefersReducedMotion) {
     cursorGlow.style.left = `${cursorTarget.x}px`;
     cursorGlow.style.top = `${cursorTarget.y}px`;
     return;
   }
 
-  cursorCurrent.x += (cursorTarget.x - cursorCurrent.x) * 0.14;
-  cursorCurrent.y += (cursorTarget.y - cursorCurrent.y) * 0.14;
-
-  cursorGlow.style.left = `${cursorCurrent.x}px`;
-  cursorGlow.style.top = `${cursorCurrent.y}px`;
-
-  requestAnimationFrame(animateCursorGlow);
-}
-
-requestAnimationFrame(animateCursorGlow);
+  kickCursorGlow();
+});
 
 const sectionIds = ["about", "skills", "projects", "training", "certifications", "contact"];
 const navAnchors = document.querySelectorAll(".nav-links a");
@@ -163,44 +182,59 @@ function moveNavIndicator() {
   navIndicator.classList.add("ready");
 }
 
+// Cache section geometry so scroll updates never force a layout read.
+// Absolute document tops/heights are measured once (and on resize/load),
+// then compared against scrollY — visually identical, zero layout thrash.
+let navGeom = [];
+let navDocBottom = 0;
+
+function refreshNavGeom() {
+  const sy = window.scrollY;
+  navGeom = sectionIds
+    .map((id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const rect = el.getBoundingClientRect();
+      return { id, top: rect.top + sy, height: rect.height };
+    })
+    .filter(Boolean);
+  navDocBottom = document.documentElement.scrollHeight;
+}
+
+let navLastKey = null;
+
 function updateActiveNav() {
+  const sy = window.scrollY;
   let current = "";
 
-  sectionIds.forEach((id) => {
-    const section = document.getElementById(id);
-    if (!section) {
-      return;
+  for (let i = 0; i < navGeom.length; i += 1) {
+    const g = navGeom[i];
+    const vt = g.top - sy;
+    if (vt <= 170 && vt + g.height >= 170) {
+      current = g.id;
     }
+  }
 
-    const rect = section.getBoundingClientRect();
-
-    if (rect.top <= 170 && rect.bottom >= 170) {
-      current = id;
-    }
-  });
-
-  const scrolledToBottom =
-    window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8;
-
-  if (scrolledToBottom) {
+  if (sy + window.innerHeight >= navDocBottom - 8) {
     current = "contact";
   }
 
-  navAnchors.forEach((link) => {
-    link.classList.remove("active");
+  const effective = sy < 400 && !current ? "home" : current;
 
-    if (link.getAttribute("href") === `#${current}`) {
-      link.classList.add("active");
-    }
+  // nothing changed since last frame -> skip all DOM writes
+  if (effective === navLastKey) {
+    return;
+  }
+  navLastKey = effective;
+
+  navAnchors.forEach((link) => {
+    link.classList.toggle("active", link.getAttribute("href") === `#${current}`);
   });
 
   const dotsNav = document.querySelector(".side-dots");
-
   if (dotsNav) {
-    const dotCurrent = window.scrollY < 400 && !current ? "home" : current;
-
     dotsNav.querySelectorAll("a").forEach((dot) => {
-      dot.classList.toggle("active", dot.getAttribute("href") === `#${dotCurrent}`);
+      dot.classList.toggle("active", dot.getAttribute("href") === `#${effective}`);
     });
   }
 
@@ -208,7 +242,17 @@ function updateActiveNav() {
 }
 
 window.addEventListener("scroll", updateActiveNav);
-window.addEventListener("resize", moveNavIndicator);
+window.addEventListener("resize", () => {
+  refreshNavGeom();
+  navLastKey = null;
+  moveNavIndicator();
+});
+window.addEventListener("load", () => {
+  refreshNavGeom();
+  navLastKey = null;
+  updateActiveNav();
+});
+refreshNavGeom();
 updateActiveNav();
 
 const projectCard = document.querySelector(".project-card");
@@ -921,19 +965,32 @@ if (!prefersReducedMotion && window.matchMedia("(pointer: fine)").matches) {
 
   const ringTarget = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
   const ringPos = { x: ringTarget.x, y: ringTarget.y };
+  let ringRunning = false;
 
   window.addEventListener("mousemove", (event) => {
     ringTarget.x = event.clientX;
     ringTarget.y = event.clientY;
+    if (!ringRunning) {
+      ringRunning = true;
+      requestAnimationFrame(animateRing);
+    }
   });
 
-  (function animateRing() {
-    ringPos.x += (ringTarget.x - ringPos.x) * 0.3;
-    ringPos.y += (ringTarget.y - ringPos.y) * 0.3;
+  function animateRing() {
+    const dx = ringTarget.x - ringPos.x;
+    const dy = ringTarget.y - ringPos.y;
+    ringPos.x += dx * 0.3;
+    ringPos.y += dy * 0.3;
     cursorRing.style.left = `${ringPos.x}px`;
     cursorRing.style.top = `${ringPos.y}px`;
+
+    if (Math.abs(dx) < 0.4 && Math.abs(dy) < 0.4) {
+      ringRunning = false;
+      return;
+    }
+
     requestAnimationFrame(animateRing);
-  })();
+  }
 
   const HOVER_TARGETS =
     "a, button, input, summary, .skill-pills span, .zoomable, canvas, " +
@@ -1177,24 +1234,37 @@ const trainingTimeline = document.getElementById("trainingTimeline");
 const trainingFill = document.getElementById("trainingProgressFill");
 
 if (trainingTimeline && trainingFill) {
-  const trainingNodes = trainingTimeline.querySelectorAll(".training-node");
+  const trainingNodes = Array.from(trainingTimeline.querySelectorAll(".training-node"));
+
+  // cache absolute geometry; only re-measure on resize/load
+  let tlTop = 0;
+  let tlHeight = 0;
+  let nodeCenters = [];
+
+  function refreshTrainingGeom() {
+    const sy = window.scrollY;
+    const rect = trainingTimeline.getBoundingClientRect();
+    tlTop = rect.top + sy;
+    tlHeight = rect.height;
+    nodeCenters = trainingNodes.map((node) => {
+      const nr = node.getBoundingClientRect();
+      return nr.top + nr.height / 2 + sy;
+    });
+  }
 
   function updateTrainingProgress() {
-    const rect = trainingTimeline.getBoundingClientRect();
+    const sy = window.scrollY;
     const triggerY = window.innerHeight * 0.62;
-    const passed = Math.min(Math.max(triggerY - rect.top, 0), rect.height);
-    const pct = rect.height > 0 ? (passed / rect.height) * 100 : 0;
+    const relTop = tlTop - sy;
+    const passed = Math.min(Math.max(triggerY - relTop, 0), tlHeight);
+    const pct = tlHeight > 0 ? (passed / tlHeight) * 100 : 0;
 
     trainingFill.style.height = `${pct}%`;
 
-    trainingNodes.forEach((node) => {
-      const nodeRect = node.getBoundingClientRect();
-      const reached = nodeRect.top + nodeRect.height / 2 <= triggerY;
-
+    trainingNodes.forEach((node, i) => {
+      const reached = nodeCenters[i] - sy <= triggerY;
       node.classList.toggle("active", reached);
-
       const card = node.parentElement.querySelector(".training-clean-card");
-
       if (card) {
         card.classList.toggle("lit", reached);
       }
@@ -1202,7 +1272,15 @@ if (trainingTimeline && trainingFill) {
   }
 
   window.addEventListener("scroll", updateTrainingProgress);
-  window.addEventListener("resize", updateTrainingProgress);
+  window.addEventListener("resize", () => {
+    refreshTrainingGeom();
+    updateTrainingProgress();
+  });
+  window.addEventListener("load", () => {
+    refreshTrainingGeom();
+    updateTrainingProgress();
+  });
+  refreshTrainingGeom();
   updateTrainingProgress();
 }
 
