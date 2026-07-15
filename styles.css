@@ -5564,10 +5564,9 @@ summary:focus-visible {
   opacity: 0.8;
 }
 
-
 /* ==========================================================
    CARD ZOOM — click a card: it spins in and settles suspended &
-   tilted on the left (neon border), with a detail panel on the right
+   tilted with a full flowing neon border; detail panel on the right
    ========================================================== */
 @property --neon-angle {
   syntax: "<angle>";
@@ -5586,13 +5585,13 @@ summary:focus-visible {
   display: grid;
   place-items: center;
   padding: 6vh 5vw;
-  background: rgba(7, 10, 17, 0.84);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(6, 9, 15, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
-  perspective: 1700px;
+  perspective: 1800px;
 }
 
 .card-zoom-overlay.open {
@@ -5604,67 +5603,77 @@ summary:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 42px;
+  gap: 96px;
   width: 100%;
-  max-width: 1040px;
+  max-width: 1120px;
   transform-style: preserve-3d;
 }
 
-/* left: the suspended, tilted replica of the original card */
+/* left: suspended, tilted replica — tilted toward the detail panel */
 .card-zoom-original {
   position: relative;
   flex: 0 0 340px;
   width: 340px;
   border-radius: 26px;
-  transform: rotateY(704deg) scale(0.12);
+  transform: rotateY(736deg) scale(0.12);
   transform-style: preserve-3d;
   will-change: transform;
+  filter:
+    drop-shadow(0 40px 80px rgba(0,0,0,0.55))
+    drop-shadow(0 0 40px rgba(122,167,255,0.18));
 }
 
 .card-zoom-overlay.spin .card-zoom-original {
-  animation: cardSpinGrow 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation: cardSpinGrow 0.95s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
 @keyframes cardSpinGrow {
-  0% { transform: rotateY(704deg) scale(0.12); }
-  100% { transform: rotateY(-16deg) rotateX(3deg) scale(1); }
+  0% { transform: rotateY(736deg) scale(0.12); }
+  100% { transform: rotateY(18deg) rotateX(4deg) scale(1); }
 }
 
 .card-zoom-overlay.settled .card-zoom-original {
-  animation: cardFloat 6s ease-in-out infinite;
+  animation: cardFloat 6.5s ease-in-out infinite;
 }
 
 @keyframes cardFloat {
-  0%, 100% { transform: rotateY(-16deg) rotateX(3deg) translateY(0) scale(1); }
-  50% { transform: rotateY(-13deg) rotateX(1.5deg) translateY(-12px) scale(1.01); }
+  0%, 100% { transform: rotateY(18deg) rotateX(4deg) translateY(0) scale(1); }
+  50% { transform: rotateY(15deg) rotateX(2deg) translateY(-14px) scale(1.012); }
 }
 
-/* the replica keeps the original card's look */
+/* the replica keeps the original card look, rounded so the neon hugs it */
 .card-zoom-original > * {
   margin: 0 !important;
+  box-sizing: border-box !important;
   width: 100%;
-  box-shadow:
-    0 40px 110px rgba(0,0,0,0.6),
-    0 0 44px rgba(122,167,255,0.14) !important;
+  border-radius: 24px !important;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5) !important;
 }
 
-/* traveling neon light along the border */
+/* glass sheen for a richer, more premium surface */
+.card-zoom-original .glass-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.12), transparent 34%),
+    radial-gradient(120% 80% at 15% 0%, rgba(122,167,255,0.12), transparent 55%);
+  mix-blend-mode: screen;
+  z-index: 2;
+}
+
+/* full flowing neon border that wraps the whole card */
 .card-zoom-original::before {
   content: "";
   position: absolute;
-  inset: -2px;
-  border-radius: 28px;
-  padding: 2px;
+  inset: -3px;
+  border-radius: 27px;
+  padding: 3px;
   background: conic-gradient(
     from var(--neon-angle),
-    transparent 0deg,
-    rgba(122,167,255,0.15) 30deg,
-    #7aa7ff 60deg,
-    #a78bfa 78deg,
-    #5eead4 96deg,
-    rgba(122,167,255,0.15) 120deg,
-    transparent 160deg,
-    transparent 360deg
+    #7aa7ff, #a78bfa, #5eead4, #7aa7ff, #a78bfa, #5eead4, #7aa7ff
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -5673,13 +5682,14 @@ summary:focus-visible {
   mask-composite: exclude;
   pointer-events: none;
   opacity: 0;
-  filter: drop-shadow(0 0 6px rgba(122,167,255,0.55));
+  filter: drop-shadow(0 0 9px rgba(122,167,255,0.6));
   transition: opacity 0.5s ease;
+  z-index: 3;
 }
 
 .card-zoom-overlay.settled .card-zoom-original::before {
   opacity: 1;
-  animation: neonTravel 3.2s linear infinite;
+  animation: neonTravel 4.5s linear infinite;
 }
 
 @keyframes neonTravel {
@@ -5688,7 +5698,7 @@ summary:focus-visible {
 
 /* right: additional / detailed information */
 .card-zoom-detail {
-  flex: 1 1 460px;
+  flex: 1 1 470px;
   max-width: 520px;
   max-height: 82vh;
   overflow: auto;
@@ -5698,7 +5708,7 @@ summary:focus-visible {
   border: 1px solid rgba(122,167,255,0.28);
   box-shadow: 0 40px 120px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
   opacity: 0;
-  transform: translateX(28px);
+  transform: translateX(34px);
 }
 
 .card-zoom-overlay.settled .card-zoom-detail {
@@ -5777,7 +5787,7 @@ summary:focus-visible {
   font-size: 1.05rem;
   font-weight: 900;
   cursor: pointer;
-  z-index: 3;
+  z-index: 4;
 }
 
 .card-zoom-close:hover {
@@ -5785,10 +5795,10 @@ summary:focus-visible {
   border-color: rgba(248,113,113,0.5);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 940px) {
   .card-zoom-stage {
     flex-direction: column;
-    gap: 24px;
+    gap: 26px;
   }
   .card-zoom-original {
     flex-basis: auto;
@@ -5807,7 +5817,7 @@ summary:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .card-zoom-overlay.spin .card-zoom-original {
     animation: none;
-    transform: rotateY(-16deg) rotateX(3deg);
+    transform: rotateY(18deg) rotateX(4deg);
   }
   .card-zoom-overlay.settled .card-zoom-original {
     animation: none;

@@ -3048,6 +3048,10 @@ if (fwCanvas) {
     original.innerHTML = "";
     original.appendChild(clone);
 
+    const sheen = document.createElement("span");
+    sheen.className = "glass-sheen";
+    clone.appendChild(sheen);
+
     detail.innerHTML = buildDetail(heading);
 
     overlay.classList.add("open");
