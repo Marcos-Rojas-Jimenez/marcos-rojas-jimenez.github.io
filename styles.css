@@ -5571,10 +5571,10 @@ summary:focus-visible {
 
 .hat-stage {
   position: absolute;
-  top: 96px;
-  right: 0;
-  width: 360px;
-  height: 360px;
+  top: 70px;
+  right: -10px;
+  width: 400px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -5585,8 +5585,8 @@ summary:focus-visible {
 
 #hatCarousel {
   display: block;
-  width: 340px;
-  height: 340px;
+  width: 380px;
+  height: 380px;
   cursor: grab;
   pointer-events: auto;
   touch-action: none;
