@@ -5563,3 +5563,51 @@ summary:focus-visible {
   color: #8fb5ff;
   opacity: 0.8;
 }
+
+/* About: 3D hacker-hat carousel in the section-head's empty right area */
+#about .shell {
+  position: relative;
+}
+
+.hat-stage {
+  position: absolute;
+  top: 96px;
+  right: 0;
+  width: 360px;
+  height: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+#hatCarousel {
+  display: block;
+  width: 340px;
+  height: 340px;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+#hatCarousel:active {
+  cursor: grabbing;
+}
+
+.hat-tag {
+  margin-top: -18px;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #8fb5ff;
+  text-shadow: 0 0 14px rgba(122,167,255,0.35);
+}
+
+@media (max-width: 1180px) {
+  .hat-stage {
+    display: none;
+  }
+}
