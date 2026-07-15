@@ -2822,3 +2822,89 @@ if (fwCanvas) {
 
 
 
+
+// Card zoom: click a content card -> it spins while growing, then reveals
+// its information full-screen in detail
+(function initCardZoom() {
+  const cards = document.querySelectorAll(
+    "#about .card, #skills .skill-category, #training .training-clean-card, #certifications .cert-card"
+  );
+
+  if (!cards.length) {
+    return;
+  }
+
+  const overlay = document.createElement("div");
+  overlay.className = "card-zoom-overlay";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.innerHTML =
+    '<div class="card-zoom-panel">' +
+    '<button class="card-zoom-close" aria-label="Close">✕</button>' +
+    '<div class="card-zoom-content"></div>' +
+    "</div>";
+  document.body.appendChild(overlay);
+
+  const panel = overlay.querySelector(".card-zoom-panel");
+  const content = overlay.querySelector(".card-zoom-content");
+  const closeBtn = overlay.querySelector(".card-zoom-close");
+
+  function reveal() {
+    overlay.classList.add("revealed");
+    overlay.classList.remove("spin");
+  }
+
+  function openZoom(card) {
+    const clone = card.cloneNode(true);
+    // strip any leftover state classes and the hover tilt transform
+    clone.classList.remove("visible", "lit", "reveal", "zoomable");
+    clone.removeAttribute("style");
+    content.innerHTML = "";
+    content.appendChild(clone);
+
+    const hint = document.createElement("span");
+    hint.className = "card-zoom-hint";
+    hint.textContent = "// click outside or press Esc to close";
+    content.appendChild(hint);
+
+    overlay.classList.add("open");
+    overlay.classList.remove("revealed");
+
+    if (prefersReducedMotion) {
+      reveal();
+      return;
+    }
+
+    overlay.classList.add("spin");
+    panel.addEventListener("animationend", reveal, { once: true });
+    // safety fallback if animationend doesn't fire
+    setTimeout(reveal, 1000);
+  }
+
+  function closeZoom() {
+    overlay.classList.remove("open", "revealed", "spin");
+  }
+
+  cards.forEach((card) => {
+    card.classList.add("zoomable");
+    card.addEventListener("click", (event) => {
+      // let genuinely interactive elements (links, images, buttons) work as-is
+      if (event.target.closest("a, button, img, input, summary, canvas")) {
+        return;
+      }
+      openZoom(card);
+    });
+  });
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+      closeZoom();
+    }
+  });
+  closeBtn.addEventListener("click", closeZoom);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && overlay.classList.contains("open")) {
+      closeZoom();
+    }
+  });
+})();
