@@ -1540,7 +1540,7 @@ if (planetSlots.length && window.innerWidth > 900) {
 
     function buildBody(kind, scene) {
       if (kind === "sun") {
-        addHalo(scene, "rgba(255,190,80,0.85)", "rgba(255,140,20,0.30)", 2.9, 0.9);
+        addHalo(scene, "rgba(255,190,80,0.85)", "rgba(255,140,20,0.30)", 2.55, 0.9);
         tex.sunT.wrapS = THREE.RepeatWrapping;
         const mesh = new THREE.Mesh(
           new THREE.SphereGeometry(1.02, 64, 64),
@@ -1551,18 +1551,18 @@ if (planetSlots.length && window.innerWidth > 900) {
       }
 
       if (kind === "saturn") {
-        addHalo(scene, "rgba(232,211,168,0.40)", "rgba(122,167,255,0.12)", 4.6, 0.45);
+        addHalo(scene, "rgba(232,211,168,0.40)", "rgba(122,167,255,0.12)", 4.1, 0.45);
         const tilt = new THREE.Group();
         const inner = new THREE.Group();
 
         const body = new THREE.Mesh(
-          new THREE.SphereGeometry(0.85, 64, 64),
+          new THREE.SphereGeometry(1.1, 64, 64),
           new THREE.MeshStandardMaterial({ map: tex.saturnT, roughness: 0.95 })
         );
         inner.add(body);
 
-        const RING_IN = 1.1;
-        const RING_OUT = 2.02;
+        const RING_IN = 1.24;
+        const RING_OUT = 1.92;
         const ringGeo = new THREE.RingGeometry(RING_IN, RING_OUT, 180, 1);
         const rpos = ringGeo.attributes.position;
         const ruv = ringGeo.attributes.uv;
@@ -1589,11 +1589,11 @@ if (planetSlots.length && window.innerWidth > 900) {
         tilt.rotation.x = 0.34;
         tilt.add(inner);
         scene.add(tilt);
-        return { spin: inner, speed: 0.0035 };
+        return { spin: inner, speed: 0.0035, precess: tilt };
       }
 
       if (kind === "earth") {
-        addHalo(scene, "rgba(122,167,255,0.65)", "rgba(122,167,255,0.16)", 3.2, 0.65);
+        addHalo(scene, "rgba(122,167,255,0.65)", "rgba(122,167,255,0.16)", 2.5, 0.65);
         const group = new THREE.Group();
 
         const globe = new THREE.Mesh(
@@ -1621,7 +1621,7 @@ if (planetSlots.length && window.innerWidth > 900) {
         return { spin: group, speed: 0.004, clouds };
       }
 
-      addHalo(scene, "rgba(190,205,235,0.45)", "rgba(122,167,255,0.10)", 2.9, 0.5);
+      addHalo(scene, "rgba(190,205,235,0.45)", "rgba(122,167,255,0.10)", 2.45, 0.5);
       const mesh = new THREE.Mesh(
         new THREE.SphereGeometry(0.95, 64, 64),
         new THREE.MeshStandardMaterial({ map: tex.moonT, roughness: 1 })
@@ -1643,7 +1643,7 @@ if (planetSlots.length && window.innerWidth > 900) {
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 60);
-      camera.position.z = kind === "saturn" ? 6.4 : 3.4;
+      camera.position.z = kind === "saturn" ? 5.95 : 3.4;
 
       scene.add(new THREE.AmbientLight(0x8fa5d8, 0.6));
       const keyLight = new THREE.DirectionalLight(0xffffff, 1.7);
@@ -1662,6 +1662,7 @@ if (planetSlots.length && window.innerWidth > 900) {
         target: built.spin,
         clouds: built.clouds || null,
         scrollMap: built.scrollMap || null,
+        precess: built.precess || null,
         autoSpeed: prefersReducedMotion ? 0 : built.speed,
         rotX: 0,
         rotY: 0,
@@ -1733,6 +1734,10 @@ if (planetSlots.length && window.innerWidth > 900) {
 
         if (s.scrollMap) {
           s.scrollMap.offset.x += 0.00035;
+        }
+
+        if (s.precess && !prefersReducedMotion) {
+          s.precess.rotation.y += 0.0009;
         }
 
         s.renderer.render(s.scene, s.camera);
@@ -1838,7 +1843,8 @@ if (revealImg && !prefersReducedMotion && window.innerWidth > 900) {
   }
 }
 
-// Firewall Defense: arcade minigame with its own interface
+
+// PhisDefense: Mail Storm — wave-based mail triage arcade
 const fwCanvas = document.getElementById("fwCanvas");
 
 if (fwCanvas) {
@@ -1849,85 +1855,90 @@ if (fwCanvas) {
   const fwSub = fwOverlay.querySelector(".fw-sub");
   const fwBestEl = document.getElementById("fwBest");
   const fwScoreEl = document.getElementById("fwScore");
+  const fwWaveEl = document.getElementById("fwWave");
   const fwComboEl = document.getElementById("fwCombo");
   const fwFillEl = document.getElementById("fwIntegrityFill");
   const fwLabelEl = document.getElementById("fwIntegrityLabel");
 
   const fx = fwCanvas.getContext("2d");
-  let fwW = 0;
-  let fwH = 0;
+  let W = 0;
+  let H = 0;
 
-  const fw = {
+  // phishing subject lines vs legit ones (shown on the envelopes)
+  const PHISH = ["RE: invoice", "verify now", "acct locked", "you won $", "reset pwd", "gift card", "CEO urgent", "pay overdue", "unusual login", "claim refund"];
+  const LEGIT = ["newsletter", "backup ok", "TLS-RPT", "MFA code", "cron done", "HR memo", "cert renew", "ticket #42", "standup", "receipt"];
+
+  const g = {
     playing: false,
-    packets: [],
+    mails: [],
     particles: [],
     floats: [],
     rings: [],
     dust: [],
-    integrity: 100,
     score: 0,
     combo: 1,
+    integrity: 100,
+    wave: 1,
+    waveKills: 0,
+    waveNeed: 8,
     elapsed: 0,
     spawnIn: 0,
     shakeT: 0,
     hurtT: 0,
+    flashT: 0,
+    flashText: "",
     scanY: 0,
-    gridScroll: 0,
+    overdrive: 0,
+    boss: null,
     last: 0
   };
 
   function seedDust() {
-    fw.dust = [];
-    for (let i = 0; i < 26; i += 1) {
-      fw.dust.push({
-        x: Math.random() * fwW,
-        y: Math.random() * fwH,
-        r: 0.5 + Math.random() * 1.3,
+    g.dust = [];
+    for (let i = 0; i < 30; i += 1) {
+      g.dust.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 0.5 + Math.random() * 1.4,
         vx: (Math.random() - 0.5) * 8,
-        vy: 4 + Math.random() * 10,
+        vy: 5 + Math.random() * 12,
         a: 0.05 + Math.random() * 0.14
       });
     }
   }
 
-  function sizeFw() {
+  function sizeG() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    fwW = fwStage.clientWidth;
-    fwH = fwStage.clientHeight;
-    fwCanvas.width = fwW * dpr;
-    fwCanvas.height = fwH * dpr;
+    W = fwStage.clientWidth;
+    H = fwStage.clientHeight;
+    fwCanvas.width = W * dpr;
+    fwCanvas.height = H * dpr;
     fx.setTransform(dpr, 0, 0, dpr, 0, 0);
     seedDust();
   }
 
-  sizeFw();
-  window.addEventListener("resize", sizeFw);
+  sizeG();
+  window.addEventListener("resize", sizeG);
 
-  function fwReadBest() {
-    try {
-      return parseInt(localStorage.getItem("fwBest") || "0", 10);
-    } catch (e) {
-      return 0;
-    }
+  function readBest() {
+    try { return parseInt(localStorage.getItem("mailStormBest") || "0", 10); }
+    catch (e) { return 0; }
+  }
+  function writeBest(v) {
+    try { localStorage.setItem("mailStormBest", String(v)); } catch (e) { /* */ }
+  }
+  function showBest() {
+    const b = readBest();
+    fwBestEl.textContent = b > 0 ? "BEST: " + b + " PTS" : "";
   }
 
-  function fwWriteBest(v) {
-    try {
-      localStorage.setItem("fwBest", String(v));
-    } catch (e) { /* no persistence */ }
-  }
-
-  function fwShowBest() {
-    const b = fwReadBest();
-    fwBestEl.textContent = b > 0 ? "BEST RUN: " + b + " PTS" : "";
-  }
-
-  function fwHud() {
-    fwScoreEl.textContent = "SCORE " + fw.score;
-    fwComboEl.textContent = "COMBO ×" + fw.combo;
-    const pct = Math.max(0, Math.round(fw.integrity));
+  function hud() {
+    fwScoreEl.textContent = "SCORE " + g.score;
+    fwWaveEl.textContent = "WAVE " + g.wave;
+    fwComboEl.textContent = g.overdrive > 0 ? "⚡ OVERDRIVE" : "COMBO ×" + g.combo;
+    const pct = Math.max(0, Math.round(g.integrity));
     fwFillEl.style.width = pct + "%";
-    fwLabelEl.textContent = "FIREWALL " + pct + "%";
+    fwLabelEl.textContent = "SERVER " + pct + "%";
     fwFillEl.style.background = pct > 55
       ? "linear-gradient(90deg, #4ade80, #22c55e)"
       : pct > 25
@@ -1935,685 +1946,520 @@ if (fwCanvas) {
         : "linear-gradient(90deg, #f87171, #dc2626)";
   }
 
-  function spawnPacket() {
+  function spawnMail(forceType) {
     const roll = Math.random();
-    let type = "red";
+    let type = forceType || "phish";
 
-    if (roll < 0.08 && fw.integrity < 95) {
-      type = "blue";
-    } else if (roll < 0.45) {
-      type = "green";
+    if (!forceType) {
+      if (roll < 0.04 && g.integrity < 92) type = "patch";
+      else if (roll < 0.09 && g.elapsed > 8) type = "golden";
+      else if (roll < 0.5) type = "legit";
     }
 
-    const speedBase = 62 + Math.min(fw.elapsed * 2.4, 190);
+    const speed = 50 + Math.min(g.elapsed * 2.0, 150) + g.wave * 6;
+    const isPhish = type === "phish";
+    const isLegit = type === "legit";
 
-    fw.packets.push({
+    g.mails.push({
       type,
-      x: 34 + Math.random() * (fwW - 68),
-      y: -18,
-      r: 15,
-      vy: speedBase * (0.85 + Math.random() * 0.4),
+      x: 40 + Math.random() * (W - 80),
+      y: -24,
+      w: 40,
+      h: 28,
+      vy: speed * (0.85 + Math.random() * 0.4) * (g.overdrive > 0 ? 0.55 : 1),
       wob: Math.random() * Math.PI * 2,
-      wobAmp: 6 + Math.random() * 14,
+      wobAmp: 5 + Math.random() * 12,
+      label: isPhish ? PHISH[Math.floor(Math.random() * PHISH.length)]
+        : isLegit ? LEGIT[Math.floor(Math.random() * LEGIT.length)]
+          : "",
+      seal: Math.random() * Math.PI * 2,
       trail: []
     });
+  }
+
+  function spawnBoss() {
+    g.boss = {
+      x: W / 2,
+      y: 46,
+      dir: 1,
+      hp: 6 + g.wave,
+      maxHp: 6 + g.wave,
+      shootIn: 1.1,
+      hitT: 0
+    };
+    g.flashText = "⚠ BOTNET C2 INBOUND";
+    g.flashT = 1.6;
   }
 
   function boom(x, y, color, n) {
     for (let i = 0; i < n; i += 1) {
       const a = Math.random() * Math.PI * 2;
-      const v = 40 + Math.random() * 180;
-      fw.particles.push({
-        x, y,
-        vx: Math.cos(a) * v,
-        vy: Math.sin(a) * v,
-        life: 0.5 + Math.random() * 0.45,
-        color
-      });
+      const v = 40 + Math.random() * 190;
+      g.particles.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0.5 + Math.random() * 0.45, color });
     }
   }
-
-  function ring(x, y, color, maxR) {
-    fw.rings.push({ x, y, r: 6, maxR, life: 1, color });
-  }
-
-  function floatText(x, y, txt, color) {
-    fw.floats.push({ x, y, txt, color, life: 0.95 });
-  }
+  function ring(x, y, color, maxR) { g.rings.push({ x, y, r: 5, maxR, life: 1, color }); }
+  function floatText(x, y, txt, color) { g.floats.push({ x, y, txt, color, life: 0.95 }); }
 
   function damage(amount) {
-    fw.integrity -= amount;
-    fw.combo = 1;
-    fw.hurtT = 0.4;
-    if (!prefersReducedMotion) {
-      fw.shakeT = 0.28;
-    }
-    if (fw.integrity <= 0) {
-      fw.integrity = 0;
-      endFw();
+    if (g.overdrive > 0) return;
+    g.integrity -= amount;
+    g.combo = 1;
+    g.hurtT = 0.45;
+    if (!prefersReducedMotion) g.shakeT = 0.3;
+    if (g.integrity <= 0) { g.integrity = 0; endGame(); }
+  }
+
+  function addKill() {
+    g.waveKills += 1;
+    if (g.waveKills >= g.waveNeed) {
+      g.wave += 1;
+      g.waveKills = 0;
+      g.waveNeed = 7 + g.wave * 2;
+      g.integrity = Math.min(100, g.integrity + 8);
+      g.flashText = "WAVE " + g.wave;
+      g.flashT = 1.3;
+      if (g.wave % 3 === 0) spawnBoss();
     }
   }
 
-  function fwRank(points) {
-    if (points >= 6000) return "RANK: FIREWALL COMMANDER 🛡";
-    if (points >= 3500) return "RANK: PACKET SNIPER";
-    if (points >= 1500) return "RANK: TRAFFIC COP";
-    return "RANK: INTERN ON DUTY ☕";
+  function goldenSweep() {
+    g.overdrive = 4.5;
+    g.flashText = "★ DMARC OVERDRIVE";
+    g.flashT = 1.6;
+    // vaporize all phishing + boss shots on screen
+    for (let i = g.mails.length - 1; i >= 0; i -= 1) {
+      const m = g.mails[i];
+      if (m.type === "phish" || m.type === "shot") {
+        g.score += 60 * g.combo;
+        boom(m.x, m.y, "#ffd166", 14);
+        g.mails.splice(i, 1);
+      }
+    }
+    ring(W / 2, H / 2, "#ffd166", Math.max(W, H));
   }
 
-  function endFw() {
-    fw.playing = false;
-    const best = fwReadBest();
-    if (fw.score > best) {
-      fwWriteBest(fw.score);
-    }
-    fwTitle.textContent = "BREACH — " + fw.score + " PTS";
-    fwSub.textContent = fwRank(fw.score) + (fw.score > best ? "  ·  NEW PERSONAL BEST!" : "");
-    fwStartBtn.textContent = "▶ REDEPLOY";
+  function rank(pts, wave) {
+    if (pts >= 8000 || wave >= 10) return "RANK: DMARC OVERLORD 🛡";
+    if (pts >= 4500) return "RANK: PHISH SLAYER";
+    if (pts >= 2000) return "RANK: MAIL MARSHAL";
+    return "RANK: INBOX ROOKIE ☕";
+  }
+
+  function endGame() {
+    g.playing = false;
+    const best = readBest();
+    if (g.score > best) writeBest(g.score);
+    fwTitle.textContent = "SERVER DOWN — " + g.score + " PTS";
+    fwSub.textContent = rank(g.score, g.wave) + " · reached wave " + g.wave +
+      (g.score > best ? "  ·  NEW BEST!" : "");
+    fwStartBtn.textContent = "▶ NEW SHIFT";
     fwOverlay.classList.remove("hidden");
-    fwShowBest();
+    showBest();
   }
 
   function update(dt) {
-    fw.elapsed += dt;
-    fw.spawnIn -= dt;
-    fw.scanY = (fw.scanY + dt * 60) % fwH;
-    fw.gridScroll = (fw.gridScroll + dt * 34) % 46;
+    g.elapsed += dt;
+    g.spawnIn -= dt;
+    g.scanY = (g.scanY + dt * 60) % H;
+    if (g.shakeT > 0) g.shakeT -= dt;
+    if (g.hurtT > 0) g.hurtT -= dt;
+    if (g.flashT > 0) g.flashT -= dt;
+    if (g.overdrive > 0) g.overdrive -= dt;
 
-    if (fw.spawnIn <= 0) {
-      spawnPacket();
-      fw.spawnIn = Math.max(0.28, 0.95 - fw.elapsed * 0.012);
+    const spawnRate = Math.max(0.32, 0.9 - g.elapsed * 0.01 - g.wave * 0.02);
+    if (g.spawnIn <= 0 && !(g.boss && g.mails.length > 4)) {
+      spawnMail();
+      g.spawnIn = spawnRate;
     }
 
-    if (fw.shakeT > 0) fw.shakeT -= dt;
-    if (fw.hurtT > 0) fw.hurtT -= dt;
+    const baseline = H - 34;
 
-    const baseline = fwH - 34;
-
-    for (let i = fw.packets.length - 1; i >= 0; i -= 1) {
-      const p = fw.packets[i];
-      p.y += p.vy * dt;
-      p.wob += dt * 3;
-
-      const wobX = p.x + Math.sin(p.wob) * p.wobAmp * 0.4;
-      p.trail.unshift({ x: wobX, y: p.y });
-      if (p.trail.length > 9) p.trail.pop();
-
-      if (p.y >= baseline) {
-        fw.packets.splice(i, 1);
-
-        if (p.type === "red") {
-          boom(wobX, baseline, "#f87171", 30);
-          ring(wobX, baseline, "#f87171", 54);
-          floatText(wobX, baseline - 22, "-12%", "#f87171");
-          damage(12);
-        } else if (p.type === "green") {
-          fw.score += 5;
-          ring(wobX, baseline, "#4ade80", 26);
-          floatText(wobX, baseline - 22, "+5", "#4ade80");
-        }
+    // boss
+    if (g.boss) {
+      const b = g.boss;
+      b.x += b.dir * dt * 70;
+      if (b.x < 60) { b.x = 60; b.dir = 1; }
+      if (b.x > W - 60) { b.x = W - 60; b.dir = -1; }
+      if (b.hitT > 0) b.hitT -= dt;
+      b.shootIn -= dt;
+      if (b.shootIn <= 0) {
+        b.shootIn = Math.max(0.5, 1.3 - g.wave * 0.05);
+        g.mails.push({
+          type: "shot", x: b.x, y: b.y + 18, w: 16, h: 16,
+          vy: 150, wob: 0, wobAmp: 0, label: "", seal: 0, trail: []
+        });
       }
     }
 
-    for (let i = fw.particles.length - 1; i >= 0; i -= 1) {
-      const pt = fw.particles[i];
-      pt.life -= dt;
-      pt.x += pt.vx * dt;
-      pt.y += pt.vy * dt;
-      pt.vy += 220 * dt;
-      if (pt.life <= 0) fw.particles.splice(i, 1);
+    for (let i = g.mails.length - 1; i >= 0; i -= 1) {
+      const m = g.mails[i];
+      m.y += m.vy * dt;
+      m.wob += dt * 3;
+      const mx = m.x + Math.sin(m.wob) * m.wobAmp * 0.4;
+      m.trail.unshift({ x: mx, y: m.y });
+      if (m.trail.length > 7) m.trail.pop();
+
+      if (m.y >= baseline) {
+        g.mails.splice(i, 1);
+        if (m.type === "phish" || m.type === "shot") {
+          boom(mx, baseline, "#f87171", 26);
+          ring(mx, baseline, "#f87171", 50);
+          floatText(mx, baseline - 22, "-12%", "#f87171");
+          damage(12);
+        } else if (m.type === "legit") {
+          g.score += 5;
+          floatText(mx, baseline - 22, "+5", "#4ade80");
+        }
+        // patch/golden falling past = no penalty
+      }
     }
 
-    for (let i = fw.rings.length - 1; i >= 0; i -= 1) {
-      const rg = fw.rings[i];
-      rg.life -= dt * 2.2;
-      rg.r += (rg.maxR - rg.r) * dt * 9;
-      if (rg.life <= 0) fw.rings.splice(i, 1);
+    for (let i = g.particles.length - 1; i >= 0; i -= 1) {
+      const p = g.particles[i];
+      p.life -= dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 220 * dt;
+      if (p.life <= 0) g.particles.splice(i, 1);
     }
-
-    for (let i = fw.floats.length - 1; i >= 0; i -= 1) {
-      const f = fw.floats[i];
-      f.life -= dt;
-      f.y -= 36 * dt;
-      if (f.life <= 0) fw.floats.splice(i, 1);
+    for (let i = g.rings.length - 1; i >= 0; i -= 1) {
+      const r = g.rings[i];
+      r.life -= dt * 2.2; r.r += (r.maxR - r.r) * dt * 9;
+      if (r.life <= 0) g.rings.splice(i, 1);
     }
-
-    fw.dust.forEach((s) => {
-      s.x += s.vx * dt;
-      s.y += s.vy * dt;
-      if (s.y > fwH + 4) { s.y = -4; s.x = Math.random() * fwW; }
-      if (s.x < -4) s.x = fwW + 4;
-      if (s.x > fwW + 4) s.x = -4;
+    for (let i = g.floats.length - 1; i >= 0; i -= 1) {
+      const f = g.floats[i];
+      f.life -= dt; f.y -= 36 * dt;
+      if (f.life <= 0) g.floats.splice(i, 1);
+    }
+    g.dust.forEach((s) => {
+      s.x += s.vx * dt; s.y += s.vy * dt;
+      if (s.y > H + 4) { s.y = -4; s.x = Math.random() * W; }
+      if (s.x < -4) s.x = W + 4; if (s.x > W + 4) s.x = -4;
     });
   }
 
-  const FW_COLORS = { red: "#f87171", green: "#4ade80", blue: "#7aa7ff" };
-  const FW_GLYPHS = { red: "✖", green: "✓", blue: "⛨" };
+  function drawEnvelope(m) {
+    const mx = m.x + Math.sin(m.wob) * m.wobAmp * 0.4;
+    const colors = { phish: "#f87171", legit: "#4ade80", patch: "#7aa7ff", golden: "#ffd166", shot: "#f87171" };
+    const color = colors[m.type];
 
-  function drawPacket(p) {
-    const wobX = p.x + Math.sin(p.wob) * p.wobAmp * 0.4;
-    const color = FW_COLORS[p.type];
-
-    // glow trail
-    for (let i = 2; i < p.trail.length; i += 1) {
-      const t = p.trail[i];
-      const fade = 1 - i / p.trail.length;
-      fx.globalAlpha = fade * 0.16;
+    // trail
+    for (let i = 2; i < m.trail.length; i += 1) {
+      const t = m.trail[i];
+      const fade = 1 - i / m.trail.length;
+      fx.globalAlpha = fade * 0.14;
       fx.fillStyle = color;
-      fx.beginPath();
-      fx.arc(t.x, t.y, p.r * fade * 0.8, 0, Math.PI * 2);
-      fx.fill();
+      fx.fillRect(t.x - m.w * fade * 0.4, t.y - m.h * fade * 0.3, m.w * fade * 0.8, m.h * fade * 0.6);
     }
     fx.globalAlpha = 1;
 
-    fx.save();
-    fx.translate(wobX, p.y);
-    fx.shadowColor = color;
-    fx.shadowBlur = 18;
-
-    fx.beginPath();
-    for (let i = 0; i < 6; i += 1) {
-      const a = Math.PI / 6 + (i * Math.PI) / 3;
-      const px = Math.cos(a) * p.r;
-      const py = Math.sin(a) * p.r;
-      if (i === 0) fx.moveTo(px, py);
-      else fx.lineTo(px, py);
+    if (m.type === "shot") {
+      fx.save();
+      fx.translate(mx, m.y);
+      fx.shadowColor = "#f87171"; fx.shadowBlur = 14;
+      fx.fillStyle = "#f87171";
+      fx.beginPath(); fx.arc(0, 0, 7, 0, Math.PI * 2); fx.fill();
+      fx.restore();
+      return;
     }
-    fx.closePath();
 
-    fx.fillStyle = "rgba(10,15,28,0.92)";
-    fx.fill();
-    fx.lineWidth = 2;
+    fx.save();
+    fx.translate(mx, m.y);
+    fx.shadowColor = color; fx.shadowBlur = m.type === "golden" ? 22 : 14;
+
+    // envelope body
+    fx.fillStyle = "rgba(12,17,30,0.95)";
     fx.strokeStyle = color;
+    fx.lineWidth = 2;
+    fx.beginPath();
+    fx.roundRect(-m.w / 2, -m.h / 2, m.w, m.h, 4);
+    fx.fill();
+    fx.stroke();
+
+    // flap
+    fx.beginPath();
+    fx.moveTo(-m.w / 2, -m.h / 2);
+    fx.lineTo(0, 2);
+    fx.lineTo(m.w / 2, -m.h / 2);
     fx.stroke();
 
     fx.shadowBlur = 0;
-    fx.fillStyle = color;
-    fx.font = "700 13px 'Segoe UI', sans-serif";
-    fx.textAlign = "center";
-    fx.textBaseline = "middle";
-    fx.fillText(FW_GLYPHS[p.type], 0, 1);
+
+    // wax seal for phishing (a hook to aim at)
+    if (m.type === "phish") {
+      fx.fillStyle = "#f87171";
+      fx.beginPath();
+      fx.arc(0, m.h / 2 - 5, 4.5, 0, Math.PI * 2);
+      fx.fill();
+    } else if (m.type === "patch") {
+      fx.fillStyle = "#7aa7ff";
+      fx.font = "700 12px 'Segoe UI', sans-serif";
+      fx.textAlign = "center"; fx.textBaseline = "middle";
+      fx.fillText("⛨", 0, m.h / 2 - 5);
+    } else if (m.type === "golden") {
+      fx.fillStyle = "#ffd166";
+      fx.font = "700 12px 'Segoe UI', sans-serif";
+      fx.textAlign = "center"; fx.textBaseline = "middle";
+      fx.fillText("★", 0, m.h / 2 - 5);
+    }
+
+    // subject label
+    if (m.label) {
+      fx.fillStyle = "rgba(199,215,255,0.85)";
+      fx.font = "600 7px Consolas, monospace";
+      fx.textAlign = "center"; fx.textBaseline = "middle";
+      fx.fillText(m.label, 0, -2);
+    }
     fx.restore();
   }
 
-  function drawServer() {
-    const cx = fwW / 2;
-    const baseY = fwH - 26;
-    const pulse = 0.5 + Math.sin(fw.elapsed * 3) * 0.22;
+  function drawBoss() {
+    if (!g.boss) return;
+    const b = g.boss;
+    fx.save();
+    fx.translate(b.x, b.y);
+    const hit = b.hitT > 0;
+    fx.shadowColor = hit ? "#ffffff" : "#a78bfa";
+    fx.shadowBlur = 20;
 
-    // shield arc over the server
-    fx.strokeStyle = "rgba(122,167,255," + (0.16 + pulse * 0.12) + ")";
-    fx.lineWidth = 2;
+    // menacing hex body
     fx.beginPath();
-    fx.arc(cx, baseY + 8, 64, Math.PI * 1.08, Math.PI * 1.92);
+    for (let i = 0; i < 6; i += 1) {
+      const a = (i * Math.PI) / 3;
+      const px = Math.cos(a) * 26;
+      const py = Math.sin(a) * 20;
+      if (i === 0) fx.moveTo(px, py); else fx.lineTo(px, py);
+    }
+    fx.closePath();
+    fx.fillStyle = hit ? "#f8f0ff" : "rgba(20,14,40,0.95)";
+    fx.fill();
+    fx.lineWidth = 2.5;
+    fx.strokeStyle = "#a78bfa";
     fx.stroke();
-
-    // baseline
-    fx.shadowColor = "rgba(122,167,255," + pulse + ")";
-    fx.shadowBlur = 18;
-    fx.fillStyle = "rgba(122,167,255,0.78)";
-    fx.fillRect(14, baseY, fwW - 28, 3);
     fx.shadowBlur = 0;
 
-    // server rack
-    const rw = 96;
-    const rh = 26;
-    fx.fillStyle = "rgba(10,15,28,0.95)";
-    fx.strokeStyle = "rgba(122,167,255,0.55)";
-    fx.lineWidth = 1.5;
-    fx.beginPath();
-    fx.roundRect(cx - rw / 2, baseY - rh - 4, rw, rh, 6);
-    fx.fill();
-    fx.stroke();
+    // eyes
+    fx.fillStyle = "#f87171";
+    fx.beginPath(); fx.arc(-8, -2, 3, 0, Math.PI * 2); fx.fill();
+    fx.beginPath(); fx.arc(8, -2, 3, 0, Math.PI * 2); fx.fill();
 
-    // blinking LEDs
-    for (let i = 0; i < 4; i += 1) {
-      const on = Math.sin(fw.elapsed * 5 + i * 1.7) > 0;
-      fx.fillStyle = on ? (i === 3 ? "#4ade80" : "#7aa7ff") : "rgba(255,255,255,0.12)";
-      fx.beginPath();
-      fx.arc(cx - rw / 2 + 14 + i * 13, baseY - rh + 9, 3, 0, Math.PI * 2);
-      fx.fill();
-    }
+    fx.fillStyle = "#c7d7ff";
+    fx.font = "700 7px Consolas, monospace";
+    fx.textAlign = "center";
+    fx.fillText("BOTNET C2", 0, 30);
+    fx.restore();
 
-    fx.fillStyle = "rgba(199,215,255,0.7)";
-    fx.font = "700 9px Consolas, monospace";
-    fx.textAlign = "left";
-    fx.fillText("SRV-01", cx + 8, baseY - rh + 12);
+    // hp bar
+    const bw = 70;
+    fx.fillStyle = "rgba(255,255,255,0.1)";
+    fx.fillRect(b.x - bw / 2, b.y - 34, bw, 5);
+    fx.fillStyle = "#a78bfa";
+    fx.fillRect(b.x - bw / 2, b.y - 34, bw * (b.hp / b.maxHp), 5);
   }
 
   function draw() {
-    fx.clearRect(0, 0, fwW, fwH);
+    fx.clearRect(0, 0, W, H);
     fx.save();
+    if (g.shakeT > 0) fx.translate((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8);
 
-    if (fw.shakeT > 0) {
-      fx.translate((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8);
+    // depth wash (gold tint during overdrive)
+    let bg = fx.createLinearGradient(0, 0, 0, H);
+    if (g.overdrive > 0) {
+      bg.addColorStop(0, "rgba(255,209,102,0.05)");
+      bg.addColorStop(1, "rgba(245,158,11,0.08)");
+    } else {
+      bg.addColorStop(0, "rgba(122,167,255,0.02)");
+      bg.addColorStop(1, "rgba(167,139,250,0.05)");
     }
+    fx.fillStyle = bg;
+    fx.fillRect(0, 0, W, H);
 
-    // depth gradient
-    let bgGrad = fx.createLinearGradient(0, 0, 0, fwH);
-    bgGrad.addColorStop(0, "rgba(122,167,255,0.02)");
-    bgGrad.addColorStop(1, "rgba(167,139,250,0.05)");
-    fx.fillStyle = bgGrad;
-    fx.fillRect(0, 0, fwW, fwH);
-
-    // Tron floor: converging verticals + scrolling horizontals
-    const cx = fwW / 2;
-    fx.strokeStyle = "rgba(122,167,255,0.07)";
+    // converging Tron floor
+    const cx = W / 2;
+    fx.strokeStyle = g.overdrive > 0 ? "rgba(255,209,102,0.09)" : "rgba(122,167,255,0.07)";
     fx.lineWidth = 1;
-
     for (let k = -9; k <= 9; k += 1) {
       fx.beginPath();
-      fx.moveTo(cx + k * (fwW / 26), 0);
-      fx.lineTo(cx + k * (fwW / 13), fwH);
+      fx.moveTo(cx + k * (W / 26), 0);
+      fx.lineTo(cx + k * (W / 13), H);
       fx.stroke();
     }
 
-    for (let j = 0; j <= 13; j += 1) {
-      const t = j / 13;
-      const y = (t * t * fwH + fw.gridScroll * (0.4 + t)) % (fwH + 20);
-      fx.globalAlpha = 0.04 + t * 0.06;
-      fx.beginPath();
-      fx.moveTo(0, y);
-      fx.lineTo(fwW, y);
-      fx.stroke();
-    }
+    // dust
+    g.dust.forEach((s) => { fx.globalAlpha = s.a; fx.fillStyle = "#c7d7ff"; fx.fillRect(s.x, s.y, s.r, s.r); });
     fx.globalAlpha = 1;
 
-    // ambient dust
-    fw.dust.forEach((s) => {
-      fx.globalAlpha = s.a;
-      fx.fillStyle = "#c7d7ff";
-      fx.fillRect(s.x, s.y, s.r, s.r);
-    });
-    fx.globalAlpha = 1;
-
-    // radar scan sweep
-    const sweep = fx.createLinearGradient(0, fw.scanY - 44, 0, fw.scanY);
+    // scan sweep
+    const sweep = fx.createLinearGradient(0, g.scanY - 44, 0, g.scanY);
     sweep.addColorStop(0, "rgba(122,167,255,0)");
-    sweep.addColorStop(1, "rgba(122,167,255,0.055)");
+    sweep.addColorStop(1, "rgba(122,167,255,0.05)");
     fx.fillStyle = sweep;
-    fx.fillRect(0, fw.scanY - 44, fwW, 44);
+    fx.fillRect(0, g.scanY - 44, W, 44);
 
-    drawServer();
+    // server baseline + rack
+    const baseY = H - 26;
+    const pulse = 0.5 + Math.sin(g.elapsed * 3) * 0.22;
+    fx.shadowColor = "rgba(122,167,255," + pulse + ")"; fx.shadowBlur = 18;
+    fx.fillStyle = "rgba(122,167,255,0.78)";
+    fx.fillRect(14, baseY, W - 28, 3);
+    fx.shadowBlur = 0;
+    const rw = 96, rh = 24;
+    fx.fillStyle = "rgba(10,15,28,0.95)";
+    fx.strokeStyle = "rgba(122,167,255,0.55)"; fx.lineWidth = 1.5;
+    fx.beginPath(); fx.roundRect(cx - rw / 2, baseY - rh - 4, rw, rh, 6); fx.fill(); fx.stroke();
+    for (let i = 0; i < 4; i += 1) {
+      const on = Math.sin(g.elapsed * 5 + i * 1.7) > 0;
+      fx.fillStyle = on ? (i === 3 ? "#4ade80" : "#7aa7ff") : "rgba(255,255,255,0.12)";
+      fx.beginPath(); fx.arc(cx - rw / 2 + 14 + i * 13, baseY - rh + 8, 3, 0, Math.PI * 2); fx.fill();
+    }
+    fx.fillStyle = "rgba(199,215,255,0.7)";
+    fx.font = "700 9px Consolas, monospace"; fx.textAlign = "left";
+    fx.fillText("MAIL-SRV", cx + 8, baseY - rh + 11);
 
-    fw.packets.forEach(drawPacket);
+    drawBoss();
+    g.mails.forEach(drawEnvelope);
 
-    fw.particles.forEach((pt) => {
-      fx.globalAlpha = Math.max(0, pt.life * 1.6);
-      fx.fillStyle = pt.color;
-      fx.fillRect(pt.x - 2, pt.y - 2, 4, 4);
+    g.particles.forEach((p) => {
+      fx.globalAlpha = Math.max(0, p.life * 1.6); fx.fillStyle = p.color;
+      fx.fillRect(p.x - 2, p.y - 2, 4, 4);
     });
     fx.globalAlpha = 1;
 
-    fw.rings.forEach((rg) => {
-      fx.globalAlpha = Math.max(0, rg.life) * 0.8;
-      fx.strokeStyle = rg.color;
-      fx.lineWidth = 2;
-      fx.beginPath();
-      fx.arc(rg.x, rg.y, rg.r, 0, Math.PI * 2);
-      fx.stroke();
+    g.rings.forEach((r) => {
+      fx.globalAlpha = Math.max(0, r.life) * 0.8; fx.strokeStyle = r.color; fx.lineWidth = 2;
+      fx.beginPath(); fx.arc(r.x, r.y, r.r, 0, Math.PI * 2); fx.stroke();
     });
     fx.globalAlpha = 1;
 
-    fw.floats.forEach((f) => {
+    g.floats.forEach((f) => {
       fx.globalAlpha = Math.max(0, f.life);
-      fx.font = "800 15px Consolas, monospace";
-      fx.textAlign = "center";
-      fx.lineWidth = 3;
-      fx.strokeStyle = "rgba(7,10,17,0.85)";
+      fx.font = "800 15px Consolas, monospace"; fx.textAlign = "center";
+      fx.lineWidth = 3; fx.strokeStyle = "rgba(7,10,17,0.85)";
       fx.strokeText(f.txt, f.x, f.y);
-      fx.fillStyle = f.color;
-      fx.fillText(f.txt, f.x, f.y);
+      fx.fillStyle = f.color; fx.fillText(f.txt, f.x, f.y);
     });
     fx.globalAlpha = 1;
 
-    // ghost combo counter
-    if (fw.combo >= 3) {
-      fx.globalAlpha = 0.08 + Math.sin(fw.elapsed * 6) * 0.02;
-      fx.fillStyle = "#c7d7ff";
-      fx.font = "900 64px Consolas, monospace";
-      fx.textAlign = "center";
-      fx.fillText("×" + fw.combo, fwW / 2, 84);
+    if (g.combo >= 3 && g.overdrive <= 0) {
+      fx.globalAlpha = 0.08 + Math.sin(g.elapsed * 6) * 0.02;
+      fx.fillStyle = "#c7d7ff"; fx.font = "900 60px Consolas, monospace"; fx.textAlign = "center";
+      fx.fillText("×" + g.combo, cx, 78);
       fx.globalAlpha = 1;
     }
 
-    // hurt vignette
-    if (fw.hurtT > 0) {
-      const v = fx.createRadialGradient(cx, fwH / 2, fwH * 0.3, cx, fwH / 2, fwH);
+    // center flash banner
+    if (g.flashT > 0) {
+      const a = Math.min(1, g.flashT);
+      fx.globalAlpha = a;
+      fx.fillStyle = g.flashText.indexOf("BOTNET") >= 0 ? "#f87171"
+        : g.flashText.indexOf("OVERDRIVE") >= 0 ? "#ffd166" : "#7aa7ff";
+      fx.font = "900 26px Consolas, monospace"; fx.textAlign = "center";
+      fx.shadowColor = fx.fillStyle; fx.shadowBlur = 20;
+      fx.fillText(g.flashText, cx, H / 2);
+      fx.shadowBlur = 0; fx.globalAlpha = 1;
+    }
+
+    if (g.hurtT > 0) {
+      const v = fx.createRadialGradient(cx, H / 2, H * 0.3, cx, H / 2, H);
       v.addColorStop(0, "rgba(248,113,113,0)");
-      v.addColorStop(1, "rgba(248,113,113," + (fw.hurtT * 0.55) + ")");
-      fx.fillStyle = v;
-      fx.fillRect(0, 0, fwW, fwH);
+      v.addColorStop(1, "rgba(248,113,113," + (g.hurtT * 0.55) + ")");
+      fx.fillStyle = v; fx.fillRect(0, 0, W, H);
+    }
+    if (g.overdrive > 0) {
+      fx.strokeStyle = "rgba(255,209,102," + (0.3 + Math.sin(g.elapsed * 10) * 0.15) + ")";
+      fx.lineWidth = 4; fx.strokeRect(3, 3, W - 6, H - 6);
     }
 
     fx.restore();
   }
 
   function frame(now) {
-    if (!fw.playing) {
-      return;
-    }
-
-    const dt = Math.min((now - fw.last) / 1000, 0.05);
-    fw.last = now;
-
+    if (!g.playing) return;
+    const dt = Math.min((now - g.last) / 1000, 0.05);
+    g.last = now;
     update(dt);
     draw();
-    fwHud();
+    hud();
     requestAnimationFrame(frame);
   }
 
-  function startFw() {
-    sizeFw();
-    fw.playing = true;
-    fw.packets = [];
-    fw.particles = [];
-    fw.floats = [];
-    fw.rings = [];
-    fw.integrity = 100;
-    fw.score = 0;
-    fw.combo = 1;
-    fw.elapsed = 0;
-    fw.spawnIn = 0.4;
-    fw.shakeT = 0;
-    fw.hurtT = 0;
+  function start() {
+    sizeG();
+    Object.assign(g, {
+      playing: true, mails: [], particles: [], floats: [], rings: [],
+      score: 0, combo: 1, integrity: 100, wave: 1, waveKills: 0, waveNeed: 8,
+      elapsed: 0, spawnIn: 0.4, shakeT: 0, hurtT: 0, flashT: 1.1, flashText: "WAVE 1",
+      overdrive: 0, boss: null
+    });
     fwOverlay.classList.add("hidden");
-    fwHud();
-    fw.last = performance.now();
+    hud();
+    g.last = performance.now();
     requestAnimationFrame(frame);
   }
 
-  function fwHit(x, y) {
-    if (!fw.playing) {
-      return;
-    }
+  function hit(x, y) {
+    if (!g.playing) return;
 
-    for (let i = fw.packets.length - 1; i >= 0; i -= 1) {
-      const p = fw.packets[i];
-      const wobX = p.x + Math.sin(p.wob) * p.wobAmp * 0.4;
-      const dx = x - wobX;
-      const dy = y - p.y;
-
-      if (dx * dx + dy * dy <= (p.r + 12) * (p.r + 12)) {
-        fw.packets.splice(i, 1);
-
-        if (p.type === "red") {
-          const pts = 100 * fw.combo;
-          fw.score += pts;
-          fw.combo = Math.min(fw.combo + 1, 9);
-          boom(wobX, p.y, "#f87171", 26);
-          ring(wobX, p.y, "#ffd166", 46);
-          floatText(wobX, p.y - 10, "+" + pts, "#ffd166");
-        } else if (p.type === "green") {
-          boom(wobX, p.y, "#4ade80", 14);
-          ring(wobX, p.y, "#facc15", 40);
-          floatText(wobX, p.y - 10, "FALSE POSITIVE -8%", "#facc15");
-          damage(8);
-        } else {
-          fw.integrity = Math.min(100, fw.integrity + 14);
-          boom(wobX, p.y, "#7aa7ff", 20);
-          ring(wobX, p.y, "#7aa7ff", 52);
-          floatText(wobX, p.y - 10, "+14% FIREWALL", "#7aa7ff");
+    // boss first
+    if (g.boss) {
+      const b = g.boss;
+      if (Math.hypot(x - b.x, y - b.y) <= 30) {
+        b.hp -= 1; b.hitT = 0.12;
+        boom(b.x, b.y, "#a78bfa", 10);
+        g.score += 40 * g.combo;
+        floatText(b.x, b.y - 30, "+" + (40 * g.combo), "#c4b5fd");
+        if (b.hp <= 0) {
+          boom(b.x, b.y, "#a78bfa", 40);
+          ring(b.x, b.y, "#a78bfa", 90);
+          g.score += 500;
+          floatText(b.x, b.y, "C2 TAKEDOWN +500", "#ffd166");
+          g.boss = null;
         }
-
-        fwHud();
+        hud();
         return;
       }
     }
 
-    // miss feedback
-    ring(x, y, "rgba(199,215,255,0.8)", 20);
+    for (let i = g.mails.length - 1; i >= 0; i -= 1) {
+      const m = g.mails[i];
+      const mx = m.x + Math.sin(m.wob) * m.wobAmp * 0.4;
+      if (Math.abs(x - mx) <= m.w / 2 + 8 && Math.abs(y - m.y) <= m.h / 2 + 8) {
+        g.mails.splice(i, 1);
+
+        if (m.type === "phish" || m.type === "shot") {
+          const pts = 100 * g.combo * (g.overdrive > 0 ? 2 : 1);
+          g.score += pts;
+          g.combo = Math.min(g.combo + 1, 12);
+          boom(mx, m.y, "#f87171", 22);
+          ring(mx, m.y, "#ffd166", 44);
+          floatText(mx, m.y - 12, "+" + pts, "#ffd166");
+          addKill();
+        } else if (m.type === "legit") {
+          boom(mx, m.y, "#4ade80", 12);
+          floatText(mx, m.y - 12, "FALSE POSITIVE -8%", "#facc15");
+          damage(8);
+        } else if (m.type === "patch") {
+          g.integrity = Math.min(100, g.integrity + 15);
+          boom(mx, m.y, "#7aa7ff", 18);
+          ring(mx, m.y, "#7aa7ff", 50);
+          floatText(mx, m.y - 12, "+15% SERVER", "#7aa7ff");
+        } else if (m.type === "golden") {
+          boom(mx, m.y, "#ffd166", 26);
+          goldenSweep();
+        }
+        hud();
+        return;
+      }
+    }
+    ring(x, y, "rgba(199,215,255,0.7)", 18);
   }
 
   fwCanvas.addEventListener("pointerdown", (event) => {
     const rect = fwCanvas.getBoundingClientRect();
-    fwHit(event.clientX - rect.left, event.clientY - rect.top);
+    hit(event.clientX - rect.left, event.clientY - rect.top);
   });
+  fwStartBtn.addEventListener("click", start);
+  document.addEventListener("visibilitychange", () => { if (document.hidden && g.playing) g.last = performance.now(); });
 
-  fwStartBtn.addEventListener("click", startFw);
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden && fw.playing) {
-      fw.last = performance.now();
-    }
-  });
-
-  fwShowBest();
-
-  window.__fwDebug = { fw, update, draw, spawnPacket, fwHit };
-}
-
-
-// Defense Core: interactive 3D centerpiece in the skills matrix
-const coreCanvas = document.getElementById("defenseCore");
-
-if (coreCanvas) {
-  let coreStarted = false;
-
-  async function initCore() {
-    if (coreStarted) {
-      return;
-    }
-    coreStarted = true;
-
-    let THREE;
-    try {
-      THREE = await import("https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js");
-    } catch (e) {
-      return; // CDN unavailable: slot simply stays empty
-    }
-
-    const size = coreCanvas.clientWidth || 300;
-    const renderer = new THREE.WebGLRenderer({ canvas: coreCanvas, alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(size, size, false);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
-    camera.position.z = 4.4;
-
-    scene.add(new THREE.AmbientLight(0x8fa5d8, 0.55));
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
-    keyLight.position.set(3, 4, 5);
-    scene.add(keyLight);
-    const rimLight = new THREE.DirectionalLight(0xa78bfa, 0.9);
-    rimLight.position.set(-4, -2, -3);
-    scene.add(rimLight);
-
-    // soft glow behind the core
-    const glowCanvas = document.createElement("canvas");
-    glowCanvas.width = 256;
-    glowCanvas.height = 256;
-    const gctx = glowCanvas.getContext("2d");
-    const gGrad = gctx.createRadialGradient(128, 128, 8, 128, 128, 128);
-    gGrad.addColorStop(0, "rgba(122,167,255,0.55)");
-    gGrad.addColorStop(0.45, "rgba(167,139,250,0.18)");
-    gGrad.addColorStop(1, "rgba(0,0,0,0)");
-    gctx.fillStyle = gGrad;
-    gctx.fillRect(0, 0, 256, 256);
-
-    const glow = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: new THREE.CanvasTexture(glowCanvas),
-      transparent: true,
-      opacity: 0.8,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    }));
-    glow.scale.set(4.4, 4.4, 1);
-    glow.position.z = -0.6;
-    scene.add(glow);
-
-    const root = new THREE.Group();
-
-    const cage = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.22, 1),
-      new THREE.MeshBasicMaterial({
-        color: 0x7aa7ff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.45
-      })
-    );
-    root.add(cage);
-
-    const nucleus = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(0.6, 0),
-      new THREE.MeshPhongMaterial({
-        color: 0x27335c,
-        emissive: 0x4b3fa0,
-        emissiveIntensity: 0.9,
-        shininess: 60,
-        flatShading: true
-      })
-    );
-    root.add(nucleus);
-
-    const ringA = new THREE.Mesh(
-      new THREE.TorusGeometry(1.55, 0.024, 12, 96),
-      new THREE.MeshBasicMaterial({ color: 0x7aa7ff, transparent: true, opacity: 0.8 })
-    );
-    ringA.rotation.x = Math.PI / 2.4;
-    root.add(ringA);
-
-    const ringB = new THREE.Mesh(
-      new THREE.TorusGeometry(1.82, 0.016, 12, 96),
-      new THREE.MeshBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.5 })
-    );
-    ringB.rotation.x = Math.PI / 1.7;
-    ringB.rotation.y = 0.6;
-    root.add(ringB);
-
-    scene.add(root);
-
-    // orbiting particle swarm
-    const P_COUNT = 90;
-    const pPositions = new Float32Array(P_COUNT * 3);
-
-    for (let i = 0; i < P_COUNT; i += 1) {
-      const radius = 1.9 + Math.random() * 0.55;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      pPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      pPositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      pPositions[i * 3 + 2] = radius * Math.cos(phi);
-    }
-
-    const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
-    const swarm = new THREE.Points(pGeo, new THREE.PointsMaterial({
-      color: 0xc7d7ff,
-      size: 0.035,
-      transparent: true,
-      opacity: 0.85,
-      depthWrite: false
-    }));
-    scene.add(swarm);
-
-    const core = {
-      rotX: 0,
-      rotY: 0,
-      dragging: false,
-      lastX: 0,
-      lastY: 0,
-      t: 0,
-      visible: true
-    };
-
-    coreCanvas.addEventListener("pointerdown", (event) => {
-      core.dragging = true;
-      core.lastX = event.clientX;
-      core.lastY = event.clientY;
-      coreCanvas.setPointerCapture(event.pointerId);
-    });
-
-    coreCanvas.addEventListener("pointermove", (event) => {
-      if (!core.dragging) {
-        return;
-      }
-      core.rotY += (event.clientX - core.lastX) * 0.012;
-      core.rotX += (event.clientY - core.lastY) * 0.012;
-      core.rotX = Math.max(-1.4, Math.min(1.4, core.rotX));
-      core.lastX = event.clientX;
-      core.lastY = event.clientY;
-    });
-
-    const endCoreDrag = () => {
-      core.dragging = false;
-    };
-
-    coreCanvas.addEventListener("pointerup", endCoreDrag);
-    coreCanvas.addEventListener("pointercancel", endCoreDrag);
-
-    const coreVis = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          core.visible = entry.isIntersecting;
-        });
-      },
-      { rootMargin: "200px" }
-    );
-    coreVis.observe(coreCanvas);
-
-    function coreStep(dt) {
-      core.t += dt;
-
-      if (!core.dragging && !prefersReducedMotion) {
-        core.rotY += dt * 0.35;
-      }
-
-      root.rotation.y = core.rotY;
-      root.rotation.x = core.rotX;
-
-      if (!prefersReducedMotion) {
-        ringA.rotation.z += dt * 0.7;
-        ringB.rotation.z -= dt * 0.5;
-        swarm.rotation.y += dt * 0.12;
-        swarm.rotation.x += dt * 0.04;
-
-        const pulse = 1 + Math.sin(core.t * 2.2) * 0.07;
-        nucleus.scale.set(pulse, pulse, pulse);
-        nucleus.material.emissiveIntensity = 0.75 + Math.sin(core.t * 2.2) * 0.3;
-        cage.material.opacity = 0.38 + Math.sin(core.t * 1.6) * 0.1;
-        glow.material.opacity = 0.7 + Math.sin(core.t * 2.2) * 0.15;
-      }
-    }
-
-    function coreRender() {
-      renderer.render(scene, camera);
-    }
-
-    let coreLast = performance.now();
-
-    (function coreFrame(now) {
-      requestAnimationFrame(coreFrame);
-
-      if (!core.visible || document.hidden) {
-        coreLast = now;
-        return;
-      }
-
-      const dt = Math.min((now - coreLast) / 1000, 0.05);
-      coreLast = now;
-      coreStep(dt);
-      coreRender();
-    })(performance.now());
-
-    window.__coreDebug = { core, coreStep, coreRender };
-  }
-
-  window.__initCore = initCore;
-
-  const coreTrigger = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          coreTrigger.disconnect();
-          initCore();
-        }
-      });
-    },
-    { rootMargin: "600px" }
-  );
-
-  coreTrigger.observe(coreCanvas);
+  showBest();
+  window.__fwDebug = { g, update, draw, spawnMail, hit, spawnBoss, goldenSweep };
 }

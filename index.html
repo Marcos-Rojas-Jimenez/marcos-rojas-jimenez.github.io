@@ -834,23 +834,6 @@
         <canvas id="skillRadar" width="320" height="300" aria-label="Radar chart of skill areas, defensive focus"></canvas>
       </article>
 
-      <article class="skill-category core-card">
-        <div class="skill-category-head">
-          <span>07</span>
-          <h3>Defense Core</h3>
-        </div>
-        <p>
-          The portfolio's power source — a live 3D core spinning behind the
-          firewall. Grab it and spin it around.
-        </p>
-        <div class="core-slot">
-          <canvas id="defenseCore" aria-label="Interactive 3D animated core, drag to rotate"></canvas>
-        </div>
-        <div class="core-hud">
-          <span>INTERACTIVE · DRAG TO SPIN</span>
-        </div>
-      </article>
-
     </div>
   </div>
 </section>
@@ -859,17 +842,18 @@
   <div class="shell">
     <div class="section-head reveal">
       <p class="kicker">Bonus Level</p>
-      <h2>Firewall Defense.</h2>
+      <h2>PhisDefense: Mail Storm.</h2>
       <p>
-        Malicious packets are heading for the server. Zap the red ones before
-        they hit — let the legitimate green traffic through. Blue shields
-        repair the firewall.
+        A storm of mail is hitting the server, wave after wave. Zap the
+        phishing before it lands, let the legitimate mail through — and watch
+        out for the botnet.
       </p>
     </div>
 
     <div class="fw-frame reveal">
       <div class="fw-hud">
         <span class="fw-chip" id="fwScore">SCORE 0</span>
+        <span class="fw-chip" id="fwWave">WAVE 1</span>
         <span class="fw-chip" id="fwCombo">COMBO ×1</span>
         <span class="fw-integrity">
           <i id="fwIntegrityFill"></i>
@@ -879,11 +863,12 @@
       <div class="fw-stage" id="fwStage">
         <canvas id="fwCanvas"></canvas>
         <div class="fw-overlay" id="fwOverlay">
-          <p class="fw-title">FIREWALL DEFENSE</p>
+          <p class="fw-title">PHISDEFENSE // MAIL STORM</p>
           <p class="fw-sub">
-            ✖ zap red malware &nbsp;·&nbsp; ✓ let green traffic pass &nbsp;·&nbsp; ⛨ click blue shields to repair
+            ✖ phishing — zap it &nbsp;·&nbsp; ✓ legit mail — let it through &nbsp;·&nbsp;
+            ⛨ patch — click to repair &nbsp;·&nbsp; ★ golden sweep — clears the storm
           </p>
-          <button type="button" id="fwStart">▶ DEPLOY FIREWALL</button>
+          <button type="button" id="fwStart">▶ START SHIFT</button>
           <p class="fw-best" id="fwBest"></p>
         </div>
       </div>
