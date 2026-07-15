@@ -2840,158 +2840,346 @@ if (fwCanvas) {
   const DETAILS = {
     "Technical Background": {
       kicker: "Foundations",
-      lead: "A layered technical base built before and during the cybersecurity specialization.",
-      points: [
-        "<strong>Telecommunications & Computer Systems:</strong> networking, connectivity, infrastructure maintenance and hardware/software troubleshooting.",
-        "<strong>Hands-on habits:</strong> methodical fault isolation, structured technical documentation and clear incident reporting.",
-        "<strong>Transferable to SOC:</strong> the same discipline used to diagnose faults maps directly onto alert triage and evidence handling."
+      lead: "A layered technical base built over several years before and during the cybersecurity specialization — networking and systems first, defensive security on top.",
+      sections: [
+        {
+          title: "Where it comes from",
+          items: [
+            "<strong>Higher Technician in Telecommunication & Computer Systems</strong> (2022–2024): networks, connectivity, infrastructure and audiovisual/telephony systems.",
+            "<strong>Cybersecurity specialization</strong> (2025–2026): threat analysis, forensics, hardening and secure deployment.",
+            "<strong>Continuous self-study:</strong> CCNA, TryHackMe SOC path and hands-on home-lab work."
+          ]
+        },
+        {
+          title: "Working habits it produced",
+          items: [
+            "Methodical fault isolation — reproduce, narrow down, confirm root cause.",
+            "Clear technical documentation and incident write-ups that another analyst can follow.",
+            "Comfort at the command line on Linux and Windows, and with reading logs."
+          ]
+        }
       ],
-      tags: ["Networking", "Troubleshooting", "Documentation", "Linux", "Windows"]
+      close: "The same discipline used to diagnose a broken network maps directly onto SOC alert triage and evidence handling.",
+      tags: ["Networking", "Linux", "Windows", "Troubleshooting", "Documentation"]
     },
+
     "Cybersecurity Focus": {
       kicker: "Defensive security",
-      lead: "Concentrated on the Blue Team side of security operations.",
-      points: [
-        "<strong>Monitoring & triage:</strong> reading logs, correlating events and separating noise from real threats.",
-        "<strong>Email security:</strong> SPF, DKIM and a progressive DMARC policy up to p=reject, validated with real evidence.",
-        "<strong>Evidence-first:</strong> every control is tested and documented, not just configured."
+      lead: "Concentrated firmly on the Blue Team side of security operations — monitoring, detection and email defense, always backed by evidence.",
+      sections: [
+        {
+          title: "Monitoring & detection",
+          items: [
+            "Reading and correlating logs across systems to reconstruct what happened.",
+            "Alert triage: prioritize by severity, confirm true positives, discard noise.",
+            "Incident-response fundamentals: contain, investigate, document, learn."
+          ]
+        },
+        {
+          title: "Email security (my strongest area)",
+          items: [
+            "SPF, DKIM and a progressive DMARC policy taken all the way to <strong>p=reject</strong>.",
+            "Spoofing simulated and then proven blocked with SMTP responses and logs.",
+            "Everything validated on a real Ubuntu VPS, not a slideshow."
+          ]
+        }
       ],
+      close: "Principle I work by: a control that isn't tested and documented doesn't count as a control.",
       tags: ["SOC", "Blue Team", "Log analysis", "Email security", "Detection"]
     },
+
     "Professional Direction": {
       kicker: "Where I'm heading",
-      lead: "Targeting junior defensive-security roles where I can grow fast.",
-      points: [
-        "<strong>Ideal roles:</strong> SOC Analyst L1, Junior Cybersecurity Analyst, Blue Team junior.",
-        "<strong>Ready to contribute:</strong> alert triage, incident response fundamentals, threat detection and reporting.",
-        "<strong>Always learning:</strong> actively working through SOC and Blue Team labs and certifications."
+      lead: "Actively looking for a first junior role in defensive security where I can contribute from day one and keep growing fast.",
+      sections: [
+        {
+          title: "Roles I'm targeting",
+          items: [
+            "SOC Analyst L1 · Junior Cybersecurity Analyst · Blue Team junior.",
+            "Location: Spain or fully remote."
+          ]
+        },
+        {
+          title: "What I can do now",
+          items: [
+            "Alert triage and log analysis on real security events.",
+            "Email-security configuration and validation (SPF / DKIM / DMARC).",
+            "Turn raw events into sanitized datasets and readable dashboards.",
+            "Write clear, evidence-based incident documentation."
+          ]
+        }
       ],
+      close: "Currently working through the SOC Analyst L1 path and preparing BTL1 to deepen investigation skills.",
       tags: ["SOC Analyst L1", "Blue Team", "Incident response", "Remote / Spain"]
     },
+
     "SOC and Blue Team": {
       kicker: "01 · Core discipline",
-      lead: "Detecting, triaging and investigating security events with a defensive mindset.",
-      points: [
-        "<strong>Alert triage:</strong> prioritize by severity, confirm true positives and discard noise.",
-        "<strong>Log & event analysis:</strong> follow an incident across syslog, SMTP responses and dashboards.",
-        "<strong>SIEM fundamentals:</strong> aggregation, correlation and evidence-based investigation.",
-        "<strong>Applied in PhisDefense:</strong> 190 SOC events categorized from a real mail environment."
+      lead: "Detecting, triaging and investigating security events with a defensive mindset — the day-to-day of a SOC analyst.",
+      sections: [
+        {
+          title: "What this covers",
+          items: [
+            "<strong>Alert triage:</strong> prioritize by severity, confirm true positives, cut the noise.",
+            "<strong>Log & event analysis:</strong> follow an incident across syslog, SMTP responses and dashboards.",
+            "<strong>Threat detection:</strong> recognize spoofing, SMTP abuse, open-relay probing and auth failures.",
+            "<strong>SIEM fundamentals:</strong> aggregation, correlation and evidence-based investigation.",
+            "<strong>Incident response basics:</strong> contain, document, report."
+          ]
+        }
       ],
-      tags: ["Alert Triage", "Log Analysis", "Threat Detection", "SIEM", "Evidence Handling"]
+      close: "Applied for real in PhisDefense: 190 SOC events processed and categorized from a live mail environment, with 270 total security tests aggregated.",
+      tags: ["Alert Triage", "Log Analysis", "Threat Detection", "SIEM", "Evidence Handling", "Incident Response"]
     },
+
     "Email Security": {
       kicker: "02 · Signature strength",
-      lead: "Full defensive email stack validated on a real Ubuntu VPS.",
-      points: [
-        "<strong>Authentication:</strong> SPF pass/fail, DKIM valid/broken/absent, selector rotation to s2026.",
-        "<strong>Policy enforcement:</strong> progressive DMARC ending in p=reject, rejecting external spoofing.",
-        "<strong>Transport & reporting:</strong> DNSSEC, MTA-STS, TLS-RPT, STARTTLS and IMAPS TLS.",
-        "<strong>Stack:</strong> Postfix, Dovecot, OpenDKIM, OpenDMARC and OpenARC."
+      lead: "A full defensive email stack designed, deployed and validated on a real Ubuntu VPS — the core of the PhisDefense project.",
+      sections: [
+        {
+          title: "Authentication",
+          items: [
+            "SPF tested in both pass and fail conditions.",
+            "DKIM validated across valid, broken and absent signatures, plus a real selector rotation to <strong>s2026</strong>.",
+            "Progressive DMARC policy hardened step by step up to <strong>p=reject</strong>, rejecting external spoofing."
+          ]
+        },
+        {
+          title: "Transport & reporting",
+          items: [
+            "DNSSEC, MTA-STS and TLS-RPT documented and in place.",
+            "STARTTLS on SMTP and IMAPS TLS for encrypted transport.",
+            "Reporting status surfaced on the SOC dashboard."
+          ]
+        },
+        {
+          title: "The stack",
+          items: [
+            "Postfix (SMTP), Dovecot (IMAPS), OpenDKIM, OpenDMARC and OpenARC.",
+            "Syslog as the single source of technical evidence."
+          ]
+        }
       ],
-      tags: ["SPF", "DKIM", "DMARC p=reject", "MTA-STS", "DNSSEC", "TLS-RPT"]
+      tags: ["SPF", "DKIM", "DMARC p=reject", "DNSSEC", "MTA-STS", "TLS-RPT", "Postfix", "Dovecot"]
     },
+
     "Systems and Networking": {
       kicker: "03 · Infrastructure base",
-      lead: "The systems knowledge that underpins good defensive work.",
-      points: [
-        "<strong>Networking:</strong> TCP/IP, DNS, DHCP, routing, switching and firewall concepts.",
-        "<strong>Systems:</strong> Linux and Windows administration and secure service configuration.",
-        "<strong>Troubleshooting:</strong> structured diagnosis from the network layer up to the application."
+      lead: "The systems and networking knowledge that underpins solid defensive work — you can't protect traffic you don't understand.",
+      sections: [
+        {
+          title: "Networking",
+          items: [
+            "TCP/IP model, addressing and subnetting.",
+            "DNS, DHCP, routing and switching fundamentals.",
+            "Firewall concepts and network troubleshooting."
+          ]
+        },
+        {
+          title: "Systems",
+          items: [
+            "Linux and Windows administration.",
+            "Secure service configuration and TLS.",
+            "Structured, layer-by-layer diagnosis from the network up to the application."
+          ]
+        }
       ],
-      tags: ["Linux", "TCP/IP", "DNS", "Firewalls", "TLS", "Windows"]
+      tags: ["Linux", "Windows", "TCP/IP", "DNS", "DHCP", "Routing", "Firewalls", "TLS"]
     },
+
     "Automation and Dashboarding": {
       kicker: "04 · Force multiplier",
-      lead: "Turning raw security data into readable evidence and automation.",
-      points: [
-        "<strong>Scripting:</strong> Python and Bash for parsing, enrichment and repetitive tasks.",
-        "<strong>Data:</strong> Pandas and CSV processing to shape sanitized SOC datasets.",
-        "<strong>Dashboards:</strong> interactive Python/Dash + Plotly views for KPIs and SMTP security.",
-        "<strong>Delivery:</strong> Git, GitHub Pages and Render for a public case study."
+      lead: "Turning raw security data into readable evidence and repeatable automation instead of manual, error-prone work.",
+      sections: [
+        {
+          title: "Scripting & data",
+          items: [
+            "Python and Bash for parsing, enrichment and repetitive tasks.",
+            "Pandas and CSV processing to shape sanitized SOC datasets."
+          ]
+        },
+        {
+          title: "Visualization & delivery",
+          items: [
+            "Interactive Python/Dash + Plotly dashboards: KPIs, event categories, SMTP security and reporting status.",
+            "Published with Git, GitHub Pages and Render as a public case study."
+          ]
+        }
       ],
-      tags: ["Python", "Bash", "Pandas", "Dash", "Plotly", "Git"]
+      close: "In PhisDefense this turned 190 events into a dashboard a non-technical reviewer can actually read.",
+      tags: ["Python", "Bash", "Pandas", "Dash", "Plotly", "Git", "GitHub Pages", "Render"]
     },
+
     "Security Methodology": {
       kicker: "05 · How I work",
-      lead: "A repeatable, evidence-driven approach to every task.",
-      points: [
-        "<strong>Validate, don't assume:</strong> test each control and capture proof.",
-        "<strong>Document everything:</strong> technical documentation and clear incident reports.",
-        "<strong>Handle data responsibly:</strong> sanitize before anything goes public.",
-        "<strong>Risk awareness:</strong> anomaly detection and fault diagnosis baked into the process."
+      lead: "A repeatable, evidence-driven approach applied to every task — the habit that ties all the technical skills together.",
+      sections: [
+        {
+          title: "The method",
+          items: [
+            "<strong>Validate, don't assume:</strong> test every control and capture proof.",
+            "<strong>Document everything:</strong> technical docs and clear incident reports.",
+            "<strong>Handle data responsibly:</strong> sanitize before anything is made public — no keys, credentials, raw logs or sensitive IPs.",
+            "<strong>Stay risk-aware:</strong> anomaly detection and fault diagnosis baked into the process."
+          ]
+        }
       ],
-      tags: ["Technical Documentation", "Incident Reporting", "Defensive Validation", "Data Sanitization"]
+      close: "It's the reason the public PhisDefense case study contains only sanitized datasets and evidence.",
+      tags: ["Technical Documentation", "Incident Reporting", "Defensive Validation", "Data Sanitization", "Risk Awareness"]
     },
+
     "Cybersecurity Master's Degree": {
-      kicker: "Oct 2025 – Jun 2026 · DigitechFP",
-      lead: "Specialized, project-driven cybersecurity training.",
-      points: [
-        "<strong>Focus areas:</strong> threat analysis, security monitoring and incident response fundamentals.",
-        "<strong>Secure infrastructure:</strong> designing and validating defensive controls.",
-        "<strong>Capstone:</strong> the PhisDefense SOC & Email Security Lab built end to end."
+      kicker: "Oct 2025 – Jun 2026 · DigitechFP (Barcelona, distancia)",
+      lead: "Official Spanish specialization course — <strong>Curso de Especialización en Ciberseguridad en Entornos de las Tecnologías de la Información</strong> (Real Decreto 479/2020) — completed with a final grade of <strong>7.35</strong>.",
+      modules: [
+        { code: "5021", name: "Incidentes de ciberseguridad", hours: 99, grade: 7 },
+        { code: "5022", name: "Fortalecimiento de redes y sistemas", hours: 132, grade: 8 },
+        { code: "5023", name: "Puesta en producción segura", hours: 99, grade: 8 },
+        { code: "5024", name: "Análisis forense informático", hours: 99, grade: 8 },
+        { code: "5025", name: "Hacking ético", hours: 99, grade: 5 },
+        { code: "5026", name: "Normativa de ciberseguridad", hours: 66, grade: 8 },
+        { code: "C087", name: "Proyecto de ciberseguridad en entornos de las TI", hours: 126, grade: 8 }
       ],
-      tags: ["SOC monitoring", "Threat analysis", "Email security", "Incident response"]
+      sections: [
+        {
+          title: "What each module builds",
+          items: [
+            "<strong>Incident handling:</strong> detect, respond to and document security incidents.",
+            "<strong>Network & system hardening:</strong> bastioning, secure configuration and defense in depth.",
+            "<strong>Secure deployment:</strong> shipping software and services securely (secure SDLC, DevSecOps basics).",
+            "<strong>Digital forensics:</strong> evidence acquisition, analysis and chain of custody.",
+            "<strong>Ethical hacking:</strong> offensive techniques understood from a defender's point of view.",
+            "<strong>Regulation:</strong> GDPR/LOPDGDD, ENS and the legal framework around security."
+          ]
+        }
+      ],
+      close: "The capstone project (C087) became the PhisDefense SOC & Email Security Lab.",
+      tags: ["Incident response", "Hardening", "Forensics", "Secure deployment", "Ethical hacking", "Compliance"]
     },
+
     "Telecommunications and Computer Systems": {
       kicker: "Sep 2022 – Jun 2024 · IES Universidad Laboral",
-      lead: "The technical grounding that makes the security work solid.",
-      points: [
-        "<strong>Networking & connectivity:</strong> from cabling and addressing to service configuration.",
-        "<strong>Infrastructure:</strong> maintenance, monitoring and structured troubleshooting.",
-        "<strong>Systems:</strong> practical Linux/Windows and hardware fundamentals."
+      lead: "<strong>Técnico Superior en Sistemas de Telecomunicaciones e Informáticos</strong> (higher vocational degree, Real Decreto 883/2011) — the technical grounding that makes the security work solid.",
+      sections: [
+        {
+          title: "Core modules of the degree",
+          items: [
+            "Sistemas informáticos y redes locales.",
+            "Redes telemáticas.",
+            "Configuración de infraestructuras de sistemas de telecomunicaciones.",
+            "Elementos y técnicas/procesos en infraestructuras de telecomunicaciones.",
+            "Sistemas de radiocomunicaciones y de telefonía fija y móvil.",
+            "Sistemas de producción audiovisual e integrados / hogar digital.",
+            "Gestión de proyectos de instalaciones de telecomunicaciones."
+          ]
+        },
+        {
+          title: "What I took from it into security",
+          items: [
+            "Real understanding of networking, connectivity and infrastructure.",
+            "Hands-on installation, configuration, maintenance and troubleshooting.",
+            "Project management and structured technical documentation."
+          ]
+        }
       ],
-      tags: ["Networking", "TCP/IP", "Infrastructure", "Connectivity", "Troubleshooting"]
+      tags: ["Networking", "TCP/IP", "Infrastructure", "Radiocomms", "Telephony", "Project management"]
     },
+
     "Analysis and documentation": {
       kicker: "Transferable experience",
-      lead: "Skills from earlier technical roles that map straight onto a SOC.",
-      points: [
-        "<strong>Anomaly detection:</strong> spotting what deviates from a known-good baseline.",
-        "<strong>Fault diagnosis:</strong> isolating root cause under pressure.",
-        "<strong>Reporting:</strong> structured, evidence-based write-ups and quality checks."
+      lead: "Skills from earlier technical roles that map straight onto SOC work — the analytical muscle behind the security knowledge.",
+      sections: [
+        {
+          title: "What transfers to a SOC",
+          items: [
+            "<strong>Anomaly detection:</strong> spotting what deviates from a known-good baseline.",
+            "<strong>Fault diagnosis:</strong> isolating root cause quickly and under pressure.",
+            "<strong>Structured reporting:</strong> evidence-based write-ups other people can act on.",
+            "<strong>Quality checks:</strong> methodical verification and attention to detail."
+          ]
+        }
       ],
-      tags: ["Anomaly detection", "Fault diagnosis", "Reporting", "Attention to detail"]
+      close: "A SOC analyst spends their day doing exactly this — just with security events instead of technical faults.",
+      tags: ["Anomaly detection", "Fault diagnosis", "Reporting", "Documentation", "Attention to detail"]
     },
+
     "Certifications and hands-on labs": {
       kicker: "Continuous learning",
-      lead: "An active networking → SOC → Blue Team path.",
-      points: [
-        "<strong>Completed:</strong> CCNA Introduction to Networks.",
-        "<strong>In progress:</strong> TryHackMe SOC Analyst Level 1.",
-        "<strong>Planned:</strong> Blue Team Level 1 (BTL1).",
-        "<strong>Practice:</strong> continuous hands-on labs and security monitoring exercises."
+      lead: "An active networking → SOC → Blue Team path, mixing recognized certifications with constant hands-on lab practice.",
+      sections: [
+        {
+          title: "Progress",
+          items: [
+            "<strong>Completed:</strong> CCNA — Introduction to Networks (Cisco Networking Academy).",
+            "<strong>In progress:</strong> TryHackMe SOC Analyst Level 1 learning path.",
+            "<strong>Planned:</strong> Blue Team Level 1 (BTL1)."
+          ]
+        },
+        {
+          title: "Ongoing practice",
+          items: [
+            "Regular hands-on labs on real and simulated environments.",
+            "Security-monitoring and detection exercises.",
+            "Building and documenting home-lab projects like PhisDefense."
+          ]
+        }
       ],
-      tags: ["CCNA ITN", "SOC Analyst L1", "BTL1 path", "Hands-on labs"]
+      tags: ["CCNA ITN", "SOC Analyst L1", "BTL1 path", "Hands-on labs", "Security monitoring"]
     },
+
     "CCNA: Introduction to Networks": {
       kicker: "Completed · Cisco Networking Academy",
-      lead: "Networking fundamentals that every defender needs.",
-      points: [
-        "<strong>Covers:</strong> TCP/IP model, addressing, routing and switching basics.",
-        "<strong>Practical:</strong> subnetting, device configuration and network troubleshooting.",
-        "<strong>Why it matters:</strong> you can't defend traffic you don't understand."
+      lead: "The first CCNA course — networking fundamentals that every defender needs before they can protect traffic.",
+      sections: [
+        {
+          title: "What it covers",
+          items: [
+            "The TCP/IP and OSI models and how data actually moves.",
+            "IPv4/IPv6 addressing and subnetting.",
+            "Ethernet, switching and basic routing concepts.",
+            "Building and troubleshooting a small network, hands-on."
+          ]
+        }
       ],
-      tags: ["TCP/IP", "Routing", "Switching", "Subnetting", "Troubleshooting"]
+      close: "Why it matters for security: you can't defend, monitor or investigate traffic you don't fully understand.",
+      tags: ["TCP/IP", "OSI", "Subnetting", "Routing", "Switching", "Troubleshooting"]
     },
+
     "SOC Analyst Level 1": {
       kicker: "In progress · TryHackMe",
-      lead: "Hands-on SOC analyst learning path.",
-      points: [
-        "<strong>Core skills:</strong> SOC fundamentals, alert triage and log analysis.",
-        "<strong>Tooling:</strong> SIEM concepts, threat intelligence and monitoring workflows.",
-        "<strong>Outcome:</strong> practical Blue Team investigation experience."
+      lead: "A hands-on SOC analyst learning path focused on the practical, day-one skills of a Tier-1 analyst.",
+      sections: [
+        {
+          title: "Focus areas",
+          items: [
+            "SOC fundamentals and the analyst workflow.",
+            "Alert triage and log analysis on realistic data.",
+            "SIEM concepts, threat intelligence and network security monitoring.",
+            "Endpoint and phishing-analysis basics."
+          ]
+        }
       ],
-      tags: ["SOC fundamentals", "Alert triage", "Log analysis", "SIEM", "Blue Team"]
+      close: "Directly reinforces the monitoring and triage work already demonstrated in PhisDefense.",
+      tags: ["SOC fundamentals", "Alert triage", "Log analysis", "SIEM", "Threat intel", "Blue Team"]
     },
+
     "Blue Team Level 1": {
-      kicker: "Planned · BTL1",
-      lead: "A recognized, hands-on Blue Team certification next on the path.",
-      points: [
-        "<strong>Domains:</strong> phishing analysis, SIEM, incident response and digital forensics.",
-        "<strong>Format:</strong> practical, exam-in-a-lab style assessment.",
-        "<strong>Goal:</strong> validate real defensive analysis and investigation skills."
+      kicker: "Planned · Security Blue Team (BTL1)",
+      lead: "A recognized, fully hands-on Blue Team certification — the next milestone on the defensive path.",
+      sections: [
+        {
+          title: "Domains it validates",
+          items: [
+            "Phishing analysis and email-threat investigation.",
+            "SIEM: building queries and hunting through logs.",
+            "Incident response methodology end to end.",
+            "Digital forensics and threat intelligence.",
+            "Security-operations fundamentals."
+          ]
+        }
       ],
-      tags: ["Phishing analysis", "SIEM", "Incident response", "Forensics"]
+      close: "Assessed with a practical, 24-hour exam-in-a-lab — proof of real investigation skill, not just theory. A natural fit with the SOC and email-security work already done.",
+      tags: ["Phishing analysis", "SIEM", "Incident response", "Forensics", "Threat intel"]
     }
   };
 
@@ -3024,10 +3212,44 @@ if (fwCanvas) {
     let html = "";
     if (d.kicker) html += '<p class="detail-kicker">' + d.kicker + "</p>";
     html += "<h3>" + heading + "</h3>";
-    if (d.lead) html += "<p>" + d.lead + "</p>";
+    if (d.lead) html += '<p class="detail-lead">' + d.lead + "</p>";
+
+    if (d.paras) {
+      html += d.paras.map((p) => "<p>" + p + "</p>").join("");
+    }
+
+    // module table (for the degrees) with hours and grades
+    if (d.modules && d.modules.length) {
+      html += '<div class="detail-modules">';
+      d.modules.forEach((m) => {
+        html +=
+          '<div class="detail-module">' +
+          '<span class="dm-code">' + m.code + "</span>" +
+          '<span class="dm-name">' + m.name + "</span>" +
+          '<span class="dm-hours">' + m.hours + " h</span>" +
+          '<span class="dm-grade">' + m.grade + "</span>" +
+          "</div>";
+      });
+      html += "</div>";
+    }
+
+    // grouped bullet sections
+    if (d.sections) {
+      d.sections.forEach((s) => {
+        if (s.title) html += "<h4>" + s.title + "</h4>";
+        if (s.items && s.items.length) {
+          html += "<ul>" + s.items.map((it) => "<li>" + it + "</li>").join("") + "</ul>";
+        }
+      });
+    }
+
+    // legacy flat bullet list
     if (d.points && d.points.length) {
       html += "<ul>" + d.points.map((p) => "<li>" + p + "</li>").join("") + "</ul>";
     }
+
+    if (d.close) html += '<p class="detail-close">' + d.close + "</p>";
+
     if (d.tags && d.tags.length) {
       html += '<div class="detail-tags">' + d.tags.map((t) => "<span>" + t + "</span>").join("") + "</div>";
     }
