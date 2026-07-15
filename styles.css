@@ -5527,44 +5527,6 @@ summary:focus-visible {
 
 
 
-/* Ambient 3D core cell in the skills grid (no numbered header) */
-.core-cell {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  min-height: 300px;
-  border-radius: var(--radius, 28px);
-  border: 1px solid rgba(122,167,255,0.14);
-  background:
-    radial-gradient(circle at 50% 42%, rgba(122,167,255,0.06), transparent 62%),
-    linear-gradient(180deg, rgba(22,29,46,0.55), rgba(13,18,31,0.5));
-  overflow: hidden;
-}
-
-#defenseCore {
-  display: block;
-  width: min(300px, 100%);
-  aspect-ratio: 1;
-  cursor: grab;
-  touch-action: none;
-}
-
-#defenseCore:active {
-  cursor: grabbing;
-}
-
-.core-tag {
-  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  color: #8fb5ff;
-  opacity: 0.8;
-}
-
 /* ==========================================================
    CARD ZOOM — click a card: it spins in and settles suspended &
    tilted with a full flowing neon border; detail panel on the right
