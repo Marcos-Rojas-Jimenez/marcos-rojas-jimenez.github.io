@@ -1844,7 +1844,242 @@ if (revealImg && !prefersReducedMotion && window.innerWidth > 900) {
 }
 
 
-// PhisDefense: Mail Storm — wave-based mail triage arcade
+
+// Defense Core: interactive 3D centerpiece in the skills matrix
+const coreCanvas = document.getElementById("defenseCore");
+
+if (coreCanvas) {
+  let coreStarted = false;
+
+  async function initCore() {
+    if (coreStarted) {
+      return;
+    }
+    coreStarted = true;
+
+    let THREE;
+    try {
+      THREE = await import("https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js");
+    } catch (e) {
+      return; // CDN unavailable: slot simply stays empty
+    }
+
+    const size = coreCanvas.clientWidth || 300;
+    const renderer = new THREE.WebGLRenderer({ canvas: coreCanvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(size, size, false);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
+    camera.position.z = 4.4;
+
+    scene.add(new THREE.AmbientLight(0x8fa5d8, 0.55));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
+    keyLight.position.set(3, 4, 5);
+    scene.add(keyLight);
+    const rimLight = new THREE.DirectionalLight(0xa78bfa, 0.9);
+    rimLight.position.set(-4, -2, -3);
+    scene.add(rimLight);
+
+    // soft glow behind the core
+    const glowCanvas = document.createElement("canvas");
+    glowCanvas.width = 256;
+    glowCanvas.height = 256;
+    const gctx = glowCanvas.getContext("2d");
+    const gGrad = gctx.createRadialGradient(128, 128, 8, 128, 128, 128);
+    gGrad.addColorStop(0, "rgba(122,167,255,0.55)");
+    gGrad.addColorStop(0.45, "rgba(167,139,250,0.18)");
+    gGrad.addColorStop(1, "rgba(0,0,0,0)");
+    gctx.fillStyle = gGrad;
+    gctx.fillRect(0, 0, 256, 256);
+
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: new THREE.CanvasTexture(glowCanvas),
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
+    glow.scale.set(4.4, 4.4, 1);
+    glow.position.z = -0.6;
+    scene.add(glow);
+
+    const root = new THREE.Group();
+
+    const cage = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.22, 1),
+      new THREE.MeshBasicMaterial({
+        color: 0x7aa7ff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.45
+      })
+    );
+    root.add(cage);
+
+    const nucleus = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(0.6, 0),
+      new THREE.MeshPhongMaterial({
+        color: 0x27335c,
+        emissive: 0x4b3fa0,
+        emissiveIntensity: 0.9,
+        shininess: 60,
+        flatShading: true
+      })
+    );
+    root.add(nucleus);
+
+    const ringA = new THREE.Mesh(
+      new THREE.TorusGeometry(1.55, 0.024, 12, 96),
+      new THREE.MeshBasicMaterial({ color: 0x7aa7ff, transparent: true, opacity: 0.8 })
+    );
+    ringA.rotation.x = Math.PI / 2.4;
+    root.add(ringA);
+
+    const ringB = new THREE.Mesh(
+      new THREE.TorusGeometry(1.82, 0.016, 12, 96),
+      new THREE.MeshBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.5 })
+    );
+    ringB.rotation.x = Math.PI / 1.7;
+    ringB.rotation.y = 0.6;
+    root.add(ringB);
+
+    scene.add(root);
+
+    // orbiting particle swarm
+    const P_COUNT = 90;
+    const pPositions = new Float32Array(P_COUNT * 3);
+
+    for (let i = 0; i < P_COUNT; i += 1) {
+      const radius = 1.9 + Math.random() * 0.55;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      pPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      pPositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      pPositions[i * 3 + 2] = radius * Math.cos(phi);
+    }
+
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pPositions, 3));
+    const swarm = new THREE.Points(pGeo, new THREE.PointsMaterial({
+      color: 0xc7d7ff,
+      size: 0.035,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false
+    }));
+    scene.add(swarm);
+
+    const core = {
+      rotX: 0,
+      rotY: 0,
+      dragging: false,
+      lastX: 0,
+      lastY: 0,
+      t: 0,
+      visible: true
+    };
+
+    coreCanvas.addEventListener("pointerdown", (event) => {
+      core.dragging = true;
+      core.lastX = event.clientX;
+      core.lastY = event.clientY;
+      coreCanvas.setPointerCapture(event.pointerId);
+    });
+
+    coreCanvas.addEventListener("pointermove", (event) => {
+      if (!core.dragging) {
+        return;
+      }
+      core.rotY += (event.clientX - core.lastX) * 0.012;
+      core.rotX += (event.clientY - core.lastY) * 0.012;
+      core.rotX = Math.max(-1.4, Math.min(1.4, core.rotX));
+      core.lastX = event.clientX;
+      core.lastY = event.clientY;
+    });
+
+    const endCoreDrag = () => {
+      core.dragging = false;
+    };
+
+    coreCanvas.addEventListener("pointerup", endCoreDrag);
+    coreCanvas.addEventListener("pointercancel", endCoreDrag);
+
+    const coreVis = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          core.visible = entry.isIntersecting;
+        });
+      },
+      { rootMargin: "200px" }
+    );
+    coreVis.observe(coreCanvas);
+
+    function coreStep(dt) {
+      core.t += dt;
+
+      if (!core.dragging && !prefersReducedMotion) {
+        core.rotY += dt * 0.35;
+      }
+
+      root.rotation.y = core.rotY;
+      root.rotation.x = core.rotX;
+
+      if (!prefersReducedMotion) {
+        ringA.rotation.z += dt * 0.7;
+        ringB.rotation.z -= dt * 0.5;
+        swarm.rotation.y += dt * 0.12;
+        swarm.rotation.x += dt * 0.04;
+
+        const pulse = 1 + Math.sin(core.t * 2.2) * 0.07;
+        nucleus.scale.set(pulse, pulse, pulse);
+        nucleus.material.emissiveIntensity = 0.75 + Math.sin(core.t * 2.2) * 0.3;
+        cage.material.opacity = 0.38 + Math.sin(core.t * 1.6) * 0.1;
+        glow.material.opacity = 0.7 + Math.sin(core.t * 2.2) * 0.15;
+      }
+    }
+
+    function coreRender() {
+      renderer.render(scene, camera);
+    }
+
+    let coreLast = performance.now();
+
+    (function coreFrame(now) {
+      requestAnimationFrame(coreFrame);
+
+      if (!core.visible || document.hidden) {
+        coreLast = now;
+        return;
+      }
+
+      const dt = Math.min((now - coreLast) / 1000, 0.05);
+      coreLast = now;
+      coreStep(dt);
+      coreRender();
+    })(performance.now());
+
+    window.__coreDebug = { core, coreStep, coreRender };
+  }
+
+  window.__initCore = initCore;
+
+  const coreTrigger = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          coreTrigger.disconnect();
+          initCore();
+        }
+      });
+    },
+    { rootMargin: "600px" }
+  );
+
+  coreTrigger.observe(coreCanvas);
+}
+
+// PhisDefense: Mail Storm — wave arcade with a living malware entity
 const fwCanvas = document.getElementById("fwCanvas");
 
 if (fwCanvas) {
@@ -1864,7 +2099,6 @@ if (fwCanvas) {
   let W = 0;
   let H = 0;
 
-  // phishing subject lines vs legit ones (shown on the envelopes)
   const PHISH = ["RE: invoice", "verify now", "acct locked", "you won $", "reset pwd", "gift card", "CEO urgent", "pay overdue", "unusual login", "claim refund"];
   const LEGIT = ["newsletter", "backup ok", "TLS-RPT", "MFA code", "cron done", "HR memo", "cert renew", "ticket #42", "standup", "receipt"];
 
@@ -1890,6 +2124,9 @@ if (fwCanvas) {
     scanY: 0,
     overdrive: 0,
     boss: null,
+    entityFlinch: 0,
+    entityAnger: 0,
+    killStamps: [],
     last: 0
   };
 
@@ -1897,11 +2134,9 @@ if (fwCanvas) {
     g.dust = [];
     for (let i = 0; i < 30; i += 1) {
       g.dust.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
+        x: Math.random() * W, y: Math.random() * H,
         r: 0.5 + Math.random() * 1.4,
-        vx: (Math.random() - 0.5) * 8,
-        vy: 5 + Math.random() * 12,
+        vx: (Math.random() - 0.5) * 8, vy: 5 + Math.random() * 12,
         a: 0.05 + Math.random() * 0.14
       });
     }
@@ -1924,9 +2159,7 @@ if (fwCanvas) {
     try { return parseInt(localStorage.getItem("mailStormBest") || "0", 10); }
     catch (e) { return 0; }
   }
-  function writeBest(v) {
-    try { localStorage.setItem("mailStormBest", String(v)); } catch (e) { /* */ }
-  }
+  function writeBest(v) { try { localStorage.setItem("mailStormBest", String(v)); } catch (e) { /* */ } }
   function showBest() {
     const b = readBest();
     fwBestEl.textContent = b > 0 ? "BEST: " + b + " PTS" : "";
@@ -1952,41 +2185,35 @@ if (fwCanvas) {
 
     if (!forceType) {
       if (roll < 0.04 && g.integrity < 92) type = "patch";
-      else if (roll < 0.09 && g.elapsed > 8) type = "golden";
-      else if (roll < 0.5) type = "legit";
+      else if (roll < 0.085 && g.elapsed > 8) type = "golden";
+      else if (roll < 0.14 && g.wave >= 2) type = "enc";
+      else if (roll < 0.17 && g.wave >= 2) type = "ransom";
+      else if (roll < 0.52) type = "legit";
     }
 
     const speed = 50 + Math.min(g.elapsed * 2.0, 150) + g.wave * 6;
-    const isPhish = type === "phish";
+    const isPhish = type === "phish" || type === "enc";
     const isLegit = type === "legit";
+    const big = type === "ransom";
 
     g.mails.push({
       type,
-      x: 40 + Math.random() * (W - 80),
+      x: 44 + Math.random() * (W - 88),
       y: -24,
-      w: 40,
-      h: 28,
-      vy: speed * (0.85 + Math.random() * 0.4) * (g.overdrive > 0 ? 0.55 : 1),
+      w: big ? 54 : 40,
+      h: big ? 38 : 28,
+      vy: speed * (0.85 + Math.random() * 0.4) * (g.overdrive > 0 ? 0.55 : 1) * (big ? 0.72 : 1) * (type === "enc" ? 0.9 : 1),
       wob: Math.random() * Math.PI * 2,
       wobAmp: 5 + Math.random() * 12,
-      label: isPhish ? PHISH[Math.floor(Math.random() * PHISH.length)]
-        : isLegit ? LEGIT[Math.floor(Math.random() * LEGIT.length)]
-          : "",
-      seal: Math.random() * Math.PI * 2,
+      hp: type === "enc" ? 2 : 1,
+      label: isPhish && type !== "enc" ? PHISH[Math.floor(Math.random() * PHISH.length)]
+        : isLegit ? LEGIT[Math.floor(Math.random() * LEGIT.length)] : "",
       trail: []
     });
   }
 
   function spawnBoss() {
-    g.boss = {
-      x: W / 2,
-      y: 46,
-      dir: 1,
-      hp: 6 + g.wave,
-      maxHp: 6 + g.wave,
-      shootIn: 1.1,
-      hitT: 0
-    };
+    g.boss = { x: W / 2, y: 46, dir: 1, hp: 6 + g.wave, maxHp: 6 + g.wave, shootIn: 1.1, hitT: 0 };
     g.flashText = "⚠ BOTNET C2 INBOUND";
     g.flashT = 1.6;
   }
@@ -2005,13 +2232,27 @@ if (fwCanvas) {
     if (g.overdrive > 0) return;
     g.integrity -= amount;
     g.combo = 1;
-    g.hurtT = 0.45;
-    if (!prefersReducedMotion) g.shakeT = 0.3;
+    g.hurtT = Math.max(g.hurtT, amount > 15 ? 0.7 : 0.45);
+    if (!prefersReducedMotion) g.shakeT = amount > 15 ? 0.5 : 0.3;
     if (g.integrity <= 0) { g.integrity = 0; endGame(); }
   }
 
-  function addKill() {
+  function registerKill(x, y) {
     g.waveKills += 1;
+    g.entityFlinch = 0.35;
+    g.entityAnger = Math.min(1, g.entityAnger + 0.06);
+
+    // triple-block streak bonus
+    g.killStamps.push(g.elapsed);
+    g.killStamps = g.killStamps.filter((t) => g.elapsed - t < 1.4);
+    if (g.killStamps.length >= 3) {
+      g.killStamps = [];
+      const bonus = 300 * g.combo;
+      g.score += bonus;
+      floatText(x, y - 30, "TRIPLE BLOCK +" + bonus, "#c4b5fd");
+      ring(x, y, "#a78bfa", 60);
+    }
+
     if (g.waveKills >= g.waveNeed) {
       g.wave += 1;
       g.waveKills = 0;
@@ -2027,10 +2268,9 @@ if (fwCanvas) {
     g.overdrive = 4.5;
     g.flashText = "★ DMARC OVERDRIVE";
     g.flashT = 1.6;
-    // vaporize all phishing + boss shots on screen
     for (let i = g.mails.length - 1; i >= 0; i -= 1) {
       const m = g.mails[i];
-      if (m.type === "phish" || m.type === "shot") {
+      if (m.type === "phish" || m.type === "enc" || m.type === "ransom" || m.type === "shot") {
         g.score += 60 * g.combo;
         boom(m.x, m.y, "#ffd166", 14);
         g.mails.splice(i, 1);
@@ -2051,8 +2291,7 @@ if (fwCanvas) {
     const best = readBest();
     if (g.score > best) writeBest(g.score);
     fwTitle.textContent = "SERVER DOWN — " + g.score + " PTS";
-    fwSub.textContent = rank(g.score, g.wave) + " · reached wave " + g.wave +
-      (g.score > best ? "  ·  NEW BEST!" : "");
+    fwSub.textContent = rank(g.score, g.wave) + " · reached wave " + g.wave + (g.score > best ? "  ·  NEW BEST!" : "");
     fwStartBtn.textContent = "▶ NEW SHIFT";
     fwOverlay.classList.remove("hidden");
     showBest();
@@ -2066,6 +2305,8 @@ if (fwCanvas) {
     if (g.hurtT > 0) g.hurtT -= dt;
     if (g.flashT > 0) g.flashT -= dt;
     if (g.overdrive > 0) g.overdrive -= dt;
+    if (g.entityFlinch > 0) g.entityFlinch -= dt * 2.2;
+    g.entityAnger = Math.max(g.entityAnger * (1 - dt * 0.05), Math.min(1, (g.wave - 1) * 0.1 + (g.boss ? 0.35 : 0)));
 
     const spawnRate = Math.max(0.32, 0.9 - g.elapsed * 0.01 - g.wave * 0.02);
     if (g.spawnIn <= 0 && !(g.boss && g.mails.length > 4)) {
@@ -2075,7 +2316,6 @@ if (fwCanvas) {
 
     const baseline = H - 34;
 
-    // boss
     if (g.boss) {
       const b = g.boss;
       b.x += b.dir * dt * 70;
@@ -2085,10 +2325,7 @@ if (fwCanvas) {
       b.shootIn -= dt;
       if (b.shootIn <= 0) {
         b.shootIn = Math.max(0.5, 1.3 - g.wave * 0.05);
-        g.mails.push({
-          type: "shot", x: b.x, y: b.y + 18, w: 16, h: 16,
-          vy: 150, wob: 0, wobAmp: 0, label: "", seal: 0, trail: []
-        });
+        g.mails.push({ type: "shot", x: b.x, y: b.y + 18, w: 16, h: 16, vy: 150, wob: 0, wobAmp: 0, hp: 1, label: "", trail: [] });
       }
     }
 
@@ -2102,16 +2339,20 @@ if (fwCanvas) {
 
       if (m.y >= baseline) {
         g.mails.splice(i, 1);
-        if (m.type === "phish" || m.type === "shot") {
+        if (m.type === "phish" || m.type === "enc" || m.type === "shot") {
           boom(mx, baseline, "#f87171", 26);
           ring(mx, baseline, "#f87171", 50);
           floatText(mx, baseline - 22, "-12%", "#f87171");
           damage(12);
+        } else if (m.type === "ransom") {
+          boom(mx, baseline, "#f87171", 40);
+          ring(mx, baseline, "#f87171", 80);
+          floatText(mx, baseline - 22, "RANSOMWARE -25%", "#f87171");
+          damage(25);
         } else if (m.type === "legit") {
           g.score += 5;
           floatText(mx, baseline - 22, "+5", "#4ade80");
         }
-        // patch/golden falling past = no penalty
       }
     }
 
@@ -2137,12 +2378,95 @@ if (fwCanvas) {
     });
   }
 
+  // ---- living malware entity background ----
+  function drawEntity() {
+    const ex = W * 0.5;
+    const ey = H * 0.4;
+    const anger = g.entityAnger;
+    const pulse = 1 + Math.sin(g.elapsed * 2.6) * 0.09 - g.entityFlinch * 0.35;
+    const coreR = (34 + anger * 26) * pulse;
+    const hueR = 200 + anger * 30;
+    const hueG = 60 - anger * 40;
+    const baseCol = "rgba(" + Math.round(hueR) + "," + Math.round(Math.max(20, hueG)) + ",90,";
+    const alpha = 0.09 + anger * 0.05;
+
+    fx.save();
+    fx.globalCompositeOperation = "lighter";
+
+    // writhing tentacles
+    const N = 10;
+    for (let i = 0; i < N; i += 1) {
+      const a = (i / N) * Math.PI * 2 + g.elapsed * (0.12 + anger * 0.1);
+      const wig = Math.sin(g.elapsed * 2 + i * 1.7);
+      const len = coreR * (2.2 + anger * 0.9) + wig * 16;
+      const cx1 = ex + Math.cos(a + 0.5 * wig) * len * 0.55;
+      const cy1 = ey + Math.sin(a + 0.5 * wig) * len * 0.55;
+      const tx = ex + Math.cos(a) * len;
+      const ty = ey + Math.sin(a) * len;
+
+      const grad = fx.createLinearGradient(ex, ey, tx, ty);
+      grad.addColorStop(0, baseCol + (alpha * 1.4) + ")");
+      grad.addColorStop(1, baseCol + "0)");
+      fx.strokeStyle = grad;
+      fx.lineWidth = coreR * 0.4 * (0.6 + Math.abs(wig) * 0.5);
+      fx.lineCap = "round";
+      fx.beginPath();
+      fx.moveTo(ex, ey);
+      fx.quadraticCurveTo(cx1, cy1, tx, ty);
+      fx.stroke();
+    }
+
+    // nucleus
+    const ng = fx.createRadialGradient(ex, ey, 2, ex, ey, coreR * 1.8);
+    ng.addColorStop(0, baseCol + (0.22 + anger * 0.1) + ")");
+    ng.addColorStop(0.5, baseCol + (alpha) + ")");
+    ng.addColorStop(1, baseCol + "0)");
+    fx.fillStyle = ng;
+    fx.beginPath();
+    fx.arc(ex, ey, coreR * 1.8, 0, Math.PI * 2);
+    fx.fill();
+
+    fx.globalCompositeOperation = "source-over";
+
+    // glitch code strands drifting through the entity
+    fx.font = "9px Consolas, monospace";
+    fx.textAlign = "center";
+    for (let i = 0; i < 5; i += 1) {
+      const gx = ex + Math.cos(g.elapsed * 0.6 + i * 1.3) * coreR * 1.4;
+      const gy = ey + ((g.elapsed * 22 + i * 40) % (coreR * 3)) - coreR * 1.5;
+      fx.fillStyle = "rgba(248,113,113," + (0.12 + anger * 0.12) + ")";
+      fx.fillText(["0x1A", "rm -rf", "exec()", "b64d", "0xFF"][i], gx, gy);
+    }
+
+    // two malevolent eyes that track the lowest phishing packet
+    let target = null;
+    let lowest = -1;
+    g.mails.forEach((m) => {
+      if ((m.type === "phish" || m.type === "enc" || m.type === "ransom") && m.y > lowest) { lowest = m.y; target = m; }
+    });
+    const look = target ? Math.atan2(target.y - ey, target.x - ex) : Math.sin(g.elapsed) * 0.4 + Math.PI / 2;
+    const eyeDx = Math.cos(look) * 3;
+    const eyeDy = Math.sin(look) * 3;
+    const eyeGlow = 0.5 + Math.sin(g.elapsed * 4) * 0.2 + anger * 0.3;
+    [-1, 1].forEach((side) => {
+      const eox = ex + side * coreR * 0.42;
+      const eoy = ey - coreR * 0.1;
+      fx.fillStyle = "rgba(255,80,80," + eyeGlow + ")";
+      fx.shadowColor = "rgba(255,60,60,0.9)";
+      fx.shadowBlur = 10;
+      fx.beginPath();
+      fx.arc(eox + eyeDx, eoy + eyeDy, 2.6 + anger * 1.2, 0, Math.PI * 2);
+      fx.fill();
+    });
+    fx.shadowBlur = 0;
+    fx.restore();
+  }
+
   function drawEnvelope(m) {
     const mx = m.x + Math.sin(m.wob) * m.wobAmp * 0.4;
-    const colors = { phish: "#f87171", legit: "#4ade80", patch: "#7aa7ff", golden: "#ffd166", shot: "#f87171" };
+    const colors = { phish: "#f87171", legit: "#4ade80", patch: "#7aa7ff", golden: "#ffd166", shot: "#f87171", enc: "#e0466a", ransom: "#ff5470" };
     const color = colors[m.type];
 
-    // trail
     for (let i = 2; i < m.trail.length; i += 1) {
       const t = m.trail[i];
       const fade = 1 - i / m.trail.length;
@@ -2162,11 +2486,13 @@ if (fwCanvas) {
       return;
     }
 
+    const ranPulse = m.type === "ransom" ? 1 + Math.sin(g.elapsed * 8) * 0.08 : 1;
     fx.save();
     fx.translate(mx, m.y);
-    fx.shadowColor = color; fx.shadowBlur = m.type === "golden" ? 22 : 14;
+    fx.scale(ranPulse, ranPulse);
+    fx.shadowColor = color;
+    fx.shadowBlur = m.type === "golden" ? 22 : m.type === "ransom" ? 20 : 14;
 
-    // envelope body
     fx.fillStyle = "rgba(12,17,30,0.95)";
     fx.strokeStyle = color;
     fx.lineWidth = 2;
@@ -2175,38 +2501,36 @@ if (fwCanvas) {
     fx.fill();
     fx.stroke();
 
-    // flap
     fx.beginPath();
     fx.moveTo(-m.w / 2, -m.h / 2);
     fx.lineTo(0, 2);
     fx.lineTo(m.w / 2, -m.h / 2);
     fx.stroke();
 
-    fx.shadowBlur = 0;
-
-    // wax seal for phishing (a hook to aim at)
-    if (m.type === "phish") {
-      fx.fillStyle = "#f87171";
+    // crack lines on a half-broken encrypted envelope
+    if (m.type === "enc" && m.hp < 2) {
+      fx.strokeStyle = "#ffd166";
+      fx.lineWidth = 1;
       fx.beginPath();
-      fx.arc(0, m.h / 2 - 5, 4.5, 0, Math.PI * 2);
-      fx.fill();
-    } else if (m.type === "patch") {
-      fx.fillStyle = "#7aa7ff";
-      fx.font = "700 12px 'Segoe UI', sans-serif";
-      fx.textAlign = "center"; fx.textBaseline = "middle";
-      fx.fillText("⛨", 0, m.h / 2 - 5);
-    } else if (m.type === "golden") {
-      fx.fillStyle = "#ffd166";
-      fx.font = "700 12px 'Segoe UI', sans-serif";
-      fx.textAlign = "center"; fx.textBaseline = "middle";
-      fx.fillText("★", 0, m.h / 2 - 5);
+      fx.moveTo(-8, -6); fx.lineTo(-2, 2); fx.lineTo(-6, 8);
+      fx.moveTo(8, -4); fx.lineTo(3, 3);
+      fx.stroke();
     }
 
-    // subject label
+    fx.shadowBlur = 0;
+    fx.fillStyle = color;
+    fx.font = "700 12px 'Segoe UI', sans-serif";
+    fx.textAlign = "center"; fx.textBaseline = "middle";
+
+    if (m.type === "phish") { fx.beginPath(); fx.arc(0, m.h / 2 - 5, 4.5, 0, Math.PI * 2); fx.fill(); }
+    else if (m.type === "enc") { fx.fillText("🔒", 0, m.h / 2 - 6); }
+    else if (m.type === "ransom") { fx.fillText("💀", 0, m.h / 2 - 6); }
+    else if (m.type === "patch") { fx.fillText("⛨", 0, m.h / 2 - 5); }
+    else if (m.type === "golden") { fx.fillText("★", 0, m.h / 2 - 5); }
+
     if (m.label) {
       fx.fillStyle = "rgba(199,215,255,0.85)";
       fx.font = "600 7px Consolas, monospace";
-      fx.textAlign = "center"; fx.textBaseline = "middle";
       fx.fillText(m.label, 0, -2);
     }
     fx.restore();
@@ -2220,40 +2544,26 @@ if (fwCanvas) {
     const hit = b.hitT > 0;
     fx.shadowColor = hit ? "#ffffff" : "#a78bfa";
     fx.shadowBlur = 20;
-
-    // menacing hex body
     fx.beginPath();
     for (let i = 0; i < 6; i += 1) {
       const a = (i * Math.PI) / 3;
-      const px = Math.cos(a) * 26;
-      const py = Math.sin(a) * 20;
+      const px = Math.cos(a) * 26, py = Math.sin(a) * 20;
       if (i === 0) fx.moveTo(px, py); else fx.lineTo(px, py);
     }
     fx.closePath();
     fx.fillStyle = hit ? "#f8f0ff" : "rgba(20,14,40,0.95)";
     fx.fill();
-    fx.lineWidth = 2.5;
-    fx.strokeStyle = "#a78bfa";
-    fx.stroke();
+    fx.lineWidth = 2.5; fx.strokeStyle = "#a78bfa"; fx.stroke();
     fx.shadowBlur = 0;
-
-    // eyes
     fx.fillStyle = "#f87171";
     fx.beginPath(); fx.arc(-8, -2, 3, 0, Math.PI * 2); fx.fill();
     fx.beginPath(); fx.arc(8, -2, 3, 0, Math.PI * 2); fx.fill();
-
-    fx.fillStyle = "#c7d7ff";
-    fx.font = "700 7px Consolas, monospace";
-    fx.textAlign = "center";
+    fx.fillStyle = "#c7d7ff"; fx.font = "700 7px Consolas, monospace"; fx.textAlign = "center";
     fx.fillText("BOTNET C2", 0, 30);
     fx.restore();
-
-    // hp bar
     const bw = 70;
-    fx.fillStyle = "rgba(255,255,255,0.1)";
-    fx.fillRect(b.x - bw / 2, b.y - 34, bw, 5);
-    fx.fillStyle = "#a78bfa";
-    fx.fillRect(b.x - bw / 2, b.y - 34, bw * (b.hp / b.maxHp), 5);
+    fx.fillStyle = "rgba(255,255,255,0.1)"; fx.fillRect(b.x - bw / 2, b.y - 34, bw, 5);
+    fx.fillStyle = "#a78bfa"; fx.fillRect(b.x - bw / 2, b.y - 34, bw * (b.hp / b.maxHp), 5);
   }
 
   function draw() {
@@ -2261,80 +2571,54 @@ if (fwCanvas) {
     fx.save();
     if (g.shakeT > 0) fx.translate((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8);
 
-    // depth wash (gold tint during overdrive)
     let bg = fx.createLinearGradient(0, 0, 0, H);
-    if (g.overdrive > 0) {
-      bg.addColorStop(0, "rgba(255,209,102,0.05)");
-      bg.addColorStop(1, "rgba(245,158,11,0.08)");
-    } else {
-      bg.addColorStop(0, "rgba(122,167,255,0.02)");
-      bg.addColorStop(1, "rgba(167,139,250,0.05)");
-    }
-    fx.fillStyle = bg;
-    fx.fillRect(0, 0, W, H);
+    if (g.overdrive > 0) { bg.addColorStop(0, "rgba(255,209,102,0.05)"); bg.addColorStop(1, "rgba(245,158,11,0.08)"); }
+    else { bg.addColorStop(0, "rgba(122,167,255,0.02)"); bg.addColorStop(1, "rgba(167,139,250,0.05)"); }
+    fx.fillStyle = bg; fx.fillRect(0, 0, W, H);
 
-    // converging Tron floor
     const cx = W / 2;
     fx.strokeStyle = g.overdrive > 0 ? "rgba(255,209,102,0.09)" : "rgba(122,167,255,0.07)";
     fx.lineWidth = 1;
     for (let k = -9; k <= 9; k += 1) {
-      fx.beginPath();
-      fx.moveTo(cx + k * (W / 26), 0);
-      fx.lineTo(cx + k * (W / 13), H);
-      fx.stroke();
+      fx.beginPath(); fx.moveTo(cx + k * (W / 26), 0); fx.lineTo(cx + k * (W / 13), H); fx.stroke();
     }
 
-    // dust
+    drawEntity();
+
     g.dust.forEach((s) => { fx.globalAlpha = s.a; fx.fillStyle = "#c7d7ff"; fx.fillRect(s.x, s.y, s.r, s.r); });
     fx.globalAlpha = 1;
 
-    // scan sweep
     const sweep = fx.createLinearGradient(0, g.scanY - 44, 0, g.scanY);
-    sweep.addColorStop(0, "rgba(122,167,255,0)");
-    sweep.addColorStop(1, "rgba(122,167,255,0.05)");
-    fx.fillStyle = sweep;
-    fx.fillRect(0, g.scanY - 44, W, 44);
+    sweep.addColorStop(0, "rgba(122,167,255,0)"); sweep.addColorStop(1, "rgba(122,167,255,0.05)");
+    fx.fillStyle = sweep; fx.fillRect(0, g.scanY - 44, W, 44);
 
-    // server baseline + rack
     const baseY = H - 26;
     const pulse = 0.5 + Math.sin(g.elapsed * 3) * 0.22;
     fx.shadowColor = "rgba(122,167,255," + pulse + ")"; fx.shadowBlur = 18;
-    fx.fillStyle = "rgba(122,167,255,0.78)";
-    fx.fillRect(14, baseY, W - 28, 3);
+    fx.fillStyle = "rgba(122,167,255,0.78)"; fx.fillRect(14, baseY, W - 28, 3);
     fx.shadowBlur = 0;
     const rw = 96, rh = 24;
-    fx.fillStyle = "rgba(10,15,28,0.95)";
-    fx.strokeStyle = "rgba(122,167,255,0.55)"; fx.lineWidth = 1.5;
+    fx.fillStyle = "rgba(10,15,28,0.95)"; fx.strokeStyle = "rgba(122,167,255,0.55)"; fx.lineWidth = 1.5;
     fx.beginPath(); fx.roundRect(cx - rw / 2, baseY - rh - 4, rw, rh, 6); fx.fill(); fx.stroke();
     for (let i = 0; i < 4; i += 1) {
       const on = Math.sin(g.elapsed * 5 + i * 1.7) > 0;
       fx.fillStyle = on ? (i === 3 ? "#4ade80" : "#7aa7ff") : "rgba(255,255,255,0.12)";
       fx.beginPath(); fx.arc(cx - rw / 2 + 14 + i * 13, baseY - rh + 8, 3, 0, Math.PI * 2); fx.fill();
     }
-    fx.fillStyle = "rgba(199,215,255,0.7)";
-    fx.font = "700 9px Consolas, monospace"; fx.textAlign = "left";
+    fx.fillStyle = "rgba(199,215,255,0.7)"; fx.font = "700 9px Consolas, monospace"; fx.textAlign = "left";
     fx.fillText("MAIL-SRV", cx + 8, baseY - rh + 11);
 
     drawBoss();
     g.mails.forEach(drawEnvelope);
 
-    g.particles.forEach((p) => {
-      fx.globalAlpha = Math.max(0, p.life * 1.6); fx.fillStyle = p.color;
-      fx.fillRect(p.x - 2, p.y - 2, 4, 4);
-    });
+    g.particles.forEach((p) => { fx.globalAlpha = Math.max(0, p.life * 1.6); fx.fillStyle = p.color; fx.fillRect(p.x - 2, p.y - 2, 4, 4); });
     fx.globalAlpha = 1;
-
-    g.rings.forEach((r) => {
-      fx.globalAlpha = Math.max(0, r.life) * 0.8; fx.strokeStyle = r.color; fx.lineWidth = 2;
-      fx.beginPath(); fx.arc(r.x, r.y, r.r, 0, Math.PI * 2); fx.stroke();
-    });
+    g.rings.forEach((r) => { fx.globalAlpha = Math.max(0, r.life) * 0.8; fx.strokeStyle = r.color; fx.lineWidth = 2; fx.beginPath(); fx.arc(r.x, r.y, r.r, 0, Math.PI * 2); fx.stroke(); });
     fx.globalAlpha = 1;
-
     g.floats.forEach((f) => {
       fx.globalAlpha = Math.max(0, f.life);
       fx.font = "800 15px Consolas, monospace"; fx.textAlign = "center";
-      fx.lineWidth = 3; fx.strokeStyle = "rgba(7,10,17,0.85)";
-      fx.strokeText(f.txt, f.x, f.y);
+      fx.lineWidth = 3; fx.strokeStyle = "rgba(7,10,17,0.85)"; fx.strokeText(f.txt, f.x, f.y);
       fx.fillStyle = f.color; fx.fillText(f.txt, f.x, f.y);
     });
     fx.globalAlpha = 1;
@@ -2346,12 +2630,10 @@ if (fwCanvas) {
       fx.globalAlpha = 1;
     }
 
-    // center flash banner
     if (g.flashT > 0) {
       const a = Math.min(1, g.flashT);
       fx.globalAlpha = a;
-      fx.fillStyle = g.flashText.indexOf("BOTNET") >= 0 ? "#f87171"
-        : g.flashText.indexOf("OVERDRIVE") >= 0 ? "#ffd166" : "#7aa7ff";
+      fx.fillStyle = g.flashText.indexOf("BOTNET") >= 0 ? "#f87171" : g.flashText.indexOf("OVERDRIVE") >= 0 ? "#ffd166" : "#7aa7ff";
       fx.font = "900 26px Consolas, monospace"; fx.textAlign = "center";
       fx.shadowColor = fx.fillStyle; fx.shadowBlur = 20;
       fx.fillText(g.flashText, cx, H / 2);
@@ -2360,15 +2642,13 @@ if (fwCanvas) {
 
     if (g.hurtT > 0) {
       const v = fx.createRadialGradient(cx, H / 2, H * 0.3, cx, H / 2, H);
-      v.addColorStop(0, "rgba(248,113,113,0)");
-      v.addColorStop(1, "rgba(248,113,113," + (g.hurtT * 0.55) + ")");
+      v.addColorStop(0, "rgba(248,113,113,0)"); v.addColorStop(1, "rgba(248,113,113," + (g.hurtT * 0.55) + ")");
       fx.fillStyle = v; fx.fillRect(0, 0, W, H);
     }
     if (g.overdrive > 0) {
       fx.strokeStyle = "rgba(255,209,102," + (0.3 + Math.sin(g.elapsed * 10) * 0.15) + ")";
       fx.lineWidth = 4; fx.strokeRect(3, 3, W - 6, H - 6);
     }
-
     fx.restore();
   }
 
@@ -2376,9 +2656,7 @@ if (fwCanvas) {
     if (!g.playing) return;
     const dt = Math.min((now - g.last) / 1000, 0.05);
     g.last = now;
-    update(dt);
-    draw();
-    hud();
+    update(dt); draw(); hud();
     requestAnimationFrame(frame);
   }
 
@@ -2388,7 +2666,7 @@ if (fwCanvas) {
       playing: true, mails: [], particles: [], floats: [], rings: [],
       score: 0, combo: 1, integrity: 100, wave: 1, waveKills: 0, waveNeed: 8,
       elapsed: 0, spawnIn: 0.4, shakeT: 0, hurtT: 0, flashT: 1.1, flashText: "WAVE 1",
-      overdrive: 0, boss: null
+      overdrive: 0, boss: null, entityFlinch: 0, entityAnger: 0, killStamps: []
     });
     fwOverlay.classList.add("hidden");
     hud();
@@ -2399,7 +2677,6 @@ if (fwCanvas) {
   function hit(x, y) {
     if (!g.playing) return;
 
-    // boss first
     if (g.boss) {
       const b = g.boss;
       if (Math.hypot(x - b.x, y - b.y) <= 30) {
@@ -2408,14 +2685,11 @@ if (fwCanvas) {
         g.score += 40 * g.combo;
         floatText(b.x, b.y - 30, "+" + (40 * g.combo), "#c4b5fd");
         if (b.hp <= 0) {
-          boom(b.x, b.y, "#a78bfa", 40);
-          ring(b.x, b.y, "#a78bfa", 90);
-          g.score += 500;
-          floatText(b.x, b.y, "C2 TAKEDOWN +500", "#ffd166");
+          boom(b.x, b.y, "#a78bfa", 40); ring(b.x, b.y, "#a78bfa", 90);
+          g.score += 500; floatText(b.x, b.y, "C2 TAKEDOWN +500", "#ffd166");
           g.boss = null;
         }
-        hud();
-        return;
+        hud(); return;
       }
     }
 
@@ -2423,16 +2697,36 @@ if (fwCanvas) {
       const m = g.mails[i];
       const mx = m.x + Math.sin(m.wob) * m.wobAmp * 0.4;
       if (Math.abs(x - mx) <= m.w / 2 + 8 && Math.abs(y - m.y) <= m.h / 2 + 8) {
+
+        if (m.type === "enc" && m.hp > 1) {
+          m.hp -= 1;
+          boom(mx, m.y, "#ffd166", 8);
+          ring(mx, m.y, "#ffd166", 26);
+          floatText(mx, m.y - 12, "DECRYPTING…", "#ffd166");
+          hud();
+          return;
+        }
+
         g.mails.splice(i, 1);
 
-        if (m.type === "phish" || m.type === "shot") {
-          const pts = 100 * g.combo * (g.overdrive > 0 ? 2 : 1);
+        if (m.type === "phish" || m.type === "shot" || m.type === "enc") {
+          const base = m.type === "enc" ? 250 : 100;
+          const pts = base * g.combo * (g.overdrive > 0 ? 2 : 1);
           g.score += pts;
           g.combo = Math.min(g.combo + 1, 12);
           boom(mx, m.y, "#f87171", 22);
           ring(mx, m.y, "#ffd166", 44);
           floatText(mx, m.y - 12, "+" + pts, "#ffd166");
-          addKill();
+          registerKill(mx, m.y);
+        } else if (m.type === "ransom") {
+          const pts = 300 * g.combo * (g.overdrive > 0 ? 2 : 1);
+          g.score += pts;
+          g.integrity = Math.min(100, g.integrity + 5);
+          g.combo = Math.min(g.combo + 1, 12);
+          boom(mx, m.y, "#ff5470", 30);
+          ring(mx, m.y, "#ff5470", 60);
+          floatText(mx, m.y - 12, "QUARANTINED +" + pts, "#ffd166");
+          registerKill(mx, m.y);
         } else if (m.type === "legit") {
           boom(mx, m.y, "#4ade80", 12);
           floatText(mx, m.y - 12, "FALSE POSITIVE -8%", "#facc15");
