@@ -2822,7 +2822,9 @@ if (fwCanvas) {
 
 
 
-// About: 3D carousel of the three hacker fedoras (black / white / grey)
+
+// About: a single clean fedora that turns "sideways" and cycles the
+// three hacker archetypes (black / grey / white)
 const hatCanvas = document.getElementById("hatCarousel");
 
 if (hatCanvas && window.innerWidth > 1100) {
@@ -2839,178 +2841,158 @@ if (hatCanvas && window.innerWidth > 1100) {
       return;
     }
 
-    const size = hatCanvas.clientWidth || 360;
+    const size = hatCanvas.clientWidth || 380;
     const renderer = new THREE.WebGLRenderer({ canvas: hatCanvas, alpha: true, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(size, size, false);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.12;
+    renderer.toneMappingExposure = 1.1;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-    camera.position.set(0, 1.05, 7.4);
-    camera.lookAt(0, -0.15, 0);
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    camera.position.set(0, 0.75, 5.4);
+    camera.lookAt(0, -0.02, 0);
 
-    scene.add(new THREE.AmbientLight(0x9db4e8, 0.55));
-    const key = new THREE.DirectionalLight(0xffffff, 1.6);
+    scene.add(new THREE.AmbientLight(0x9db4e8, 0.5));
+    const key = new THREE.DirectionalLight(0xffffff, 1.7);
     key.position.set(3.5, 6, 5);
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0x7aa7ff, 1.5);
+    const rim = new THREE.DirectionalLight(0x7aa7ff, 1.7);
     rim.position.set(-5, 1.5, -4);
     scene.add(rim);
-    const rim2 = new THREE.DirectionalLight(0xa78bfa, 0.9);
-    rim2.position.set(5, -1, -3);
+    const rim2 = new THREE.DirectionalLight(0xa78bfa, 1.0);
+    rim2.position.set(5, -1.5, -3);
     scene.add(rim2);
-    const fill = new THREE.DirectionalLight(0xffffff, 0.35);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.4);
     fill.position.set(0, -3, 4);
     scene.add(fill);
 
-    // soft radial shadow texture (contact shadow under each hat)
-    const shTex = (function () {
+    // ---- felt texture: base tone + fine speckle for grain ----
+    function feltTex(hex) {
       const cv = document.createElement("canvas");
-      cv.width = 128; cv.height = 128;
+      cv.width = 256; cv.height = 256;
       const c = cv.getContext("2d");
-      const grd = c.createRadialGradient(64, 64, 4, 64, 64, 64);
-      grd.addColorStop(0, "rgba(0,0,0,0.55)");
-      grd.addColorStop(1, "rgba(0,0,0,0)");
-      c.fillStyle = grd; c.fillRect(0, 0, 128, 128);
-      return new THREE.CanvasTexture(cv);
-    })();
-
-    function buildHat(hatColor, bandColor, knotColor) {
-      const group = new THREE.Group();
-      const felt = new THREE.MeshPhysicalMaterial({
-        color: hatColor, roughness: 0.72, metalness: 0.0,
-        clearcoat: 0.35, clearcoatRoughness: 0.6, sheen: 0.5, sheenRoughness: 0.7,
-        sheenColor: new THREE.Color(hatColor)
-      });
-      const bandMat = new THREE.MeshStandardMaterial({ color: bandColor, roughness: 0.45, metalness: 0.15 });
-      const knotMat = new THREE.MeshStandardMaterial({ color: knotColor, roughness: 0.5, metalness: 0.1 });
-
-      // ---- snap brim: drooping lathe profile, then saddle-deformed ----
-      const brimPts = [];
-      for (let i = 0; i <= 16; i += 1) {
-        const t = i / 16;
-        const r = 0.4 + t * 0.72;
-        const y = -0.02 - Math.pow(t, 2.4) * 0.14;
-        brimPts.push(new THREE.Vector2(r, y));
+      c.fillStyle = "#" + ("000000" + hex.toString(16)).slice(-6);
+      c.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 5200; i += 1) {
+        const l = Math.random() < 0.5;
+        c.fillStyle = l ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)";
+        c.fillRect(Math.random() * 256, Math.random() * 256, 1.4, 1.4);
       }
-      const brimGeo = new THREE.LatheGeometry(brimPts, 72);
-      const bp = brimGeo.attributes.position;
-      const v = new THREE.Vector3();
-      for (let i = 0; i < bp.count; i += 1) {
-        v.fromBufferAttribute(bp, i);
-        const rad = Math.hypot(v.x, v.z);
-        const edge = Math.min(1, Math.max(0, (rad - 0.5) / 0.62));
-        // snap: sides (x) sweep up, front/back (z) dip down
-        const snap = ((v.x * v.x - v.z * v.z) / 1.25) * 0.34 * edge;
-        bp.setY(i, v.y + snap);
-      }
-      brimGeo.computeVertexNormals();
-      const brim = new THREE.Mesh(brimGeo, felt);
-      group.add(brim);
-
-      // ---- crown: tapered open cylinder ----
-      const crown = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.44, 0.56, 0.82, 64, 6, true), felt
-      );
-      crown.position.y = 0.4;
-      group.add(crown);
-
-      // ---- domed top with fedora crease + front pinches ----
-      const dome = new THREE.SphereGeometry(0.44, 64, 40, 0, Math.PI * 2, 0, Math.PI / 2);
-      const dp = dome.attributes.position;
-      for (let i = 0; i < dp.count; i += 1) {
-        v.fromBufferAttribute(dp, i);
-        const nx = v.x, nz = v.z, ny = v.y;
-        // longitudinal centre crease (valley running front-back along z)
-        const crease = Math.exp(-(nx * nx) / 0.03) * 0.2 * (ny / 0.44);
-        // two front pinch dimples near +z
-        const frontMask = Math.max(0, nz) / 0.44;
-        const dimpleL = Math.exp(-((nx + 0.2) * (nx + 0.2) + (nz - 0.28) * (nz - 0.28)) / 0.02) * 0.12;
-        const dimpleR = Math.exp(-((nx - 0.2) * (nx - 0.2) + (nz - 0.28) * (nz - 0.28)) / 0.02) * 0.12;
-        let y = ny - crease - (dimpleL + dimpleR) * frontMask;
-        // squeeze the top slightly front-to-back for a teardrop footprint
-        dp.setXYZ(i, v.x, y, v.z * 0.92);
-      }
-      dome.computeVertexNormals();
-      const domeMesh = new THREE.Mesh(dome, felt);
-      domeMesh.position.y = 0.81;
-      group.add(domeMesh);
-
-      // ---- hat band + knot ----
-      const band = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.055, 16, 64), bandMat);
-      band.rotation.x = Math.PI / 2;
-      band.position.y = 0.09;
-      group.add(band);
-
-      const knot = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.12, 0.07), knotMat);
-      knot.position.set(0.36, 0.09, 0.36);
-      knot.rotation.y = -0.7;
-      group.add(knot);
-
-      group.rotation.y = 0.5; // show the pinched front three-quarter
-      return group;
+      const t = new THREE.CanvasTexture(cv);
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      t.repeat.set(3, 2);
+      return t;
     }
 
-    const hatDefs = [
-      { name: "WHITE HAT", color: 0xeceef4, band: 0x99a2b6, knot: 0x7f8798 },
-      { name: "GREY HAT", color: 0x878c97, band: 0x4a5060, knot: 0x3b414d },
-      { name: "BLACK HAT", color: 0x15171d, band: 0x3c2233, knot: 0x281525 }
+    // ---- one clean fedora from a single lathe silhouette + crease ----
+    function fedoraGeometry() {
+      // profile from top-centre down the crown and out along the brim
+      const pts = [
+        [0.02, 1.03], [0.16, 1.02], [0.30, 0.98], [0.42, 0.90],
+        [0.49, 0.74], [0.525, 0.5], [0.55, 0.24], [0.565, 0.16],
+        [0.60, 0.135], [0.82, 0.10], [1.08, 0.03], [1.28, 0.075],
+        [1.30, 0.045], [1.12, 0.0], [0.60, 0.02]
+      ].map((p) => new THREE.Vector2(p[0], p[1]));
+      const geo = new THREE.LatheGeometry(pts, 96);
+
+      // crease the crown top (y above ~0.55): centre dent + two front pinches
+      const pos = geo.attributes.position;
+      const v = new THREE.Vector3();
+      for (let i = 0; i < pos.count; i += 1) {
+        v.fromBufferAttribute(pos, i);
+        if (v.y > 0.55) {
+          const up = (v.y - 0.55) / 0.48;
+          const crease = Math.exp(-(v.x * v.x) / 0.028) * 0.19 * up;
+          const front = Math.max(0, v.z);
+          const dimpleL = Math.exp(-(((v.x + 0.19) * (v.x + 0.19) + (v.z - 0.24) * (v.z - 0.24))) / 0.017) * 0.1;
+          const dimpleR = Math.exp(-(((v.x - 0.19) * (v.x - 0.19) + (v.z - 0.24) * (v.z - 0.24))) / 0.017) * 0.1;
+          pos.setXYZ(i, v.x, v.y - crease - (dimpleL + dimpleR) * (front / 0.5), v.z * 0.94);
+        }
+      }
+      geo.computeVertexNormals();
+      return geo;
+    }
+
+    const geo = fedoraGeometry();
+    const bandGeo = new THREE.TorusGeometry(0.545, 0.05, 16, 80);
+
+    const defs = [
+      { name: "BLACK HAT", hat: 0x16181e, band: 0x3a2233 },
+      { name: "GREY HAT", hat: 0x878c97, band: 0x4a5060 },
+      { name: "WHITE HAT", hat: 0xe9ecf3, band: 0x99a2b6 }
     ];
 
-    const R = 1.3;
-    const TILT = 0.34; // tilted turntable
-    const carousel = new THREE.Group();
-    scene.add(carousel);
-
-    // faint glowing pedestal ring
-    const pedestal = new THREE.Mesh(
-      new THREE.TorusGeometry(R, 0.012, 10, 120),
-      new THREE.MeshBasicMaterial({ color: 0x7aa7ff, transparent: true, opacity: 0.28, blending: THREE.AdditiveBlending })
-    );
-    pedestal.rotation.x = Math.PI / 2 - TILT;
-    pedestal.position.y = -0.62;
-    scene.add(pedestal);
-
-    const hats = hatDefs.map((def, i) => {
-      const hat = buildHat(def.color, def.band, def.knot);
-      const holder = new THREE.Group();
-      holder.add(hat);
-
-      const shadow = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.7, 1.7),
-        new THREE.MeshBasicMaterial({ map: shTex, transparent: true, opacity: 0.5, depthWrite: false })
-      );
-      shadow.rotation.x = -Math.PI / 2;
-      shadow.position.y = -0.52;
-      holder.add(shadow);
-
-      scene.add(holder);
-      return { holder, hat, shadow, base: (i / hatDefs.length) * Math.PI * 2, name: def.name };
+    const hats = defs.map((def) => {
+      const group = new THREE.Group();
+      const feltMat = new THREE.MeshPhysicalMaterial({
+        map: feltTex(def.hat), roughness: 0.7, metalness: 0.05,
+        clearcoat: 0.3, clearcoatRoughness: 0.55,
+        sheen: 0.55, sheenRoughness: 0.75, sheenColor: new THREE.Color(def.hat),
+        transparent: true, opacity: 0
+      });
+      const bandMat = new THREE.MeshStandardMaterial({
+        color: def.band, roughness: 0.4, metalness: 0.2, transparent: true, opacity: 0
+      });
+      const body = new THREE.Mesh(geo, feltMat);
+      group.add(body);
+      const band = new THREE.Mesh(bandGeo, bandMat);
+      band.rotation.x = Math.PI / 2;
+      band.position.y = 0.2;
+      group.add(band);
+      group.visible = false;
+      scene.add(group);
+      return { group, feltMat, bandMat, name: def.name };
     });
 
+    // soft contact shadow
+    const shCv = document.createElement("canvas");
+    shCv.width = shCv.height = 128;
+    const shc = shCv.getContext("2d");
+    const sg = shc.createRadialGradient(64, 64, 4, 64, 64, 64);
+    sg.addColorStop(0, "rgba(0,0,0,0.5)");
+    sg.addColorStop(1, "rgba(0,0,0,0)");
+    shc.fillStyle = sg; shc.fillRect(0, 0, 128, 128);
+    const shadow = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.6, 2.6),
+      new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(shCv), transparent: true, opacity: 0.4, depthWrite: false })
+    );
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.y = -0.18;
+    scene.add(shadow);
+
+    const holder = new THREE.Group();
+    holder.rotation.x = 0.14; // slight forward tilt so the crease reads
+    holder.scale.setScalar(1.28);
+    holder.position.y = -0.1;
+    // reparent hats + shadow under holder for a unified pose
+    hats.forEach((h) => holder.add(h.group));
+    holder.add(shadow);
+    scene.add(holder);
+
     const hatTag = document.getElementById("hatTag");
-    const state = { spin: 0, throw: 0, dragging: false, lastX: 0, visible: true };
-    const AUTO = 0.42;
+    const st = { ang: 0, active: 0, dwell: 0, dragging: false, lastX: 0, throw: 0, visible: true };
+    const DWELL = 3.6;
+    const SPEED = 1.05;
 
     hatCanvas.addEventListener("pointerdown", (e) => {
-      state.dragging = true; state.lastX = e.clientX; state.throw = 0;
+      st.dragging = true; st.lastX = e.clientX; st.throw = 0;
       hatCanvas.setPointerCapture(e.pointerId);
     });
     hatCanvas.addEventListener("pointermove", (e) => {
-      if (!state.dragging) return;
-      const dx = e.clientX - state.lastX;
-      state.spin += dx * 0.012;
-      state.throw = dx * 0.9;
-      state.lastX = e.clientX;
+      if (!st.dragging) return;
+      const dx = e.clientX - st.lastX;
+      st.ang += dx * 0.014;
+      st.throw = dx * 1.1;
+      st.lastX = e.clientX;
     });
-    const endHatDrag = () => { state.dragging = false; };
-    hatCanvas.addEventListener("pointerup", endHatDrag);
-    hatCanvas.addEventListener("pointercancel", endHatDrag);
+    const endDrag = () => { st.dragging = false; };
+    hatCanvas.addEventListener("pointerup", endDrag);
+    hatCanvas.addEventListener("pointercancel", endDrag);
 
     const vis = new IntersectionObserver((entries) => {
-      entries.forEach((en) => { state.visible = en.isIntersecting; });
+      entries.forEach((en) => { st.visible = en.isIntersecting; });
     }, { rootMargin: "150px" });
     vis.observe(hatCanvas);
 
@@ -3018,58 +3000,48 @@ if (hatCanvas && window.innerWidth > 1100) {
 
     function step(dt) {
       if (!prefersReducedMotion) {
-        if (!state.dragging) {
-          state.spin += (AUTO + state.throw) * dt;
-          state.throw -= state.throw * Math.min(1, dt * 3.2);
+        if (st.dragging) {
+          // spin follows the drag directly
+        } else {
+          // non-linear "showcase" turn: slow at front/back, fast at the sides
+          const ease = 0.32 + 0.68 * (0.5 - 0.5 * Math.cos(st.ang * 2));
+          st.ang += (SPEED * ease + st.throw) * dt;
+          st.throw -= st.throw * Math.min(1, dt * 3);
         }
       }
 
-      let frontHat = null;
-      let frontMax = -Infinity;
-      const sinT = Math.sin(TILT);
-      const cosT = Math.cos(TILT);
+      // cycle the archetype on a dwell timer
+      st.dwell += dt;
+      if (st.dwell >= DWELL) {
+        st.dwell = 0;
+        st.active = (st.active + 1) % hats.length;
+      }
 
-      hats.forEach((h) => {
-        const a = h.base + state.spin;
-        const sa = Math.sin(a), ca = Math.cos(a);
-        // tilted-turntable position: front lower & nearer, back higher & farther
-        h.holder.position.set(sa * R, -ca * R * sinT, ca * R * cosT);
-        h.hat.rotation.y = -a + 0.5; // face camera, keep the three-quarter pinch toward it
-
-        const frontness = (ca + 1) / 2;
-        const scl = 0.8 + Math.pow(frontness, 2.1) * 0.62;
-        h.hat.scale.setScalar(scl);
-        h.shadow.scale.setScalar(scl * 0.9);
-        h.shadow.material.opacity = 0.15 + frontness * 0.4;
-
-        h.hat.traverse((o) => {
-          if (o.material && "opacity" in o.material) {
-            o.material.transparent = frontness < 0.97;
-            o.material.opacity = 0.5 + frontness * 0.5;
-          }
-        });
-
-        // render order so the front hat draws on top
-        h.holder.renderOrder = Math.round(frontness * 10);
-
-        if (frontness > frontMax) { frontMax = frontness; frontHat = h; }
+      hats.forEach((h, i) => {
+        const targ = i === st.active ? 1 : 0;
+        const op = h.feltMat.opacity + (targ - h.feltMat.opacity) * Math.min(1, dt * 5);
+        h.feltMat.opacity = op;
+        h.bandMat.opacity = op;
+        h.group.visible = op > 0.02;
+        h.group.rotation.y = st.ang;
+        h.group.position.y = Math.sin(st.ang * 0.5) * 0.04;
       });
 
-      if (frontHat && hatTag && hatTag.textContent !== frontHat.name) {
-        hatTag.textContent = frontHat.name;
+      if (hatTag && hatTag.textContent !== hats[st.active].name) {
+        hatTag.textContent = hats[st.active].name;
       }
     }
 
     (function loop(now) {
       requestAnimationFrame(loop);
-      if (!state.visible || document.hidden) { last = now; return; }
+      if (!st.visible || document.hidden) { last = now; return; }
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       step(dt);
       renderer.render(scene, camera);
     })(performance.now());
 
-    window.__hatsDebug = { state, step, hats, render: () => renderer.render(scene, camera), TILT, R };
+    window.__hatsDebug = { st, step, hats, render: () => renderer.render(scene, camera) };
   }
 
   window.__initHats = initHats;
