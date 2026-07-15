@@ -3048,6 +3048,12 @@ if (fwCanvas) {
     original.innerHTML = "";
     original.appendChild(clone);
 
+    // re-establish the source section context so id-scoped styles
+    // (#training .training-clean-card, #skills .skill-category, ...) apply
+    // to the cloned card again — otherwise it loses its padding/pills/etc.
+    const section = card.closest("section");
+    original.id = section ? section.id : "";
+
     const sheen = document.createElement("span");
     sheen.className = "glass-sheen";
     clone.appendChild(sheen);
@@ -3069,6 +3075,7 @@ if (fwCanvas) {
 
   function closeZoom() {
     overlay.classList.remove("open", "settled", "spin");
+    original.id = "";
   }
 
   cards.forEach((card) => {
