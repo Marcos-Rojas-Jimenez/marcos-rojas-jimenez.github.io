@@ -935,7 +935,10 @@ if (!prefersReducedMotion && window.matchMedia("(pointer: fine)").matches) {
     requestAnimationFrame(animateRing);
   })();
 
-  const HOVER_TARGETS = "a, button, input, summary, .skill-pills span";
+  const HOVER_TARGETS =
+    "a, button, input, summary, .skill-pills span, .zoomable, canvas, " +
+    ".side-dots a, .cmd-item, .focus-row, details, .compact-tags span, " +
+    ".training-clean-tags span, .detail-tags span";
 
   document.addEventListener("mouseover", (event) => {
     if (event.target.closest(HOVER_TARGETS)) {
