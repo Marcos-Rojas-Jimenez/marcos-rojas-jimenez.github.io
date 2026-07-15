@@ -2823,72 +2823,253 @@ if (fwCanvas) {
 
 
 
-// Card zoom: click a content card -> it spins while growing, then reveals
-// its information full-screen in detail
+
+// Card zoom: click a card -> it spins in and settles suspended & tilted on
+// the left with a traveling neon border, and a panel with additional /
+// more detailed information slides in on the right.
 (function initCardZoom() {
   const cards = document.querySelectorAll(
-    "#about .card, #skills .skill-category, #training .training-clean-card, #certifications .cert-card"
+    "#about .card, #skills .skill-category:not(.radar-card), #training .training-clean-card, #certifications .cert-card"
   );
 
   if (!cards.length) {
     return;
   }
 
+  // additional / deeper detail per card, keyed by its heading
+  const DETAILS = {
+    "Technical Background": {
+      kicker: "Foundations",
+      lead: "A layered technical base built before and during the cybersecurity specialization.",
+      points: [
+        "<strong>Telecommunications & Computer Systems:</strong> networking, connectivity, infrastructure maintenance and hardware/software troubleshooting.",
+        "<strong>Hands-on habits:</strong> methodical fault isolation, structured technical documentation and clear incident reporting.",
+        "<strong>Transferable to SOC:</strong> the same discipline used to diagnose faults maps directly onto alert triage and evidence handling."
+      ],
+      tags: ["Networking", "Troubleshooting", "Documentation", "Linux", "Windows"]
+    },
+    "Cybersecurity Focus": {
+      kicker: "Defensive security",
+      lead: "Concentrated on the Blue Team side of security operations.",
+      points: [
+        "<strong>Monitoring & triage:</strong> reading logs, correlating events and separating noise from real threats.",
+        "<strong>Email security:</strong> SPF, DKIM and a progressive DMARC policy up to p=reject, validated with real evidence.",
+        "<strong>Evidence-first:</strong> every control is tested and documented, not just configured."
+      ],
+      tags: ["SOC", "Blue Team", "Log analysis", "Email security", "Detection"]
+    },
+    "Professional Direction": {
+      kicker: "Where I'm heading",
+      lead: "Targeting junior defensive-security roles where I can grow fast.",
+      points: [
+        "<strong>Ideal roles:</strong> SOC Analyst L1, Junior Cybersecurity Analyst, Blue Team junior.",
+        "<strong>Ready to contribute:</strong> alert triage, incident response fundamentals, threat detection and reporting.",
+        "<strong>Always learning:</strong> actively working through SOC and Blue Team labs and certifications."
+      ],
+      tags: ["SOC Analyst L1", "Blue Team", "Incident response", "Remote / Spain"]
+    },
+    "SOC and Blue Team": {
+      kicker: "01 · Core discipline",
+      lead: "Detecting, triaging and investigating security events with a defensive mindset.",
+      points: [
+        "<strong>Alert triage:</strong> prioritize by severity, confirm true positives and discard noise.",
+        "<strong>Log & event analysis:</strong> follow an incident across syslog, SMTP responses and dashboards.",
+        "<strong>SIEM fundamentals:</strong> aggregation, correlation and evidence-based investigation.",
+        "<strong>Applied in PhisDefense:</strong> 190 SOC events categorized from a real mail environment."
+      ],
+      tags: ["Alert Triage", "Log Analysis", "Threat Detection", "SIEM", "Evidence Handling"]
+    },
+    "Email Security": {
+      kicker: "02 · Signature strength",
+      lead: "Full defensive email stack validated on a real Ubuntu VPS.",
+      points: [
+        "<strong>Authentication:</strong> SPF pass/fail, DKIM valid/broken/absent, selector rotation to s2026.",
+        "<strong>Policy enforcement:</strong> progressive DMARC ending in p=reject, rejecting external spoofing.",
+        "<strong>Transport & reporting:</strong> DNSSEC, MTA-STS, TLS-RPT, STARTTLS and IMAPS TLS.",
+        "<strong>Stack:</strong> Postfix, Dovecot, OpenDKIM, OpenDMARC and OpenARC."
+      ],
+      tags: ["SPF", "DKIM", "DMARC p=reject", "MTA-STS", "DNSSEC", "TLS-RPT"]
+    },
+    "Systems and Networking": {
+      kicker: "03 · Infrastructure base",
+      lead: "The systems knowledge that underpins good defensive work.",
+      points: [
+        "<strong>Networking:</strong> TCP/IP, DNS, DHCP, routing, switching and firewall concepts.",
+        "<strong>Systems:</strong> Linux and Windows administration and secure service configuration.",
+        "<strong>Troubleshooting:</strong> structured diagnosis from the network layer up to the application."
+      ],
+      tags: ["Linux", "TCP/IP", "DNS", "Firewalls", "TLS", "Windows"]
+    },
+    "Automation and Dashboarding": {
+      kicker: "04 · Force multiplier",
+      lead: "Turning raw security data into readable evidence and automation.",
+      points: [
+        "<strong>Scripting:</strong> Python and Bash for parsing, enrichment and repetitive tasks.",
+        "<strong>Data:</strong> Pandas and CSV processing to shape sanitized SOC datasets.",
+        "<strong>Dashboards:</strong> interactive Python/Dash + Plotly views for KPIs and SMTP security.",
+        "<strong>Delivery:</strong> Git, GitHub Pages and Render for a public case study."
+      ],
+      tags: ["Python", "Bash", "Pandas", "Dash", "Plotly", "Git"]
+    },
+    "Security Methodology": {
+      kicker: "05 · How I work",
+      lead: "A repeatable, evidence-driven approach to every task.",
+      points: [
+        "<strong>Validate, don't assume:</strong> test each control and capture proof.",
+        "<strong>Document everything:</strong> technical documentation and clear incident reports.",
+        "<strong>Handle data responsibly:</strong> sanitize before anything goes public.",
+        "<strong>Risk awareness:</strong> anomaly detection and fault diagnosis baked into the process."
+      ],
+      tags: ["Technical Documentation", "Incident Reporting", "Defensive Validation", "Data Sanitization"]
+    },
+    "Cybersecurity Master's Degree": {
+      kicker: "Oct 2025 – Jun 2026 · DigitechFP",
+      lead: "Specialized, project-driven cybersecurity training.",
+      points: [
+        "<strong>Focus areas:</strong> threat analysis, security monitoring and incident response fundamentals.",
+        "<strong>Secure infrastructure:</strong> designing and validating defensive controls.",
+        "<strong>Capstone:</strong> the PhisDefense SOC & Email Security Lab built end to end."
+      ],
+      tags: ["SOC monitoring", "Threat analysis", "Email security", "Incident response"]
+    },
+    "Telecommunications and Computer Systems": {
+      kicker: "Sep 2022 – Jun 2024 · IES Universidad Laboral",
+      lead: "The technical grounding that makes the security work solid.",
+      points: [
+        "<strong>Networking & connectivity:</strong> from cabling and addressing to service configuration.",
+        "<strong>Infrastructure:</strong> maintenance, monitoring and structured troubleshooting.",
+        "<strong>Systems:</strong> practical Linux/Windows and hardware fundamentals."
+      ],
+      tags: ["Networking", "TCP/IP", "Infrastructure", "Connectivity", "Troubleshooting"]
+    },
+    "Analysis and documentation": {
+      kicker: "Transferable experience",
+      lead: "Skills from earlier technical roles that map straight onto a SOC.",
+      points: [
+        "<strong>Anomaly detection:</strong> spotting what deviates from a known-good baseline.",
+        "<strong>Fault diagnosis:</strong> isolating root cause under pressure.",
+        "<strong>Reporting:</strong> structured, evidence-based write-ups and quality checks."
+      ],
+      tags: ["Anomaly detection", "Fault diagnosis", "Reporting", "Attention to detail"]
+    },
+    "Certifications and hands-on labs": {
+      kicker: "Continuous learning",
+      lead: "An active networking → SOC → Blue Team path.",
+      points: [
+        "<strong>Completed:</strong> CCNA Introduction to Networks.",
+        "<strong>In progress:</strong> TryHackMe SOC Analyst Level 1.",
+        "<strong>Planned:</strong> Blue Team Level 1 (BTL1).",
+        "<strong>Practice:</strong> continuous hands-on labs and security monitoring exercises."
+      ],
+      tags: ["CCNA ITN", "SOC Analyst L1", "BTL1 path", "Hands-on labs"]
+    },
+    "CCNA: Introduction to Networks": {
+      kicker: "Completed · Cisco Networking Academy",
+      lead: "Networking fundamentals that every defender needs.",
+      points: [
+        "<strong>Covers:</strong> TCP/IP model, addressing, routing and switching basics.",
+        "<strong>Practical:</strong> subnetting, device configuration and network troubleshooting.",
+        "<strong>Why it matters:</strong> you can't defend traffic you don't understand."
+      ],
+      tags: ["TCP/IP", "Routing", "Switching", "Subnetting", "Troubleshooting"]
+    },
+    "SOC Analyst Level 1": {
+      kicker: "In progress · TryHackMe",
+      lead: "Hands-on SOC analyst learning path.",
+      points: [
+        "<strong>Core skills:</strong> SOC fundamentals, alert triage and log analysis.",
+        "<strong>Tooling:</strong> SIEM concepts, threat intelligence and monitoring workflows.",
+        "<strong>Outcome:</strong> practical Blue Team investigation experience."
+      ],
+      tags: ["SOC fundamentals", "Alert triage", "Log analysis", "SIEM", "Blue Team"]
+    },
+    "Blue Team Level 1": {
+      kicker: "Planned · BTL1",
+      lead: "A recognized, hands-on Blue Team certification next on the path.",
+      points: [
+        "<strong>Domains:</strong> phishing analysis, SIEM, incident response and digital forensics.",
+        "<strong>Format:</strong> practical, exam-in-a-lab style assessment.",
+        "<strong>Goal:</strong> validate real defensive analysis and investigation skills."
+      ],
+      tags: ["Phishing analysis", "SIEM", "Incident response", "Forensics"]
+    }
+  };
+
   const overlay = document.createElement("div");
   overlay.className = "card-zoom-overlay";
   overlay.setAttribute("role", "dialog");
   overlay.setAttribute("aria-modal", "true");
   overlay.innerHTML =
-    '<div class="card-zoom-panel">' +
     '<button class="card-zoom-close" aria-label="Close">✕</button>' +
-    '<div class="card-zoom-content"></div>' +
+    '<div class="card-zoom-stage">' +
+    '<div class="card-zoom-original"></div>' +
+    '<div class="card-zoom-detail"></div>' +
     "</div>";
   document.body.appendChild(overlay);
 
-  const panel = overlay.querySelector(".card-zoom-panel");
-  const content = overlay.querySelector(".card-zoom-content");
+  const original = overlay.querySelector(".card-zoom-original");
+  const detail = overlay.querySelector(".card-zoom-detail");
   const closeBtn = overlay.querySelector(".card-zoom-close");
 
-  function reveal() {
-    overlay.classList.add("revealed");
+  function headingOf(card) {
+    const h = card.querySelector("h3");
+    return h ? h.textContent.trim() : "";
+  }
+
+  function buildDetail(heading) {
+    const d = DETAILS[heading];
+    if (!d) {
+      return "<h3>" + heading + "</h3><p>More detail coming soon.</p>";
+    }
+    let html = "";
+    if (d.kicker) html += '<p class="detail-kicker">' + d.kicker + "</p>";
+    html += "<h3>" + heading + "</h3>";
+    if (d.lead) html += "<p>" + d.lead + "</p>";
+    if (d.points && d.points.length) {
+      html += "<ul>" + d.points.map((p) => "<li>" + p + "</li>").join("") + "</ul>";
+    }
+    if (d.tags && d.tags.length) {
+      html += '<div class="detail-tags">' + d.tags.map((t) => "<span>" + t + "</span>").join("") + "</div>";
+    }
+    return html;
+  }
+
+  function settle() {
     overlay.classList.remove("spin");
+    overlay.classList.add("settled");
   }
 
   function openZoom(card) {
+    const heading = headingOf(card);
+
     const clone = card.cloneNode(true);
-    // strip any leftover state classes and the hover tilt transform
     clone.classList.remove("visible", "lit", "reveal", "zoomable");
     clone.removeAttribute("style");
-    content.innerHTML = "";
-    content.appendChild(clone);
+    original.innerHTML = "";
+    original.appendChild(clone);
 
-    const hint = document.createElement("span");
-    hint.className = "card-zoom-hint";
-    hint.textContent = "// click outside or press Esc to close";
-    content.appendChild(hint);
+    detail.innerHTML = buildDetail(heading);
 
     overlay.classList.add("open");
-    overlay.classList.remove("revealed");
+    overlay.classList.remove("settled");
 
     if (prefersReducedMotion) {
-      reveal();
+      settle();
       return;
     }
 
     overlay.classList.add("spin");
-    panel.addEventListener("animationend", reveal, { once: true });
-    // safety fallback if animationend doesn't fire
-    setTimeout(reveal, 1000);
+    original.addEventListener("animationend", settle, { once: true });
+    setTimeout(settle, 1100); // fallback if animationend doesn't fire
   }
 
   function closeZoom() {
-    overlay.classList.remove("open", "revealed", "spin");
+    overlay.classList.remove("open", "settled", "spin");
   }
 
   cards.forEach((card) => {
     card.classList.add("zoomable");
     card.addEventListener("click", (event) => {
-      // let genuinely interactive elements (links, images, buttons) work as-is
       if (event.target.closest("a, button, img, input, summary, canvas")) {
         return;
       }
@@ -2897,7 +3078,7 @@ if (fwCanvas) {
   });
 
   overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) {
+    if (event.target === overlay || event.target.classList.contains("card-zoom-stage")) {
       closeZoom();
     }
   });
@@ -2907,4 +3088,6 @@ if (fwCanvas) {
       closeZoom();
     }
   });
+
+  window.__zoomDebug = { openZoom, settle, DETAILS, overlay };
 })();

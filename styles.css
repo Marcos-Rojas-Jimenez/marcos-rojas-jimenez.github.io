@@ -5566,9 +5566,15 @@ summary:focus-visible {
 
 
 /* ==========================================================
-   CARD ZOOM — click a card: it spins while growing, then
-   reveals its content full-screen in detail
+   CARD ZOOM — click a card: it spins in and settles suspended &
+   tilted on the left (neon border), with a detail panel on the right
    ========================================================== */
+@property --neon-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .zoomable {
   cursor: pointer;
 }
@@ -5579,14 +5585,14 @@ summary:focus-visible {
   z-index: 100002;
   display: grid;
   place-items: center;
-  padding: 5vh 4vw;
-  background: rgba(7, 10, 17, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  padding: 6vh 5vw;
+  background: rgba(7, 10, 17, 0.84);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
-  perspective: 1600px;
+  perspective: 1700px;
 }
 
 .card-zoom-overlay.open {
@@ -5594,92 +5600,184 @@ summary:focus-visible {
   pointer-events: auto;
 }
 
-.card-zoom-panel {
+.card-zoom-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 42px;
+  width: 100%;
+  max-width: 1040px;
+  transform-style: preserve-3d;
+}
+
+/* left: the suspended, tilted replica of the original card */
+.card-zoom-original {
   position: relative;
-  width: min(780px, 92vw);
-  max-height: 88vh;
-  overflow: auto;
+  flex: 0 0 340px;
+  width: 340px;
   border-radius: 26px;
-  padding: 40px 44px;
-  background: linear-gradient(180deg, rgba(24,31,50,0.98), rgba(13,18,31,0.98));
-  border: 1px solid rgba(122,167,255,0.32);
-  box-shadow:
-    0 44px 130px rgba(0,0,0,0.62),
-    0 0 56px rgba(122,167,255,0.14),
-    inset 0 1px 0 rgba(255,255,255,0.06);
+  transform: rotateY(704deg) scale(0.12);
   transform-style: preserve-3d;
   will-change: transform;
 }
 
-.card-zoom-overlay.spin .card-zoom-panel {
-  animation: cardSpinGrow 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+.card-zoom-overlay.spin .card-zoom-original {
+  animation: cardSpinGrow 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
 @keyframes cardSpinGrow {
-  0% {
-    transform: rotateY(0deg) rotateX(12deg) scale(0.12);
-    box-shadow: 0 0 60px rgba(122,167,255,0.5);
-  }
-  70% {
-    box-shadow: 0 44px 130px rgba(0,0,0,0.62), 0 0 90px rgba(122,167,255,0.35);
-  }
-  100% {
-    transform: rotateY(720deg) rotateX(0deg) scale(1);
-  }
+  0% { transform: rotateY(704deg) scale(0.12); }
+  100% { transform: rotateY(-16deg) rotateX(3deg) scale(1); }
 }
 
-.card-zoom-content {
+.card-zoom-overlay.settled .card-zoom-original {
+  animation: cardFloat 6s ease-in-out infinite;
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: rotateY(-16deg) rotateX(3deg) translateY(0) scale(1); }
+  50% { transform: rotateY(-13deg) rotateX(1.5deg) translateY(-12px) scale(1.01); }
+}
+
+/* the replica keeps the original card's look */
+.card-zoom-original > * {
+  margin: 0 !important;
+  width: 100%;
+  box-shadow:
+    0 40px 110px rgba(0,0,0,0.6),
+    0 0 44px rgba(122,167,255,0.14) !important;
+}
+
+/* traveling neon light along the border */
+.card-zoom-original::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 28px;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--neon-angle),
+    transparent 0deg,
+    rgba(122,167,255,0.15) 30deg,
+    #7aa7ff 60deg,
+    #a78bfa 78deg,
+    #5eead4 96deg,
+    rgba(122,167,255,0.15) 120deg,
+    transparent 160deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
   opacity: 0;
-  transform: translateY(10px);
+  filter: drop-shadow(0 0 6px rgba(122,167,255,0.55));
+  transition: opacity 0.5s ease;
 }
 
-.card-zoom-overlay.revealed .card-zoom-content {
+.card-zoom-overlay.settled .card-zoom-original::before {
   opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: neonTravel 3.2s linear infinite;
 }
 
-/* Enlarge the cloned content so it reads as a detailed full view */
-.card-zoom-content h3 {
-  font-size: 1.9rem;
-  margin-bottom: 14px;
+@keyframes neonTravel {
+  to { --neon-angle: 360deg; }
 }
 
-.card-zoom-content p {
-  font-size: 1.08rem;
-  line-height: 1.75;
+/* right: additional / detailed information */
+.card-zoom-detail {
+  flex: 1 1 460px;
+  max-width: 520px;
+  max-height: 82vh;
+  overflow: auto;
+  padding: 34px 38px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(24,31,50,0.98), rgba(13,18,31,0.98));
+  border: 1px solid rgba(122,167,255,0.28);
+  box-shadow: 0 40px 120px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
+  opacity: 0;
+  transform: translateX(28px);
 }
 
-.card-zoom-content .skill-pills {
-  margin-top: 20px;
+.card-zoom-overlay.settled .card-zoom-detail {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.5s ease 0.15s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
 }
 
-.card-zoom-content .cert-image,
-.card-zoom-content img {
-  max-height: 320px;
+.card-zoom-detail .detail-kicker {
+  color: #8fb5ff;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
 }
 
-.card-zoom-content .skill-category-head span {
-  font-size: 0.9rem;
+.card-zoom-detail h3 {
+  margin: 0 0 16px;
+  font-size: 1.6rem;
+  color: #ffffff;
+}
+
+.card-zoom-detail p {
+  color: #aab6c8;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  margin: 0 0 16px;
+}
+
+.card-zoom-detail ul {
+  margin: 0 0 18px;
+  padding-left: 20px;
+}
+
+.card-zoom-detail li {
+  color: #c2cddd;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+.card-zoom-detail li strong {
+  color: #ffffff;
+}
+
+.card-zoom-detail .detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.card-zoom-detail .detail-tags span {
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(122,167,255,0.10);
+  border: 1px solid rgba(122,167,255,0.26);
+  color: #c7d7ff;
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .card-zoom-close {
-  position: sticky;
-  top: 0;
-  float: right;
-  width: 40px;
-  height: 40px;
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
-  margin: -10px -14px 0 0;
   border-radius: 50%;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.16);
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 900;
   cursor: pointer;
-  z-index: 2;
+  z-index: 3;
 }
 
 .card-zoom-close:hover {
@@ -5687,20 +5785,37 @@ summary:focus-visible {
   border-color: rgba(248,113,113,0.5);
 }
 
-.card-zoom-hint {
-  display: block;
-  margin-top: 22px;
-  color: #6b7a95;
-  font-family: "Cascadia Code", Consolas, monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
+@media (max-width: 900px) {
+  .card-zoom-stage {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .card-zoom-original {
+    flex-basis: auto;
+    width: min(300px, 80vw);
+    transform: none;
+  }
+  .card-zoom-overlay.settled .card-zoom-original {
+    animation: none;
+    transform: none;
+  }
+  .card-zoom-detail {
+    max-height: 52vh;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card-zoom-overlay.spin .card-zoom-panel {
+  .card-zoom-overlay.spin .card-zoom-original {
+    animation: none;
+    transform: rotateY(-16deg) rotateX(3deg);
+  }
+  .card-zoom-overlay.settled .card-zoom-original {
     animation: none;
   }
-  .card-zoom-overlay.revealed .card-zoom-content {
+  .card-zoom-overlay.settled .card-zoom-original::before {
+    animation: none;
+  }
+  .card-zoom-overlay.settled .card-zoom-detail {
     transition: opacity 0.25s ease;
   }
 }
