@@ -1,5 +1,50 @@
 ﻿document.body.classList.add("js-ready");
 
+/* Performance: make high-frequency listeners passive and coalesce scroll /
+   mousemove work to at most once per animation frame. This removes the
+   layout thrashing from the many independent scroll/mousemove handlers
+   without changing any behavior or visuals. Installed before any listener
+   is registered so it wraps them all. */
+(function optimizeListeners() {
+  const EP = EventTarget.prototype;
+  const origAdd = EP.addEventListener;
+  const PASSIVE = { scroll: 1, wheel: 1, mousewheel: 1, touchstart: 1, touchmove: 1, mousemove: 1, pointermove: 1 };
+  const COALESCE = { scroll: 1, mousemove: 1 };
+
+  function normOpts(type, options) {
+    if (!PASSIVE[type]) return options;
+    if (options === undefined || options === null) return { passive: true };
+    if (typeof options === "boolean") return { capture: options, passive: true };
+    if (typeof options === "object" && options.passive === undefined) {
+      const o = {};
+      for (const k in options) o[k] = options[k];
+      o.passive = true;
+      return o;
+    }
+    return options;
+  }
+
+  EP.addEventListener = function (type, listener, options) {
+    if (typeof listener === "function" && COALESCE[type]) {
+      let scheduled = false;
+      let lastEv = null;
+      const self = this;
+      const wrapped = function (ev) {
+        lastEv = ev;
+        if (!scheduled) {
+          scheduled = true;
+          requestAnimationFrame(function () {
+            scheduled = false;
+            listener.call(self, lastEv);
+          });
+        }
+      };
+      return origAdd.call(this, type, wrapped, normOpts(type, options));
+    }
+    return origAdd.call(this, type, listener, normOpts(type, options));
+  };
+})();
+
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const navToggle = document.getElementById("navToggle");
