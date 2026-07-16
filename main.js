@@ -957,42 +957,6 @@ sideDotSections.forEach((id) => {
 document.body.appendChild(sideDots);
 updateActiveNav();
 
-// Precision cursor ring (desktop pointers only)
-if (!prefersReducedMotion && window.matchMedia("(pointer: fine)").matches) {
-  const cursorRing = document.createElement("div");
-  cursorRing.className = "cursor-ring";
-  document.body.appendChild(cursorRing);
-
-  // The ring is glued to the cursor with zero lag: position is set
-  // directly from the pointer via a GPU-composited transform, no easing.
-  cursorRing.style.left = "0px";
-  cursorRing.style.top = "0px";
-  cursorRing.style.transform =
-    `translate3d(${window.innerWidth / 2}px, ${window.innerHeight / 2}px, 0) translate(-50%, -50%)`;
-
-  window.addEventListener("mousemove", (event) => {
-    cursorRing.style.transform =
-      `translate3d(${event.clientX}px, ${event.clientY}px, 0) translate(-50%, -50%)`;
-  });
-
-  const HOVER_TARGETS =
-    "a, button, input, summary, .skill-pills span, .zoomable, canvas, " +
-    ".side-dots a, .cmd-item, .focus-row, details, .compact-tags span, " +
-    ".training-clean-tags span, .detail-tags span";
-
-  document.addEventListener("mouseover", (event) => {
-    if (event.target.closest(HOVER_TARGETS)) {
-      cursorRing.classList.add("on");
-    }
-  });
-
-  document.addEventListener("mouseout", (event) => {
-    if (event.target.closest(HOVER_TARGETS)) {
-      cursorRing.classList.remove("on");
-    }
-  });
-}
-
 // Skill radar: animated pentagon chart with rotating sweep
 const radarCanvas = document.getElementById("skillRadar");
 
