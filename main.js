@@ -963,34 +963,17 @@ if (!prefersReducedMotion && window.matchMedia("(pointer: fine)").matches) {
   cursorRing.className = "cursor-ring";
   document.body.appendChild(cursorRing);
 
-  const ringTarget = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  const ringPos = { x: ringTarget.x, y: ringTarget.y };
-  let ringRunning = false;
+  // The ring is glued to the cursor with zero lag: position is set
+  // directly from the pointer via a GPU-composited transform, no easing.
+  cursorRing.style.left = "0px";
+  cursorRing.style.top = "0px";
+  cursorRing.style.transform =
+    `translate3d(${window.innerWidth / 2}px, ${window.innerHeight / 2}px, 0) translate(-50%, -50%)`;
 
   window.addEventListener("mousemove", (event) => {
-    ringTarget.x = event.clientX;
-    ringTarget.y = event.clientY;
-    if (!ringRunning) {
-      ringRunning = true;
-      requestAnimationFrame(animateRing);
-    }
+    cursorRing.style.transform =
+      `translate3d(${event.clientX}px, ${event.clientY}px, 0) translate(-50%, -50%)`;
   });
-
-  function animateRing() {
-    const dx = ringTarget.x - ringPos.x;
-    const dy = ringTarget.y - ringPos.y;
-    ringPos.x += dx * 0.3;
-    ringPos.y += dy * 0.3;
-    cursorRing.style.left = `${ringPos.x}px`;
-    cursorRing.style.top = `${ringPos.y}px`;
-
-    if (Math.abs(dx) < 0.4 && Math.abs(dy) < 0.4) {
-      ringRunning = false;
-      return;
-    }
-
-    requestAnimationFrame(animateRing);
-  }
 
   const HOVER_TARGETS =
     "a, button, input, summary, .skill-pills span, .zoomable, canvas, " +
