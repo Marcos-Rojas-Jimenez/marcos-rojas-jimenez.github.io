@@ -1549,13 +1549,31 @@ if (planetSlots.length && window.innerWidth > 900) {
     let THREE;
     let tex;
 
+    // yield to the browser so heavy steps never share one frame
+    const nextFrame = () =>
+      new Promise((resolve) => {
+        if (document.hidden) {
+          setTimeout(resolve, 16);
+        } else {
+          requestAnimationFrame(() => setTimeout(resolve, 0));
+        }
+      });
+
     try {
       THREE = await import("https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js");
 
-      const loader = new THREE.TextureLoader();
+      await nextFrame();
+
+      // ImageBitmapLoader decodes the 2K JPEGs OFF the main thread,
+      // removing the multi-hundred-ms sync decodes that froze the page
+      const loader = new THREE.ImageBitmapLoader();
+      loader.setOptions({ imageOrientation: "flipY" });
 
       const loadTex = async (file, srgb) => {
-        const t = await loader.loadAsync("assets/planets/" + file);
+        const bmp = await loader.loadAsync("assets/planets/" + file);
+        const t = new THREE.Texture(bmp);
+        t.flipY = false;
+        t.needsUpdate = true;
         if (srgb) {
           t.colorSpace = THREE.SRGBColorSpace;
         }
@@ -1572,6 +1590,7 @@ if (planetSlots.length && window.innerWidth > 900) {
       ]);
 
       tex = { sunT, saturnT, ringT, earthT, cloudsT, moonT };
+      await nextFrame();
     } catch (e) {
       return; // CDN or texture unavailable: slots simply stay empty
     }
@@ -1705,7 +1724,11 @@ if (planetSlots.length && window.innerWidth > 900) {
 
     const planetItems = [];
 
-    planetSlots.forEach((slot) => {
+    // Build ONE planet per frame: each iteration creates its renderer,
+    // uploads its textures to the GPU (via an immediate first render) and
+    // then yields, so the total cost is spread instead of one long freeze.
+    for (let slotIndex = 0; slotIndex < planetSlots.length; slotIndex += 1) {
+      const slot = planetSlots[slotIndex];
       const kind = slot.dataset.body;
       const size = slot.clientWidth || 300;
 
@@ -1772,7 +1795,11 @@ if (planetSlots.length && window.innerWidth > 900) {
       canvasEl.addEventListener("pointercancel", endDrag);
 
       planetItems.push(state);
-    });
+
+      // force this planet's shader compile + texture uploads NOW, alone
+      renderer.render(scene, camera);
+      await nextFrame();
+    }
 
     let planetsVisible = true;
 
@@ -1833,6 +1860,18 @@ if (planetSlots.length && window.innerWidth > 900) {
   );
 
   planetsTrigger.observe(document.getElementById("training"));
+
+  // Pre-warm during idle time shortly after load, so by the time the
+  // visitor scrolls to Training everything is already built and uploaded.
+  window.addEventListener("load", () => {
+    const prewarm = () => initPlanets();
+
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(prewarm, { timeout: 6000 });
+    } else {
+      setTimeout(prewarm, 3500);
+    }
+  });
 }
 
 
