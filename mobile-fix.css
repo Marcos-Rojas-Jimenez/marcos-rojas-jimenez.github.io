@@ -288,3 +288,12 @@ main section[id] {
   }
 }
 
+
+/* Keep inputs >=16px on touch screens so iOS doesn't zoom on focus */
+@media (max-width: 900px) {
+  .skills-search input,
+  .soc-prompt input,
+  .cmd-panel input {
+    font-size: 16px;
+  }
+}

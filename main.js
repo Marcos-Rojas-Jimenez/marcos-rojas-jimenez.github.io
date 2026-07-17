@@ -52,32 +52,17 @@ const navLinks = document.getElementById("navLinks");
 
 if (navToggle && navLinks) {
   navToggle.addEventListener("click", () => {
-    navLinks.classList.toggle("open");
+    const open = navLinks.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
   });
 
   navLinks.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
       navLinks.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
     });
   });
 }
-
-const tabs = document.querySelectorAll(".skill-tab");
-const panels = document.querySelectorAll(".skill-panel");
-
-tabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    tabs.forEach((item) => item.classList.remove("active"));
-    panels.forEach((panel) => panel.classList.remove("active"));
-
-    tab.classList.add("active");
-
-    const activePanel = document.getElementById(tab.dataset.tab);
-    if (activePanel) {
-      activePanel.classList.add("active");
-    }
-  });
-});
 
 const revealObserver = new IntersectionObserver(
   (entries) => {
@@ -254,25 +239,6 @@ window.addEventListener("load", () => {
 });
 refreshNavGeom();
 updateActiveNav();
-
-const projectCard = document.querySelector(".project-card");
-
-if (projectCard) {
-  projectCard.addEventListener("mousemove", (event) => {
-    const rect = projectCard.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    const rotateX = ((y / rect.height) - 0.5) * -4;
-    const rotateY = ((x / rect.width) - 0.5) * 4;
-
-    projectCard.style.transform = `translateY(-6px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-  });
-
-  projectCard.addEventListener("mouseleave", () => {
-    projectCard.style.transform = "";
-  });
-}
 
 const allCards = document.querySelectorAll(".card, .skill-category, .compact-project-card, .cert-card");
 

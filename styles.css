@@ -5830,3 +5830,30 @@ summary:focus-visible {
   font-weight: 900;
   font-size: 0.82rem;
 }
+
+/* Accessibility: skip-to-content link (visible only on keyboard focus) */
+.skip-link {
+  position: fixed;
+  top: -60px;
+  left: 16px;
+  z-index: 100010;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7aa7ff, #a78bfa);
+  color: #070a11;
+  font-weight: 900;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  top: 16px;
+}
+
+/* Prevent iOS focus-zoom: keep form inputs at >=16px on touch screens */
+@media (max-width: 900px) {
+  .soc-prompt input,
+  .skills-search input,
+  .cmd-panel input {
+    font-size: 16px;
+  }
+}
