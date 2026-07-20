@@ -778,13 +778,16 @@ if (socFeed) {
         return ["wake up, Neo... (6s)"];
       },
       whoami: () => [
-        "Marcos Rojas Jimenez — Junior Cybersecurity Analyst (SOC · Blue Team)"
+        "Marcos Rojas Jimenez — Junior Cybersecurity Analyst (IAM Operations · SOC · Blue Team)"
       ],
       skills: () => [
-        "SOC monitoring · log analysis · email security (SPF / DKIM / DMARC)",
-        "Linux · Python · Bash · defensive validation · evidence handling"
+        "IAM operations · Keycloak · OpenID Connect · RBAC · privileged account review",
+        "SOC-style monitoring · log analysis · email security (SPF / DKIM / DMARC)",
+        "Linux · Python · REST API automation · Streamlit dashboards · evidence handling"
       ],
       project: () => [
+        "IAM Operations & CyberIAM Monitoring Lab — Keycloak · OIDC · RBAC · Streamlit",
+        "→ marcos-rojas-jimenez.github.io/projects/iam-operations-cyberiam-lab",
         "PhisDefense SOC & Email Security Lab — 270 tests · 190 SOC events · p=reject",
         "→ marcos-rojas-jimenez.github.io/phisdefense-email-security-soc"
       ],
@@ -929,10 +932,11 @@ const radarCanvas = document.getElementById("skillRadar");
 if (radarCanvas) {
   const rctx = radarCanvas.getContext("2d");
   const radarAxes = [
+    { label: "IAM / Identity", value: 0.82 },
     { label: "Blue Team / SOC", value: 0.85 },
     { label: "Email Sec", value: 0.9 },
     { label: "Systems", value: 0.72 },
-    { label: "Automation", value: 0.68 },
+    { label: "Automation", value: 0.75 },
     { label: "Reporting", value: 0.8 },
     { label: "Red Team", value: 0.15 }
   ];

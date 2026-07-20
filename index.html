@@ -7,13 +7,13 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-  <meta name="description" content="Portfolio of Marcos Rojas Jimenez, Junior Cybersecurity Analyst: SOC monitoring, Blue Team, email security, Linux and Python automation." />
+  <meta name="description" content="Portfolio of Marcos Rojas Jimenez, Junior Cybersecurity Analyst focused on IAM Operations, security automation and SOC-style monitoring: Keycloak, OpenID Connect, email security and Python." />
   <meta name="theme-color" content="#070a11" />
   <link rel="canonical" href="https://marcos-rojas-jimenez.github.io/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Marcos Rojas Jimenez — Cybersecurity Portfolio" />
   <meta property="og:title" content="Marcos Rojas Jimenez | Junior Cybersecurity Analyst" />
-  <meta property="og:description" content="SOC monitoring, Blue Team operations, email security and Python automation demonstrated through evidence-based projects." />
+  <meta property="og:description" content="IAM Operations, identity and access management, SOC-style monitoring, email security and Python automation demonstrated through evidence-based projects." />
   <meta property="og:url" content="https://marcos-rojas-jimenez.github.io/" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:image" content="https://marcos-rojas-jimenez.github.io/assets/og-image.png" />
@@ -22,7 +22,7 @@
   <meta property="og:image:alt" content="Marcos Rojas Jimenez — Junior Cybersecurity Analyst portfolio card" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Marcos Rojas Jimenez | Junior Cybersecurity Analyst" />
-  <meta name="twitter:description" content="SOC monitoring, Blue Team operations, email security and Python automation demonstrated through evidence-based projects." />
+  <meta name="twitter:description" content="IAM Operations, identity and access management, SOC-style monitoring, email security and Python automation demonstrated through evidence-based projects." />
   <meta name="twitter:image" content="https://marcos-rojas-jimenez.github.io/assets/og-image.png" />
   <script type="application/ld+json">
   {
@@ -34,7 +34,7 @@
     "email": "mailto:marcosrojasjimenez2@gmail.com",
     "image": "https://marcos-rojas-jimenez.github.io/assets/og-image.png",
     "sameAs": ["https://www.linkedin.com/in/marcos-rojas-jimenez"],
-    "knowsAbout": ["SOC monitoring", "Blue Team", "Email security", "SPF", "DKIM", "DMARC", "Linux", "Python", "Log analysis"]
+    "knowsAbout": ["IAM Operations", "Identity and Access Management", "Keycloak", "OpenID Connect", "RBAC", "SOC monitoring", "Blue Team", "Email security", "SPF", "DKIM", "DMARC", "Linux", "Python", "Streamlit", "Log analysis"]
   }
   </script>
   <link rel="stylesheet" href="styles.css" />
@@ -478,7 +478,8 @@
   }
 
   /* Green case study button */
-  #projects a[href*="phisdefense-email-security-soc"] {
+  #projects a[href*="phisdefense-email-security-soc"],
+  #projects a[href*="iam-operations-cyberiam-lab"] {
     background: linear-gradient(135deg, #22c55e, #5eead4) !important;
     color: #06110d !important;
     border: 1px solid rgba(94, 234, 212, 0.70) !important;
@@ -488,7 +489,8 @@
     font-weight: 950 !important;
   }
 
-  #projects a[href*="phisdefense-email-security-soc"]:hover {
+  #projects a[href*="phisdefense-email-security-soc"]:hover,
+  #projects a[href*="iam-operations-cyberiam-lab"]:hover {
     transform: translateY(-3px) !important;
     box-shadow:
       0 24px 70px rgba(34, 197, 94, 0.42),
@@ -544,8 +546,9 @@
           <p class="role">Junior Cybersecurity Analyst</p>
 
           <p class="hero-text">
-            SOC monitoring, Blue Team operations, email security and Python automation
-            demonstrated through evidence-based projects and real-world validation.
+            Junior Cybersecurity Analyst with a strong practical interest in IAM operations,
+            security automation, SOC-style monitoring, email security and evidence-based
+            reporting — demonstrated through hands-on projects and real-world validation.
           </p>
 
           <div class="actions">
@@ -559,6 +562,11 @@
           <p class="card-label">Current focus</p>
 
           <div class="focus-row">
+            <span>IAM Operations</span>
+            <strong>Keycloak · OIDC · RBAC</strong>
+          </div>
+
+          <div class="focus-row">
             <span>SOC Monitoring</span>
             <strong>Blue Team</strong>
           </div>
@@ -570,12 +578,12 @@
 
           <div class="focus-row">
             <span>Automation</span>
-            <strong>Python · Dash</strong>
+            <strong>Python · Streamlit · Dash</strong>
           </div>
-        
+
           <div class="focus-row career-row">
             <span>Career Target</span>
-            <strong>SOC Analyst L1 · Blue Team Junior</strong>
+            <strong>IAM Operations · SOC Analyst L1</strong>
           </div></aside>
       </div>
 
@@ -605,27 +613,29 @@
     <div class="section-head reveal">
       <span class="about-stamp" aria-hidden="true">Verified ✓</span>
       <p class="kicker">About Me</p>
-      <h2>Junior SOC-focused cybersecurity profile with systems and email security foundations.</h2>
+      <h2>Junior cybersecurity profile focused on IAM operations, security monitoring and secure infrastructure.</h2>
       <p>
-        I am a junior cybersecurity professional focused on defensive security, SOC monitoring,
-        Blue Team operations and email security. My background combines Telecommunications and
-        Computer Systems training with a Cybersecurity Master's Degree, giving me a practical
-        foundation in networking, Linux systems, troubleshooting, infrastructure maintenance and
-        secure service configuration.
+        I am a junior cybersecurity professional working across defensive security, with a
+        strong practical interest in IAM operations, SOC-style monitoring and email security.
+        My background combines Telecommunications and Computer Systems training with a
+        Cybersecurity Master's Degree, giving me a practical foundation in networking, Linux
+        systems, troubleshooting, infrastructure maintenance and secure service configuration.
       </p>
 
       <p>
-        During my cybersecurity training, I developed PhisDefense SOC & Email Security Lab, a
-        practical project based on a real VPS Ubuntu environment. The project involved deploying
-        and validating a secure mail infrastructure with Postfix, Dovecot, OpenDKIM, OpenDMARC,
-        OpenARC, SPF, DKIM, DMARC p=reject, DNSSEC, MTA-STS, TLS-RPT, STARTTLS and IMAPS TLS.
+        I build practical cybersecurity labs that combine identity, access management, automation,
+        monitoring and evidence-based reporting. My recent work includes an IAM Operations &
+        CyberIAM Monitoring Lab — Keycloak, OpenID Connect, RBAC, Python automation over the
+        Admin REST API and a Streamlit dashboard — and PhisDefense, an email security and SOC
+        dashboard project built on a real VPS with Postfix, Dovecot, SPF, DKIM, DMARC p=reject,
+        DNSSEC, MTA-STS and TLS-RPT.
       </p>
 
       <p>
         Before specializing in cybersecurity, I gained technical experience in environments that
         required anomaly detection, fault diagnosis, structured reporting, technical documentation
-        and attention to detail. These skills are directly transferable to SOC monitoring, alert
-        triage, incident analysis and evidence-based investigation.
+        and attention to detail. These skills transfer directly to IAM operations, SOC monitoring,
+        alert triage, incident analysis and evidence-based investigation.
       </p>
     </div>
 
@@ -642,16 +652,18 @@
       <article class="card reveal">
         <h3>Cybersecurity Focus</h3>
         <p>
-          Focused on SOC monitoring, Blue Team workflows, log analysis, email security, Linux
-          systems, evidence handling and defensive validation through practical projects.
+          Defensive security across IAM operations, SOC-style monitoring, email security,
+          log and event analysis, evidence handling and validation through practical
+          projects.
         </p>
       </article>
 
       <article class="card reveal">
         <h3>Professional Direction</h3>
         <p>
-          Seeking junior opportunities in SOC analysis, security monitoring, Blue Team operations,
-          threat detection, incident response fundamentals and defensive cybersecurity operations.
+          Seeking junior opportunities in IAM operations, IT operations, SOC analysis, security
+          monitoring and service management — roles where automation, evidence-based reporting
+          and structured troubleshooting add value.
         </p>
       </article>
     </div>
@@ -660,35 +672,35 @@
 
 <div class="tech-marquee" aria-hidden="true">
   <div class="tech-marquee-track">
+    <span>IAM Operations</span>
+    <span>Keycloak</span>
+    <span>OpenID Connect</span>
+    <span>RBAC</span>
     <span>SOC Monitoring</span>
     <span>Blue Team</span>
     <span>SPF</span>
     <span>DKIM</span>
     <span>DMARC</span>
-    <span>DNSSEC</span>
     <span>MTA-STS</span>
-    <span>TLS-RPT</span>
     <span>Linux</span>
     <span>Python</span>
-    <span>Log Analysis</span>
-    <span>Threat Detection</span>
-    <span>Incident Response</span>
-    <span>Postfix</span>
+    <span>Streamlit</span>
+    <span>Event Monitoring</span>
     <span>Email Security</span>
+    <span>IAM Operations</span>
+    <span>Keycloak</span>
+    <span>OpenID Connect</span>
+    <span>RBAC</span>
     <span>SOC Monitoring</span>
     <span>Blue Team</span>
     <span>SPF</span>
     <span>DKIM</span>
     <span>DMARC</span>
-    <span>DNSSEC</span>
     <span>MTA-STS</span>
-    <span>TLS-RPT</span>
     <span>Linux</span>
     <span>Python</span>
-    <span>Log Analysis</span>
-    <span>Threat Detection</span>
-    <span>Incident Response</span>
-    <span>Postfix</span>
+    <span>Streamlit</span>
+    <span>Event Monitoring</span>
     <span>Email Security</span>
   </div>
 </div>
@@ -697,44 +709,74 @@
   <div class="shell">
     <div class="section-head reveal">
       <p class="kicker">Skills</p>
-      <h2>SOC, email security and automation skills.</h2>
+      <h2>Cybersecurity skills across IAM, security operations and automation.</h2>
       <p>
-        A compact overview of the technical areas I am developing across SOC monitoring,
-        Blue Team operations, email security, systems, networking and automation.
+        A practical overview of the technical areas I am developing across cybersecurity:
+        identity and access management, email security, security operations, systems,
+        scripting, automation and reporting.
       </p>
     </div>
 
     <div class="skills-search reveal">
       <label for="skillSearchInput">Search skills</label>
-      <input id="skillSearchInput" type="search" placeholder="Search SOC, Python, DMARC, Linux..." autocomplete="off" />
+      <input id="skillSearchInput" type="search" placeholder="Search IAM, Keycloak, Python, DMARC..." autocomplete="off" />
     </div>
 
     <div class="skills-matrix reveal">
 
-      <article class="skill-category soc">
+      <article class="skill-category iam">
         <div class="skill-category-head">
           <span>01</span>
-          <h3>SOC and Blue Team</h3>
+          <h3>Identity and Access Management</h3>
         </div>
         <p>
-          Security monitoring, alert triage, log analysis and evidence-based investigation
-          focused on defensive operations.
+          IAM operations practiced hands-on in the Keycloak lab: SSO integration, RBAC,
+          privileged access visibility and identity monitoring.
         </p>
         <div class="skill-pills">
-          <span>SOC Monitoring</span>
+          <span>IAM</span>
+          <span>SSO</span>
+          <span>OpenID Connect</span>
+          <span>OAuth2 Fundamentals</span>
+          <span>SAML Fundamentals</span>
+          <span>MFA Concepts</span>
+          <span>RBAC</span>
+          <span>Keycloak</span>
+          <span>Identity Provider Concepts</span>
+          <span>Access / ID Tokens</span>
+          <span>Privileged Account Review</span>
+          <span>User and Role Inventory</span>
+          <span>IAM Event Monitoring</span>
+        </div>
+      </article>
+
+      <article class="skill-category soc">
+        <div class="skill-category-head">
+          <span>02</span>
+          <h3>Security Operations</h3>
+        </div>
+        <p>
+          SOC-style monitoring, event analysis and evidence-based investigation applied
+          across both the email security and IAM labs.
+        </p>
+        <div class="skill-pills">
+          <span>SOC-Style Monitoring</span>
           <span>Alert Triage</span>
           <span>Log Analysis</span>
-          <span>Threat Detection</span>
-          <span>Incident Response Fundamentals</span>
-          <span>Evidence Handling</span>
           <span>Security Event Analysis</span>
+          <span>Failed Login Review</span>
+          <span>Admin Event Review</span>
+          <span>Evidence Collection</span>
+          <span>Security Reporting</span>
+          <span>Incident Response Fundamentals</span>
           <span>SIEM Fundamentals</span>
+          <span>ITIL Concepts</span>
         </div>
       </article>
 
       <article class="skill-category email">
         <div class="skill-category-head">
-          <span>02</span>
+          <span>03</span>
           <h3>Email Security</h3>
         </div>
         <p>
@@ -758,7 +800,7 @@
 
       <article class="skill-category systems">
         <div class="skill-category-head">
-          <span>03</span>
+          <span>04</span>
           <h3>Systems and Networking</h3>
         </div>
         <p>
@@ -781,31 +823,37 @@
 
       <article class="skill-category automation">
         <div class="skill-category-head">
-          <span>04</span>
-          <h3>Automation and Dashboarding</h3>
+          <span>05</span>
+          <h3>Automation, Dashboards and Reporting</h3>
         </div>
         <p>
-          Scripting, data processing, dashboards and automation workflows for security
-          monitoring and technical reporting.
+          Scripting, REST API automation, data processing and operational dashboards for
+          security monitoring and technical reporting.
         </p>
         <div class="skill-pills">
           <span>Python</span>
-          <span>Bash</span>
-          <span>Pandas</span>
+          <span>PowerShell Basics</span>
+          <span>Bash Basics</span>
+          <span>REST API Automation</span>
+          <span>Keycloak Admin REST API</span>
+          <span>CSV / JSON Processing</span>
+          <span>Data Normalization</span>
+          <span>Markdown Reporting</span>
+          <span>Streamlit</span>
+          <span>pandas</span>
+          <span>Altair</span>
           <span>Dash</span>
-          <span>Plotly</span>
-          <span>CSV Processing</span>
-          <span>Data Visualization</span>
-          <span>SOC Dashboards</span>
+          <span>KPI Dashboards</span>
+          <span>Docker Compose</span>
+          <span>Flask</span>
           <span>Git</span>
           <span>GitHub Pages</span>
-          <span>Render</span>
         </div>
       </article>
 
       <article class="skill-category methods">
         <div class="skill-category-head">
-          <span>05</span>
+          <span>06</span>
           <h3>Security Methodology</h3>
         </div>
         <p>
@@ -826,7 +874,7 @@
 
       <article class="skill-category radar-card">
         <div class="skill-category-head">
-          <span>06</span>
+          <span>07</span>
           <h3>Skill Radar</h3>
         </div>
         <p>
@@ -897,10 +945,10 @@
   <div class="shell">
     <div class="section-head reveal">
       <p class="kicker">Projects</p>
-      <h2>Featured defensive security project.</h2>
+      <h2>Featured defensive security projects.</h2>
       <p>
         Practical cybersecurity work focused on defensive security, SOC analysis,
-        evidence handling and secure infrastructure.
+        IAM operations, evidence handling and secure infrastructure.
       </p>
     </div>
 
@@ -1102,6 +1150,252 @@
 </div>
     </article>
 
+    <article class="compact-project-card reveal">
+      <div class="compact-project-header">
+        <div>
+          <p class="project-label">IAM case study</p>
+          <h3>IAM Operations and CyberIAM Monitoring Lab</h3>
+        </div>
+
+        <a class="btn primary compact-cta" href="projects/iam-operations-cyberiam-lab/" target="_blank" rel="noopener">
+          View full case study
+        </a>
+      </div>
+
+      <p class="compact-summary">
+        An end-to-end IAM operations lab built as a small identity control center: a real Keycloak
+        identity provider, a Flask application protected with OpenID Connect, Python automation for
+        identity inventory and privileged account review, and a Streamlit CyberIAM dashboard that
+        turns login, failed-login and admin events into reviewable, audit-friendly evidence.
+      </p>
+
+      <div class="iam-sim" aria-label="Animated diagram: a login request is redirected to Keycloak, a token passes the RBAC gate into the protected Flask profile, while login, admin and failed-login events stream into the IAM monitoring dashboard">
+        <svg viewBox="0 0 720 210" role="img" focusable="false">
+          <text x="16" y="24" class="iam-sim-tag">OIDC AUTHORIZATION CODE FLOW</text>
+          <text x="446" y="152" class="iam-sim-tag">EVENT STREAM</text>
+
+          <path id="iamPathAuth" class="iam-wire" d="M100,100 C170,100 185,37 248,37" />
+          <path id="iamPathToken" class="iam-wire" d="M402,37 C448,37 440,100 470,100" />
+          <path class="iam-wire" d="M494,100 L506,100" />
+          <path id="iamPathEvents" class="iam-wire iam-wire-events" d="M325,62 C325,140 440,177 536,177" />
+
+          <g class="iam-node">
+            <rect x="14" y="78" width="86" height="44" rx="10" />
+            <text x="57" y="97">USER</text>
+            <text x="57" y="111" class="iam-node-sub">browser session</text>
+          </g>
+
+          <g class="iam-node iam-node-idp">
+            <rect x="250" y="14" width="152" height="48" rx="10" />
+            <text x="326" y="34">KEYCLOAK IdP</text>
+            <text x="326" y="48" class="iam-node-sub">realm airbus-iam-lab</text>
+          </g>
+
+          <g class="iam-gate">
+            <rect x="470" y="72" width="24" height="56" rx="7" />
+            <text x="482" y="64">RBAC</text>
+          </g>
+
+          <g class="iam-node iam-node-ok">
+            <rect x="506" y="78" width="134" height="44" rx="10" />
+            <text x="573" y="97">FLASK /PROFILE</text>
+            <text x="573" y="111" class="iam-node-sub" fill="#5fbf94">access granted</text>
+          </g>
+
+          <g class="iam-node iam-node-mon">
+            <rect x="536" y="155" width="170" height="44" rx="10" />
+            <text x="621" y="174">IAM MONITORING</text>
+            <text x="621" y="188" class="iam-node-sub" fill="#b3985a">streamlit dashboard</text>
+          </g>
+
+          <g>
+            <text x="16" y="156" class="iam-sim-tag">LAB ROLES</text>
+            <rect class="iam-role-pill" x="14" y="164" width="52" height="20" rx="10" />
+            <text x="40" y="177" class="iam-role iam-role-user">USER</text>
+            <rect class="iam-role-pill" x="72" y="164" width="56" height="20" rx="10" />
+            <text x="100" y="177" class="iam-role iam-role-admin">ADMIN</text>
+            <rect class="iam-role-pill" x="134" y="164" width="66" height="20" rx="10" />
+            <text x="167" y="177" class="iam-role iam-role-other">AUDITOR</text>
+            <rect class="iam-role-pill" x="206" y="164" width="68" height="20" rx="10" />
+            <text x="240" y="177" class="iam-role iam-role-other">SUPPORT</text>
+          </g>
+
+          <circle class="iam-dot-auth" r="5">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.02;0.24;1">
+              <mpath href="#iamPathAuth" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.03;0.22;0.26;1" dur="7s" repeatCount="indefinite" />
+          </circle>
+
+          <rect class="iam-dot-token" x="-7" y="-5" width="14" height="10" rx="3">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.28;0.50;1">
+              <mpath href="#iamPathToken" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.28;0.30;0.48;0.52;1" dur="7s" repeatCount="indefinite" />
+          </rect>
+
+          <circle class="iam-dot-ok" r="4.5">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.56;0.72;1">
+              <mpath href="#iamPathEvents" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.56;0.58;0.70;0.74;1" dur="7s" repeatCount="indefinite" />
+          </circle>
+
+          <circle class="iam-dot-priv" r="4.5">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.66;0.82;1">
+              <mpath href="#iamPathEvents" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.66;0.68;0.80;0.84;1" dur="7s" repeatCount="indefinite" />
+          </circle>
+
+          <circle class="iam-dot-fail" r="4.5">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.80;0.96;1">
+              <mpath href="#iamPathEvents" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.80;0.82;0.94;0.98" dur="7s" repeatCount="indefinite" />
+          </circle>
+
+          <circle class="iam-fail-ring" cx="326" cy="62" r="2">
+            <animate attributeName="r" values="2;2;16" keyTimes="0;0.78;0.88" dur="7s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0;0.85;0" keyTimes="0;0.77;0.82;0.90" dur="7s" repeatCount="indefinite" />
+          </circle>
+        </svg>
+        <p class="sim-caption">
+          Identity &amp; access flow — the login request is redirected to Keycloak, the issued token
+          passes the RBAC gate into the protected profile, and login, privileged and failed-login
+          events stream into the IAM monitoring dashboard.
+        </p>
+      </div>
+
+      <div class="compact-metrics">
+        <div>
+          <strong>4</strong>
+          <span>lab users and roles</span>
+        </div>
+
+        <div>
+          <strong>1</strong>
+          <span>protected Flask app (OIDC)</span>
+        </div>
+
+        <div>
+          <strong>1</strong>
+          <span>privileged account detected</span>
+        </div>
+
+        <div>
+          <strong>10</strong>
+          <span>normalized IAM events</span>
+        </div>
+      </div>
+
+      <div class="compact-tags">
+        <span>Keycloak</span>
+        <span>OpenID Connect</span>
+        <span>Flask</span>
+        <span>Python</span>
+        <span>Docker Compose</span>
+        <span>Streamlit</span>
+        <span>pandas</span>
+        <span>Altair</span>
+        <span>Keycloak Admin REST API</span>
+        <span>IAM</span>
+        <span>RBAC</span>
+        <span>CyberIAM</span>
+      </div>
+
+      <div class="project-dark-accordion">
+  <details open>
+    <summary>Project objective</summary>
+    <p>
+      Build a local hands-on lab that simulates the daily workflow of an IAM Operations team:
+      identity lifecycle visibility, access control validation and evidence-based reporting.
+    </p>
+    <ul>
+      <li>Configure a real Keycloak identity provider with a dedicated realm, OIDC client, users and roles.</li>
+      <li>Protect a Flask application with the OpenID Connect Authorization Code Flow.</li>
+      <li>Automate identity inventory, privileged account review and IAM event monitoring with Python.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Technical environment</summary>
+    <p>
+      The lab runs locally with Docker Compose and uses a full IAM stack on top of Keycloak.
+    </p>
+    <ul>
+      <li>Keycloak realm airbus-iam-lab with users, roles and an OIDC client.</li>
+      <li>Flask application protected with OpenID Connect Authorization Code Flow.</li>
+      <li>Role-Based Access Control with filtered lab roles: user, admin, auditor, support.</li>
+      <li>Professional IAM identity profile UI on a protected /profile route.</li>
+      <li>Docker Compose orchestration for Keycloak and the Flask app.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>IAM automation and monitoring</summary>
+    <p>
+      Python scripts use the Keycloak Admin REST API to automate operational IAM tasks
+      and to extract authentication and administrative events.
+    </p>
+    <ul>
+      <li>User and role inventory export.</li>
+      <li>Privileged account detection.</li>
+      <li>Missing lab role control.</li>
+      <li>Daily IAM operations report.</li>
+      <li>Keycloak login and admin event monitoring.</li>
+      <li>Normalized IAM event pipeline with severity classification.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>CyberIAM dashboard and evidence</summary>
+    <p>
+      A Streamlit IAM/CyberIAM operations dashboard consolidates the generated evidence
+      into operational views for review and reporting.
+    </p>
+    <ul>
+      <li>Executive KPIs and identity inventory.</li>
+      <li>Privileged account review.</li>
+      <li>Failed login review and admin events review.</li>
+      <li>CSV and Markdown evidence outputs for auditability.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Security and privacy</summary>
+    <p>
+      The lab was built with a security-first approach to secrets and token handling.
+    </p>
+    <ul>
+      <li>No secrets are displayed in the UI.</li>
+      <li>Client secrets remain in the local .env file and are not committed.</li>
+      <li>Raw tokens are not displayed.</li>
+      <li>Technical Keycloak roles are filtered from the profile UI.</li>
+      <li>The dashboard reads evidence files and does not require live credentials.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Professional value</summary>
+    <p>
+      This lab demonstrates practical IAM operations skills directly related to IAM IT Operations,
+      CyberIAM monitoring and service management workflows.
+    </p>
+    <ul>
+      <li>Identity lifecycle visibility and RBAC validation.</li>
+      <li>Privileged account review and authentication event monitoring.</li>
+      <li>Admin event review and evidence-based reporting.</li>
+    </ul>
+  </details>
+</div>
+    </article>
+
   </div>
 </section>
 
@@ -1283,7 +1577,7 @@
         <div class="contact-card reveal">
           <p class="kicker">Contact</p>
           <h2>Open to junior cybersecurity opportunities.</h2>
-          <p>Available for junior SOC, Blue Team and cybersecurity roles in Spain or remote.</p>
+          <p>Available for junior IAM operations, SOC, IT operations and cybersecurity roles in Spain or remote.</p>
 
           <p class="contact-status">
             <span class="status-dot"></span>
@@ -1293,7 +1587,8 @@
           <div class="actions center">
             <a class="btn primary" href="mailto:marcosrojasjimenez2@gmail.com">Email me</a>
             <a class="btn secondary" href="https://www.linkedin.com/in/marcos-rojas-jimenez" target="_blank" rel="noopener">LinkedIn</a>
-            <a class="btn ghost" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">Main project</a>
+            <a class="btn ghost" href="projects/iam-operations-cyberiam-lab/" target="_blank" rel="noopener">IAM project</a>
+            <a class="btn ghost" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">Email security project</a>
           </div>
         </div>
       </div>

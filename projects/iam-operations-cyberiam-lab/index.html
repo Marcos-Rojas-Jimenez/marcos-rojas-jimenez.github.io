@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IAM Operations & CyberIAM Monitoring Lab</title>
+  <meta name="description" content="IAM Control Center case study: Keycloak, OpenID Connect, Flask, Python automation, event monitoring and a Streamlit CyberIAM dashboard." />
+
+  <style>
+    :root {
+      --bg: #060b16;
+      --panel: #0b1526;
+      --panel-2: #0a1322;
+      --line: rgba(76, 194, 255, 0.16);
+      --soft: rgba(255, 255, 255, 0.08);
+      --ink: #e8f3ff;
+      --dim: #93a9c0;
+      --faint: #64798f;
+      --blue: #4cc2ff;
+      --violet: #a78bfa;
+      --ok: #34d399;
+      --priv: #fbbf24;
+      --alert: #f87171;
+      --mono: "JetBrains Mono", "Cascadia Code", Consolas, ui-monospace, monospace;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    /* console grid backdrop */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(76, 194, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(76, 194, 255, 0.05) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 30%, transparent 75%);
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+
+    /* ============ top bar ============ */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(6, 11, 22, 0.86);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .console-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: 0.86rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .console-brand .sq {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 0.62rem;
+      color: #04121f;
+      background: linear-gradient(160deg, var(--blue), var(--violet));
+      font-weight: 800;
+    }
+
+    .console-brand .path { color: var(--faint); font-weight: 500; }
+
+    .topnav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+    }
+
+    .topnav a { color: var(--dim); padding: 6px 2px; }
+    .topnav a:hover { color: var(--blue); }
+    .topnav a.back { color: var(--blue); }
+
+    /* ============ buttons ============ */
+    .cbtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      border-radius: 9px;
+      border: 1px solid rgba(76, 194, 255, 0.40);
+      background: rgba(76, 194, 255, 0.07);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+    }
+
+    .cbtn:hover {
+      transform: translateY(-2px);
+      background: rgba(76, 194, 255, 0.14);
+      border-color: rgba(76, 194, 255, 0.75);
+    }
+
+    .cbtn.solid {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #04121f;
+    }
+
+    .cbtn.solid:hover { background: #6fd0ff; }
+
+    /* ============ hero ============ */
+    .hero { padding: 72px 0 40px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 34px;
+      align-items: start;
+    }
+
+    .prompt-line {
+      font-family: var(--mono);
+      font-size: 0.80rem;
+      color: var(--faint);
+      letter-spacing: 0.04em;
+      margin: 0 0 18px;
+    }
+
+    .prompt-line .dollar { color: var(--ok); }
+    .prompt-line .cmd { color: var(--dim); }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2.2rem, 4.4vw, 3.9rem);
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+    }
+
+    .hero h1 .accent { color: var(--blue); }
+
+    .hero-role {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--violet);
+      margin: 0 0 20px;
+    }
+
+    .hero-lede {
+      color: var(--dim);
+      font-size: 1.04rem;
+      max-width: 640px;
+      margin: 0 0 14px;
+    }
+
+    .led-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 22px 0 26px;
+    }
+
+    .led-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid var(--soft);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      font-family: var(--mono);
+      font-size: 0.70rem;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .led {
+      width: 7px;
+      height: 7px;
+      border-radius: 99px;
+      background: var(--ok);
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.9);
+      animation: ledpulse 2.4s ease-in-out infinite;
+    }
+
+    .led.blue { background: var(--blue); box-shadow: 0 0 8px rgba(76, 194, 255, 0.9); }
+    .led.amber { background: var(--priv); box-shadow: 0 0 8px rgba(251, 191, 36, 0.9); }
+
+    @keyframes ledpulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    /* ============ console panel ============ */
+    .console {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    .console-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(76, 194, 255, 0.04);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    .console-head .dots { display: flex; gap: 5px; }
+    .console-head .dots i {
+      width: 9px; height: 9px; border-radius: 99px; display: block;
+      background: rgba(255, 255, 255, 0.14);
+    }
+    .console-head .dots i:first-child { background: rgba(248, 113, 113, 0.55); }
+    .console-head .dots i:nth-child(2) { background: rgba(251, 191, 36, 0.55); }
+    .console-head .dots i:last-child { background: rgba(52, 211, 153, 0.55); }
+
+    .console-body { padding: 8px 16px 12px; }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 2px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+      font-family: var(--mono);
+      font-size: 0.80rem;
+    }
+
+    .status-row:last-child { border-bottom: 0; }
+    .status-row .k { color: var(--faint); letter-spacing: 0.04em; }
+    .status-row .v { color: var(--ink); font-weight: 700; display: inline-flex; align-items: center; gap: 8px; text-align: right; }
+    .status-row .v.ok { color: var(--ok); }
+    .status-row .v.blue { color: var(--blue); }
+
+    /* ============ KPI strip ============ */
+    .kpi-strip {
+      margin-top: 40px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(11, 21, 38, 0.55);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .kpi {
+      padding: 20px 14px 18px;
+      text-align: center;
+      border-right: 1px dashed rgba(255, 255, 255, 0.07);
+    }
+
+    .kpi:last-child { border-right: 0; }
+
+    .kpi b {
+      display: block;
+      font-family: var(--mono);
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--blue);
+      line-height: 1.1;
+    }
+
+    .kpi.ok b { color: var(--ok); }
+    .kpi.priv b { color: var(--priv); }
+    .kpi.alert b { color: var(--alert); }
+
+    .kpi span {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.74rem;
+      letter-spacing: 0.04em;
+      color: var(--faint);
+    }
+
+    /* ============ sections ============ */
+    section { padding: 58px 0 8px; }
+
+    .sec-head { margin-bottom: 26px; max-width: 760px; }
+
+    .sec-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+
+    .sec-tag::before {
+      content: "";
+      width: 26px;
+      height: 1px;
+      background: var(--blue);
+      display: inline-block;
+    }
+
+    .sec-head h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+      letter-spacing: -0.03em;
+    }
+
+    .sec-head p { margin: 0; color: var(--dim); }
+
+    .sec-head .hint,
+    .hint {
+      margin-top: 10px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: var(--faint);
+      border-left: 2px solid rgba(76, 194, 255, 0.4);
+      padding-left: 10px;
+    }
+
+    /* step-by-step walkthrough */
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 26px;
+      padding: 6px 18px 16px;
+      margin: 0;
+      list-style: none;
+      counter-reset: step;
+    }
+
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      padding: 10px 0 10px 40px;
+      color: var(--dim);
+      font-size: 0.90rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    }
+
+    .steps li::before {
+      content: counter(step, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 11px;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--blue);
+      border: 1px solid rgba(76, 194, 255, 0.35);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+
+    .steps li strong { color: var(--ink); font-weight: 650; }
+
+    /* ============ generic panels ============ */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+
+    .pane {
+      background: var(--panel);
+      border: 1px solid var(--soft);
+      border-radius: var(--radius);
+      padding: 22px;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+
+    .pane:hover { transform: translateY(-3px); border-color: rgba(76, 194, 255, 0.35); }
+
+    .pane h3 {
+      margin: 0 0 10px;
+      font-size: 1.02rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pane h3 .pin {
+      width: 8px; height: 8px; border-radius: 3px;
+      background: var(--blue); flex: none;
+    }
+
+    .pane h3 .pin.ok { background: var(--ok); }
+    .pane h3 .pin.priv { background: var(--priv); }
+    .pane h3 .pin.violet { background: var(--violet); }
+
+    .pane p { color: var(--dim); margin: 0; font-size: 0.94rem; }
+
+    .ticklist {
+      list-style: none;
+      margin: 12px 0 0;
+      padding: 0;
+      color: var(--dim);
+      font-size: 0.92rem;
+    }
+
+    .ticklist li {
+      padding: 6px 0 6px 22px;
+      position: relative;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    }
+
+    .ticklist li:last-child { border-bottom: 0; }
+
+    .ticklist li::before {
+      content: "›";
+      position: absolute;
+      left: 4px;
+      color: var(--blue);
+      font-family: var(--mono);
+      font-weight: 700;
+    }
+
+    .ticklist li strong { color: var(--ink); font-weight: 650; }
+
+    /* ============ flow diagram ============ */
+    .flow-wrap { overflow-x: auto; padding: 20px 16px 8px; }
+
+    .flow-wrap svg {
+      display: block;
+      width: 100%;
+      min-width: 860px;
+      height: auto;
+    }
+
+    .fl-node rect { fill: var(--panel-2); stroke: rgba(76, 194, 255, 0.45); stroke-width: 1.2; }
+    .fl-node text { fill: #bfe3ff; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-anchor: middle; }
+    .fl-node .sub { fill: var(--faint); font-size: 9.5px; font-weight: 600; letter-spacing: 0.05em; }
+    .fl-idp rect { stroke: rgba(76, 194, 255, 0.9); fill: rgba(76, 194, 255, 0.09); }
+    .fl-ok rect { stroke: rgba(52, 211, 153, 0.6); fill: rgba(52, 211, 153, 0.07); }
+    .fl-ok text { fill: #86efac; }
+    .fl-mon rect { stroke: rgba(251, 191, 36, 0.55); fill: rgba(251, 191, 36, 0.05); }
+    .fl-mon text { fill: #fde68a; }
+    .fl-auto rect { stroke: rgba(167, 139, 250, 0.6); fill: rgba(167, 139, 250, 0.07); }
+    .fl-auto text { fill: #d3c5ff; }
+
+    .fl-wire { fill: none; stroke: rgba(76, 194, 255, 0.28); stroke-width: 1.4; stroke-dasharray: 4 6; }
+    .fl-wire.ev { stroke: rgba(251, 191, 36, 0.28); }
+    .fl-wire.auto { stroke: rgba(167, 139, 250, 0.30); }
+
+    .fl-gate rect { fill: rgba(167, 139, 250, 0.15); stroke: rgba(167, 139, 250, 0.65); stroke-width: 1.2; }
+    .fl-gate text { fill: #d3c5ff; font-size: 10px; font-weight: 900; letter-spacing: 0.10em; text-anchor: middle; }
+
+    .fl-tag { fill: var(--faint); font-size: 9.5px; font-weight: 800; letter-spacing: 0.14em; }
+
+    .fl-dot-auth { fill: var(--blue); filter: drop-shadow(0 0 6px rgba(76, 194, 255, 0.9)); }
+    .fl-dot-token { fill: var(--violet); filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.9)); }
+    .fl-dot-ok { fill: var(--ok); filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.9)); }
+    .fl-dot-priv { fill: var(--priv); filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.9)); }
+    .fl-dot-fail { fill: var(--alert); filter: drop-shadow(0 0 6px rgba(248, 113, 113, 0.9)); }
+
+    .flow-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      padding: 10px 18px 16px;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    .flow-legend i {
+      display: inline-block;
+      width: 8px; height: 8px; border-radius: 99px;
+      margin-right: 7px;
+    }
+
+    /* ============ architecture layers ============ */
+    .layers {
+      position: relative;
+      margin-top: 8px;
+      padding-left: 34px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .layers::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 12px;
+      bottom: 12px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--blue), var(--violet), var(--priv));
+      opacity: 0.5;
+    }
+
+    .layer {
+      position: relative;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 18px;
+      background: var(--panel);
+      border: 1px solid var(--soft);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+
+    .layer:hover { transform: translateX(4px); border-color: rgba(76, 194, 255, 0.35); }
+
+    .layer::before {
+      content: "";
+      position: absolute;
+      left: -28px;
+      top: 26px;
+      width: 10px;
+      height: 10px;
+      border-radius: 99px;
+      background: var(--bg);
+      border: 2px solid var(--blue);
+    }
+
+    .layer.l2::before { border-color: var(--ok); }
+    .layer.l3::before { border-color: var(--violet); }
+    .layer.l4::before { border-color: var(--priv); }
+    .layer.l5::before { border-color: var(--alert); }
+
+    .layer-id {
+      font-family: var(--mono);
+      font-size: 0.70rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    .layer-id b {
+      display: block;
+      color: var(--ink);
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      margin-top: 4px;
+      text-transform: none;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    .layer-body p { margin: 0 0 10px; color: var(--dim); font-size: 0.92rem; }
+
+    .chiprow { display: flex; flex-wrap: wrap; gap: 7px; }
+
+    .chip {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 5px 10px;
+      border-radius: 7px;
+      border: 1px solid rgba(76, 194, 255, 0.28);
+      background: rgba(76, 194, 255, 0.06);
+      color: #a8d8f8;
+    }
+
+    .chip.ok { border-color: rgba(52, 211, 153, 0.30); background: rgba(52, 211, 153, 0.06); color: #8fe6c3; }
+    .chip.priv { border-color: rgba(251, 191, 36, 0.30); background: rgba(251, 191, 36, 0.06); color: #f3d789; }
+    .chip.violet { border-color: rgba(167, 139, 250, 0.30); background: rgba(167, 139, 250, 0.07); color: #cfc0f7; }
+
+    /* ============ dashboard modules ============ */
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .module {
+      background: var(--panel);
+      border: 1px solid var(--soft);
+      border-radius: 12px;
+      padding: 16px 16px 14px;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+
+    .module:hover { transform: translateY(-3px); border-color: rgba(76, 194, 255, 0.4); }
+
+    .module .mod-id {
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      color: var(--faint);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .module .mod-id .st { color: var(--ok); }
+    .module .mod-id .st.plan { color: var(--priv); }
+
+    .module h4 { margin: 0 0 6px; font-size: 0.94rem; }
+    .module p { margin: 0; color: var(--dim); font-size: 0.82rem; line-height: 1.5; }
+
+    /* ============ screenshots ============ */
+    .shot-group { margin: 30px 0 6px; }
+
+    .shot-group-head {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin-bottom: 6px;
+    }
+
+    .shot-group-head .g-tag {
+      font-family: var(--mono);
+      font-size: 0.70rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--blue);
+      border: 1px solid rgba(76, 194, 255, 0.35);
+      border-radius: 7px;
+      padding: 4px 9px;
+    }
+
+    .shot-group-head h3 { margin: 0; font-size: 1.15rem; letter-spacing: -0.01em; }
+    .shot-group-head p { margin: 0; color: var(--faint); font-size: 0.86rem; width: 100%; max-width: 720px; }
+
+    .shot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .shot-grid.two { grid-template-columns: repeat(2, 1fr); }
+
+    .shot {
+      margin: 0;
+      background: var(--panel);
+      border: 1px solid var(--soft);
+      border-radius: 12px;
+      padding: 10px;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+
+    .shot:hover { transform: translateY(-3px); border-color: rgba(76, 194, 255, 0.4); }
+
+    .shot a { display: block; position: relative; }
+
+    .shot img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: contain;
+      display: block;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background:
+        linear-gradient(rgba(76, 194, 255, 0.03) 1px, transparent 1px) 0 0 / 18px 18px,
+        rgba(3, 7, 14, 0.85);
+    }
+
+    .shot figcaption { padding: 11px 6px 4px; }
+
+    .shot figcaption b {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink);
+      font-size: 0.90rem;
+      margin-bottom: 3px;
+    }
+
+    .shot figcaption b::before {
+      content: attr(data-n);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--blue);
+      border: 1px solid rgba(76, 194, 255, 0.35);
+      border-radius: 5px;
+      padding: 1px 5px;
+    }
+
+    .shot figcaption span { color: var(--faint); font-size: 0.80rem; line-height: 1.45; display: block; }
+
+    /* ============ callouts ============ */
+    .callout {
+      margin-top: 26px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(251, 191, 36, 0.28);
+      background: rgba(251, 191, 36, 0.05);
+      padding: 20px 22px;
+    }
+
+    .callout.blue {
+      border-color: rgba(76, 194, 255, 0.28);
+      background: rgba(76, 194, 255, 0.05);
+    }
+
+    .callout h3 {
+      margin: 0 0 10px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--priv);
+    }
+
+    .callout.blue h3 { color: var(--blue); }
+
+    .callout ul { margin: 0; padding-left: 18px; color: var(--dim); font-size: 0.92rem; }
+    .callout ul li { margin: 4px 0; }
+    .callout p { margin: 0; color: var(--dim); font-size: 0.94rem; }
+
+    /* ============ footer ============ */
+    .foot {
+      margin-top: 64px;
+      border-top: 1px solid var(--line);
+      padding: 30px 0 54px;
+      color: var(--faint);
+      font-size: 0.9rem;
+    }
+
+    .foot .shell {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .foot b { color: var(--ink); }
+    .foot .mono { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.10em; text-transform: uppercase; }
+
+    /* ============ responsive ============ */
+    @media (max-width: 1020px) {
+      .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+      .kpi:nth-child(4) { border-right: 0; }
+      .kpi { border-bottom: 1px dashed rgba(255,255,255,0.07); }
+      .kpi:nth-child(n+5) { border-bottom: 0; }
+      .modules { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 880px) {
+      .hero-grid, .grid-2, .shot-grid, .shot-grid.two, .steps { grid-template-columns: 1fr; }
+      .layer { grid-template-columns: 1fr; gap: 8px; }
+      .topbar-inner { flex-direction: column; align-items: flex-start; padding: 12px 0; }
+    }
+
+    @media (max-width: 620px) {
+      .console-brand { white-space: normal; }
+      .console-brand .path { display: none; }
+
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .kpi { border-bottom: 1px dashed rgba(255,255,255,0.07); }
+      .kpi:nth-child(2n) { border-right: 0; }
+      .kpi:nth-child(n+7) { border-bottom: 0; }
+      .modules { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="console-brand">
+        <span class="sq">IAM</span>
+        <span>IAM CONTROL CENTER <span class="path">// cyberiam-monitoring-lab</span></span>
+      </div>
+      <nav class="topnav">
+        <a class="back" href="../../">&larr; Portfolio</a>
+        <a href="#flow">Flow</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#built">Build</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#screenshots">Evidence</a>
+        <a href="#value">Value</a>
+        <a href="#next">Next</a>
+        <a href="#security">Security</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+  <section class="hero" id="top">
+    <div class="shell hero-grid">
+      <div>
+        <p class="prompt-line"><span class="dollar">$</span> <span class="cmd">iam-operations --status --realm airbus-iam-lab</span></p>
+
+        <h1>IAM Operations<br /><span class="accent">&amp; CyberIAM Monitoring Lab</span></h1>
+        <p class="hero-role">Identity · Access · Events · Evidence</p>
+
+        <p class="hero-lede">
+          An end-to-end IAM operations lab built like a small identity control center:
+          a real Keycloak identity provider, a Flask application protected with OpenID
+          Connect, Python automation over the Admin REST API, a normalized IAM event
+          pipeline and a Streamlit CyberIAM dashboard.
+        </p>
+        <p class="hero-lede">
+          Every capability produces evidence — CSV exports, Markdown reports, dashboard
+          views — so identity inventory, privileged access and authentication activity
+          can be reviewed and audited, not just configured.
+        </p>
+
+        <div class="led-row">
+          <span class="led-chip"><i class="led blue"></i> OIDC ACTIVE</span>
+          <span class="led-chip"><i class="led"></i> RBAC ENFORCED</span>
+          <span class="led-chip"><i class="led amber"></i> EVENTS MONITORED</span>
+        </div>
+
+        <div class="hero-actions">
+          <a class="cbtn solid" href="#flow">View access flow</a>
+          <a class="cbtn" href="#screenshots">View evidence</a>
+          <!-- Update this href if the GitHub repository URL changes -->
+          <a class="cbtn" href="https://github.com/marcos-rojas-jimenez/iam-operations-cyberiam-lab" target="_blank" rel="noopener">GitHub repo</a>
+        </div>
+      </div>
+
+      <div class="console" aria-label="Lab status panel">
+        <div class="console-head">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span>iam-lab / status</span>
+        </div>
+        <div class="console-body">
+          <div class="status-row"><span class="k">realm</span><span class="v blue">airbus-iam-lab</span></div>
+          <div class="status-row"><span class="k">oidc_client</span><span class="v blue">flask-oidc-app</span></div>
+          <div class="status-row"><span class="k">auth_flow</span><span class="v">Authorization Code</span></div>
+          <div class="status-row"><span class="k">rbac</span><span class="v ok"><i class="led"></i>ACTIVE</span></div>
+          <div class="status-row"><span class="k">event_monitoring</span><span class="v ok"><i class="led"></i>ENABLED</span></div>
+          <div class="status-row"><span class="k">dashboard_evidence</span><span class="v ok"><i class="led"></i>AVAILABLE</span></div>
+          <div class="status-row"><span class="k">environment</span><span class="v">LOCAL LAB · DOCKER COMPOSE</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-strip">
+      <div class="shell kpi-grid">
+        <div class="kpi"><b>4</b><span>lab users</span></div>
+        <div class="kpi"><b>4</b><span>lab roles</span></div>
+        <div class="kpi"><b>1</b><span>OIDC client</span></div>
+        <div class="kpi ok"><b>1</b><span>protected app</span></div>
+        <div class="kpi"><b>10</b><span>normalized IAM events</span></div>
+        <div class="kpi alert"><b>1</b><span>failed login reviewed</span></div>
+        <div class="kpi priv"><b>3</b><span>admin events reviewed</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="sec-tag">01 · Identity &amp; access flow</p>
+        <h2>How a login travels through the lab.</h2>
+        <p>
+          The pipeline in one view: authentication through Keycloak, token validation and
+          RBAC at the Flask app, and a parallel operations lane where the Admin REST API
+          feeds automation, event monitoring and the CyberIAM dashboard.
+        </p>
+        <p class="hint">How to read this — top lane: what happens when a user logs in.
+        Bottom lane: what the operations tooling does with the same identity data.
+        The numbered walkthrough below follows one request through both lanes.</p>
+      </div>
+
+      <div class="console">
+        <div class="console-head">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span>identity-access-flow / live</span>
+        </div>
+        <div class="flow-wrap" aria-label="Animated diagram of the identity and access flow: user to Keycloak to RBAC gate to protected profile, with automation and events feeding the evidence store and dashboard">
+          <svg viewBox="0 0 1080 300" role="img" focusable="false">
+            <text x="20" y="26" class="fl-tag">AUTHENTICATION LANE — OIDC AUTHORIZATION CODE FLOW</text>
+            <text x="20" y="182" class="fl-tag">OPERATIONS LANE — ADMIN REST API · EVENTS · EVIDENCE</text>
+
+            <path id="flAuth" class="fl-wire" d="M150,90 C240,90 250,64 330,64" />
+            <path id="flToken" class="fl-wire" d="M510,64 C590,64 600,90 660,90" />
+            <path class="fl-wire" d="M712,90 L724,90" />
+            <path id="flAdminApi" class="fl-wire auto" d="M420,110 C420,170 300,155 240,208" />
+            <path id="flEvents" class="fl-wire ev" d="M470,110 C480,190 520,208 560,208" />
+            <path id="flEvid1" class="fl-wire auto" d="M330,240 C500,286 750,286 900,240" />
+            <path id="flDash" class="fl-wire ev" d="M700,226 C780,226 830,228 900,228" />
+
+            <g class="fl-node">
+              <rect x="40" y="66" width="110" height="48" rx="10" />
+              <text x="95" y="87">USER</text>
+              <text x="95" y="102" class="sub">browser session</text>
+            </g>
+
+            <g class="fl-node fl-idp">
+              <rect x="330" y="40" width="180" height="70" rx="10" />
+              <text x="420" y="66">KEYCLOAK IdP</text>
+              <text x="420" y="82" class="sub">realm airbus-iam-lab</text>
+              <text x="420" y="96" class="sub">users · roles · oidc client</text>
+            </g>
+
+            <g class="fl-gate">
+              <rect x="660" y="62" width="26" height="56" rx="7" />
+              <text x="673" y="54">RBAC</text>
+            </g>
+
+            <g class="fl-node fl-ok">
+              <rect x="724" y="66" width="150" height="48" rx="10" />
+              <text x="799" y="87">FLASK /PROFILE</text>
+              <text x="799" y="102" class="sub" fill="#5fbf94">filtered lab roles only</text>
+            </g>
+
+            <g class="fl-node fl-auto">
+              <rect x="120" y="196" width="210" height="60" rx="10" />
+              <text x="225" y="219">PYTHON AUTOMATION</text>
+              <text x="225" y="235" class="sub">inventory · privileged review</text>
+              <text x="225" y="248" class="sub">missing roles · daily report</text>
+            </g>
+
+            <g class="fl-node fl-mon">
+              <rect x="560" y="196" width="140" height="60" rx="10" />
+              <text x="630" y="219">IAM EVENTS</text>
+              <text x="630" y="235" class="sub">login · failed · admin</text>
+              <text x="630" y="248" class="sub">normalized + severity</text>
+            </g>
+
+            <g class="fl-node fl-ok">
+              <rect x="900" y="196" width="150" height="60" rx="10" />
+              <text x="975" y="219">DASHBOARD</text>
+              <text x="975" y="235" class="sub" fill="#5fbf94">streamlit · pandas · altair</text>
+              <text x="975" y="248" class="sub" fill="#5fbf94">KPIs · reviews · evidence</text>
+            </g>
+
+            <circle class="fl-dot-auth" r="5.5">
+              <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.02;0.20;1">
+                <mpath href="#flAuth" />
+              </animateMotion>
+              <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.03;0.19;0.22;1" dur="8s" repeatCount="indefinite" />
+            </circle>
+
+            <rect class="fl-dot-token" x="-8" y="-5.5" width="16" height="11" rx="3">
+              <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.24;0.42;1">
+                <mpath href="#flToken" />
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.24;0.26;0.40;0.44;1" dur="8s" repeatCount="indefinite" />
+            </rect>
+
+            <circle class="fl-dot-auth" r="5">
+              <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.30;0.48;1">
+                <mpath href="#flAdminApi" />
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.30;0.32;0.46;0.50;1" dur="8s" repeatCount="indefinite" />
+            </circle>
+
+            <circle class="fl-dot-ok" r="5">
+              <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.46;0.60;1">
+                <mpath href="#flEvents" />
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.46;0.48;0.58;0.62;1" dur="8s" repeatCount="indefinite" />
+            </circle>
+
+            <circle class="fl-dot-priv" r="5">
+              <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.56;0.70;1">
+                <mpath href="#flEvents" />
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.56;0.58;0.68;0.72;1" dur="8s" repeatCount="indefinite" />
+            </circle>
+
+            <circle class="fl-dot-fail" r="5">
+              <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.66;0.80;1">
+                <mpath href="#flEvents" />
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.66;0.68;0.78;0.82;1" dur="8s" repeatCount="indefinite" />
+            </circle>
+
+            <circle class="fl-dot-auth" r="5">
+              <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.72;0.86;1">
+                <mpath href="#flEvid1" />
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.72;0.74;0.84;0.88;1" dur="8s" repeatCount="indefinite" />
+            </circle>
+
+            <circle class="fl-dot-ok" r="5">
+              <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.84;0.97;1">
+                <mpath href="#flDash" />
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.84;0.86;0.95;0.99" dur="8s" repeatCount="indefinite" />
+            </circle>
+          </svg>
+        </div>
+        <div class="flow-legend">
+          <span><i style="background:#4cc2ff"></i>auth request / API call</span>
+          <span><i style="background:#a78bfa"></i>token &amp; claims</span>
+          <span><i style="background:#34d399"></i>successful login event</span>
+          <span><i style="background:#fbbf24"></i>admin / privileged event</span>
+          <span><i style="background:#f87171"></i>failed login event</span>
+        </div>
+      </div>
+
+      <div class="console" style="margin-top:18px;">
+        <div class="console-head">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span>request-walkthrough / step-by-step</span>
+        </div>
+        <ol class="steps">
+          <li>The <strong>browser</strong> requests the Flask app.</li>
+          <li>Flask finds no session and <strong>redirects to Keycloak</strong>.</li>
+          <li>Keycloak authenticates the user via the <strong>OIDC Authorization Code Flow</strong>.</li>
+          <li>Flask exchanges the code, <strong>validates the tokens</strong> and extracts identity claims.</li>
+          <li><strong>Technical Keycloak roles are filtered out</strong> of the claims.</li>
+          <li>Only the <strong>lab roles</strong> (user, admin, auditor, support) reach the profile UI.</li>
+          <li><strong>Python automation</strong> exports users and roles through the Admin REST API.</li>
+          <li><strong>Monitoring scripts</strong> extract login, failed-login and admin events.</li>
+          <li>Events are <strong>normalized into a single CSV</strong> with severity classification.</li>
+          <li>The <strong>Streamlit dashboard</strong> reads the generated evidence files — nothing live.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="why">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="sec-tag">02 · Context</p>
+        <h2>What this is, why it was built, and the problem it solves.</h2>
+        <p class="hint">How to read this section — left to right: the project in one panel,
+        the visibility gap it addresses, and the recurring operational tasks it automates.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="pane">
+          <h3><span class="pin"></span>What this project is</h3>
+          <p>
+            A local, hands-on IAM Operations lab that reproduces the daily work of an
+            identity team end to end — from a running identity provider to audit-ready
+            reports. Nothing is mocked: the Flask app authenticates against a real
+            Keycloak realm, and every dashboard figure traces back to an exported
+            evidence file.
+          </p>
+          <ul class="ticklist">
+            <li><strong>Keycloak</strong> realm, OIDC client, users and role mappings.</li>
+            <li><strong>Flask + OpenID Connect</strong> protected application with RBAC.</li>
+            <li><strong>Python automation</strong> and event monitoring over the Admin REST API.</li>
+            <li><strong>Streamlit dashboard</strong> consolidating the operational evidence.</li>
+          </ul>
+        </div>
+
+        <div class="pane">
+          <h3><span class="pin priv"></span>Why it was built</h3>
+          <p>
+            IAM Operations teams are accountable for questions that must be answered
+            with evidence, on demand. This lab automates the visibility those answers
+            require:
+          </p>
+          <ul class="ticklist">
+            <li><strong>Users</strong> — who exists in the realm right now?</li>
+            <li><strong>Roles</strong> — what access does each identity hold?</li>
+            <li><strong>Privileged accounts</strong> — who has admin power, and is it justified?</li>
+            <li><strong>Authentication events</strong> — who logged in, and who failed to?</li>
+            <li><strong>Administrative changes</strong> — what was modified, by whom?</li>
+            <li><strong>Operational evidence</strong> — can each answer be backed by a file?</li>
+            <li><strong>Access reviews</strong> — can reporting be produced on schedule?</li>
+          </ul>
+        </div>
+
+        <div class="pane">
+          <h3><span class="pin ok"></span>The problem it solves</h3>
+          <p>
+            Without automation these are slow, manual console tasks that leave no audit
+            trail. The lab turns each recurring IAM operation into a repeatable job with
+            an evidence file behind it:
+          </p>
+          <ul class="ticklist">
+            <li>Checking <strong>who has access</strong> to what.</li>
+            <li>Validating <strong>role assignments</strong> against the expected model.</li>
+            <li>Identifying <strong>privileged accounts</strong> for review.</li>
+            <li>Reviewing <strong>failed logins</strong> for anomalies.</li>
+            <li>Reviewing <strong>admin changes</strong> in the realm.</li>
+            <li>Producing <strong>evidence files</strong> (CSV / Markdown).</li>
+            <li>Visualizing <strong>operational status</strong> in a dashboard.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="sec-tag">03 · Platform architecture</p>
+        <h2>Five layers, each with verifiable output.</h2>
+        <p>
+          The lab is structured like an IAM platform: identity at the base, access in the
+          middle, operations and evidence on top. Each layer produces artifacts the next
+          layer consumes.
+        </p>
+      </div>
+
+      <div class="layers">
+        <div class="layer l1">
+          <div class="layer-id">Layer 01 · Identity<b>Keycloak identity provider</b></div>
+          <div class="layer-body">
+            <p>
+              A dedicated realm isolates the lab: four test users, four realm roles and a
+              confidential OIDC client, orchestrated locally with Docker Compose.
+            </p>
+            <div class="chiprow">
+              <span class="chip">realm: airbus-iam-lab</span>
+              <span class="chip">client: flask-oidc-app</span>
+              <span class="chip ok">roles: user · admin · auditor · support</span>
+              <span class="chip">4 users</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer l2">
+          <div class="layer-id">Layer 02 · Access<b>OIDC-protected Flask application</b></div>
+          <div class="layer-body">
+            <p>
+              Full Authorization Code Flow — login, callback with state and signature
+              validation, protected /profile route and RP-initiated logout. The profile UI
+              filters technical Keycloak roles and shows only lab roles, with a clear
+              privileged vs standard access classification.
+            </p>
+            <div class="chiprow">
+              <span class="chip violet">authorization code flow</span>
+              <span class="chip">protected /profile</span>
+              <span class="chip ok">role filtering</span>
+              <span class="chip ok">access classification</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer l3">
+          <div class="layer-id">Layer 03 · Automation<b>IAM operations scripts</b></div>
+          <div class="layer-body">
+            <p>
+              Python scripts query the Keycloak Admin REST API and turn manual console
+              checks into repeatable, evidence-producing jobs.
+            </p>
+            <div class="chiprow">
+              <span class="chip">user-role inventory export</span>
+              <span class="chip priv">privileged account detection</span>
+              <span class="chip">missing lab role check</span>
+              <span class="chip">daily IAM report</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer l4">
+          <div class="layer-id">Layer 04 · Monitoring<b>IAM event pipeline</b></div>
+          <div class="layer-body">
+            <p>
+              Login, failed-login, logout and admin events are extracted from Keycloak,
+              normalized into a single schema and classified by severity — one consistent
+              event stream instead of scattered raw exports.
+            </p>
+            <div class="chiprow">
+              <span class="chip ok">login events</span>
+              <span class="chip" style="border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.06);color:#f5a8a8;">failed logins</span>
+              <span class="chip priv">admin events</span>
+              <span class="chip violet">normalized CSV + severity</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer l5">
+          <div class="layer-id">Layer 05 · Reporting<b>Streamlit CyberIAM dashboard</b></div>
+          <div class="layer-body">
+            <p>
+              The operations console. Built with pandas and Altair, it reads only the
+              exported evidence files — no live credentials — and consolidates identity,
+              access and event data into reviewable views.
+            </p>
+            <div class="chiprow">
+              <span class="chip">streamlit</span>
+              <span class="chip">pandas</span>
+              <span class="chip">altair</span>
+              <span class="chip ok">read-only evidence</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="built">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="sec-tag">04 · What I built</p>
+        <h2>Every component, delivered and validated.</h2>
+        <p>
+          The concrete deliverables: realm <strong>airbus-iam-lab</strong>, OIDC client
+          <strong>flask-oidc-app</strong>, the lab roles user / admin / auditor / support,
+          test users, a protected Flask profile, IAM automation, event monitoring and the
+          Streamlit dashboard.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div class="pane">
+          <h3><span class="pin"></span>Identity &amp; SSO</h3>
+          <ul class="ticklist">
+            <li>Keycloak realm <strong>airbus-iam-lab</strong> with event logging enabled.</li>
+            <li>Confidential OIDC client <strong>flask-oidc-app</strong> with redirect and logout configuration.</li>
+            <li>Four lab users mapped to the roles <strong>user, admin, auditor, support</strong>.</li>
+            <li>Flask app with the complete <strong>Authorization Code Flow</strong>.</li>
+            <li>Protected <strong>/profile</strong> route with filtered role display.</li>
+          </ul>
+        </div>
+
+        <div class="pane">
+          <h3><span class="pin violet"></span>Automation &amp; reporting</h3>
+          <ul class="ticklist">
+            <li><strong>User-role inventory</strong> exported to CSV via the Admin REST API.</li>
+            <li><strong>Privileged account review</strong> — admin role holders flagged automatically.</li>
+            <li><strong>Missing lab role check</strong> for RBAC hygiene and compliance.</li>
+            <li><strong>Daily IAM report</strong> consolidating findings in Markdown.</li>
+          </ul>
+        </div>
+
+        <div class="pane">
+          <h3><span class="pin priv"></span>Event monitoring</h3>
+          <ul class="ticklist">
+            <li><strong>Login / failed-login / logout</strong> events exported from Keycloak.</li>
+            <li><strong>Admin events</strong> capturing realm configuration changes.</li>
+            <li><strong>Normalization pipeline</strong> into one unified IAM events CSV.</li>
+            <li><strong>Severity classification</strong> applied to every event.</li>
+          </ul>
+        </div>
+
+        <div class="pane">
+          <h3><span class="pin ok"></span>Validated results — what each number means</h3>
+          <ul class="ticklist">
+            <li><strong>4 lab users</strong> — the full identity population covered by the inventory export.</li>
+            <li><strong>4 lab roles</strong> — the RBAC model (user, admin, auditor, support) validated end to end.</li>
+            <li><strong>1 protected app</strong> — the Flask relying party enforcing OIDC on /profile.</li>
+            <li><strong>1 privileged account</strong> — the admin role holder, automatically detected and flagged for review.</li>
+            <li><strong>10 IAM events normalized</strong> — logins, failures, logouts and changes unified into one severity-tagged CSV.</li>
+            <li><strong>1 failed login reviewed</strong> — captured by monitoring, classified and analyzed in the dashboard.</li>
+            <li><strong>3 admin events reviewed</strong> — realm changes traced with resource and operation context.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dashboard">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="sec-tag">05 · Dashboard modules</p>
+        <h2>The CyberIAM operations console.</h2>
+        <p>
+          Eight modules, each answering one operational question — all reading from
+          exported evidence, never from live credentials.
+        </p>
+      </div>
+
+      <div class="modules">
+        <div class="module">
+          <div class="mod-id"><span>MOD-01</span><span class="st">ONLINE</span></div>
+          <h4>Executive overview</h4>
+          <p>KPIs for identities, roles, privileged accounts and event volume at a glance.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>MOD-02</span><span class="st">ONLINE</span></div>
+          <h4>Identity inventory</h4>
+          <p>Every user in the realm with its role assignments, exported and versionable.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>MOD-03</span><span class="st">ONLINE</span></div>
+          <h4>Privileged accounts</h4>
+          <p>Who holds the admin role, surfaced for recurring privileged access review.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>MOD-04</span><span class="st">ONLINE</span></div>
+          <h4>Role compliance</h4>
+          <p>Users missing expected lab roles, flagged for RBAC hygiene follow-up.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>MOD-05</span><span class="st">ONLINE</span></div>
+          <h4>Event monitoring</h4>
+          <p>The normalized IAM event stream with type and severity classification.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>MOD-06</span><span class="st">ONLINE</span></div>
+          <h4>Failed login review</h4>
+          <p>Authentication errors isolated for analyst review, with user and client context.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>MOD-07</span><span class="st">ONLINE</span></div>
+          <h4>Admin events review</h4>
+          <p>Administrative changes in the realm — what changed, where, and when.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>MOD-08</span><span class="st">ONLINE</span></div>
+          <h4>Evidence &amp; reporting</h4>
+          <p>Index of CSV and Markdown outputs backing every figure shown above.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="sec-tag">06 · Evidence gallery</p>
+        <h2>The lab, as it actually runs.</h2>
+        <p>
+          Screenshots grouped by story: authentication at the identity provider, the
+          protected application, and the CyberIAM dashboard. Click any image to open it
+          at full size.
+        </p>
+        <p class="hint">How to read this gallery — the groups follow one session through the
+        lab: Group A proves authentication is enforced, Group B proves RBAC works in the
+        app, Group C proves the operational data reaches the dashboard. Each caption states
+        what that screenshot demonstrates.</p>
+      </div>
+
+      <div class="shot-group">
+        <div class="shot-group-head">
+          <span class="g-tag">GROUP A</span>
+          <h3>Identity provider &amp; login</h3>
+          <p>Authentication is delegated to Keycloak; unauthenticated requests never reach protected content.</p>
+        </div>
+        <div class="shot-grid two">
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/13-keycloak-login-airbus-realm.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/13-keycloak-login-airbus-realm.png" alt="Keycloak login page for the airbus-iam-lab realm" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="A1">Keycloak login — airbus-iam-lab</b>
+              <span>Proves authentication is delegated: credentials are entered on the realm's own login page and never touch the Flask app.</span>
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/17-protected-route-redirect-login.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/17-protected-route-redirect-login.png" alt="Protected route redirecting an unauthenticated request to login" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="A2">Protected route enforcement</b>
+              <span>Proves access control is enforced: requesting /profile without a session triggers the OIDC redirect instead of serving content.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="shot-group">
+        <div class="shot-group-head">
+          <span class="g-tag">GROUP B</span>
+          <h3>Protected Flask application</h3>
+          <p>The relying party: OIDC session handling, role filtering and privileged vs standard access classification.</p>
+        </div>
+        <div class="shot-grid">
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/12-home-iam-control-center.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/12-home-iam-control-center.png" alt="Home page of the Flask app presented as an IAM control center" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="B1">IAM control center home</b>
+              <span>Entry point of the protected app, with session state and navigation to the identity profile.</span>
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/14-profile-admin-privileged-access.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/14-profile-admin-privileged-access.png" alt="Profile page of an admin user classified as privileged access" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="B2">Privileged profile — admin</b>
+              <span>Proves privileged access classification: the admin user is labeled as privileged — the same account the automation later flags for review.</span>
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/15-profile-normal-standard-access.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/15-profile-normal-standard-access.png" alt="Profile page of a normal user with standard access" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="B3">Standard profile — normal user</b>
+              <span>Proves role filtering: only the single lab role is displayed — technical Keycloak roles never reach the UI.</span>
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/16-oidc-flow-and-system-status.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/16-oidc-flow-and-system-status.png" alt="View of the OIDC flow explanation and system status" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="B4">OIDC flow &amp; system status</b>
+              <span>The Authorization Code Flow and component status, documented inside the app itself.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="shot-group">
+        <div class="shot-group-head">
+          <span class="g-tag">GROUP C</span>
+          <h3>CyberIAM dashboard</h3>
+          <p>The Streamlit operations console: KPIs, inventory, privileged review and event analysis — all from exported evidence.</p>
+        </div>
+        <div class="shot-grid">
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/18-dashboard-executive-overview.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/18-dashboard-executive-overview.png" alt="Executive overview page of the Streamlit IAM dashboard" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="C1">Executive overview</b>
+              <span>Top-level KPIs: users, roles, privileged accounts and event volume in one view.</span>
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/19-dashboard-identity-inventory.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/19-dashboard-identity-inventory.png" alt="Identity inventory page of the dashboard" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="C2">Identity inventory</b>
+              <span>Users and role assignments exported through the Admin REST API.</span>
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/20-dashboard-privileged-accounts.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/20-dashboard-privileged-accounts.png" alt="Privileged accounts review page of the dashboard" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="C3">Privileged accounts</b>
+              <span>Accounts holding the admin role, surfaced for privileged access review.</span>
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/21-dashboard-event-monitoring.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/21-dashboard-event-monitoring.png" alt="Event monitoring page of the dashboard" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="C4">Event monitoring</b>
+              <span>The normalized IAM event stream with severity classification.</span>
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/22-dashboard-failed-login-review.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/22-dashboard-failed-login-review.png" alt="Failed login review page of the dashboard" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="C5">Failed login review</b>
+              <span>Proves the monitoring loop closes: the failed login generated during validation appears here, classified and ready for analyst review.</span>
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <a href="../../assets/projects/iam-operations-cyberiam-lab/23-dashboard-admin-events-review.png" target="_blank" rel="noopener">
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/23-dashboard-admin-events-review.png" alt="Admin events review page of the dashboard" loading="lazy" />
+            </a>
+            <figcaption>
+              <b data-n="C6">Admin events review</b>
+              <span>Administrative changes in the realm, traced with context — three reviewed during validation.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="callout blue">
+        <h3>No public demo — by design</h3>
+        <p>
+          This lab runs locally. Screenshots and documentation are provided as public evidence.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="value">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="sec-tag">07 · Technical value</p>
+        <h2>Why this is relevant to IAM Operations / CyberIAM.</h2>
+        <p>
+          The lab is scoped around the responsibilities an IAM Operations or CyberIAM
+          analyst actually carries — each capability below maps to a recurring task in
+          that role.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="pane">
+          <h3><span class="pin"></span>Identity &amp; access engineering</h3>
+          <p>
+            Keycloak administration, OIDC integration with the Authorization Code Flow,
+            RBAC design and validation, and privileged access visibility — the core
+            technical skills of IAM operations.
+          </p>
+        </div>
+        <div class="pane">
+          <h3><span class="pin priv"></span>CyberIAM monitoring</h3>
+          <p>
+            Authentication and administrative activity treated as monitorable events:
+            extraction, normalization, severity classification and dedicated review
+            workflows for failed logins and admin changes.
+          </p>
+        </div>
+        <div class="pane">
+          <h3><span class="pin ok"></span>Audit-friendly operations</h3>
+          <p>
+            Every check produces CSV or Markdown evidence and a recurring report —
+            service-management style outputs that map directly to access reviews and
+            audit requests.
+          </p>
+        </div>
+      </div>
+
+      <div class="pane" style="margin-top:18px;">
+        <h3><span class="pin violet"></span>Mapped to the day-to-day of the role</h3>
+        <ul class="ticklist">
+          <li><strong>Identity lifecycle visibility</strong> — a current, exportable picture of every account in the realm.</li>
+          <li><strong>RBAC validation</strong> — role assignments checked against the expected model, gaps flagged.</li>
+          <li><strong>Privileged access review</strong> — admin role holders surfaced automatically for recurring review.</li>
+          <li><strong>Authentication monitoring</strong> — login and failed-login activity captured and classified.</li>
+          <li><strong>Admin event review</strong> — realm configuration changes traced for accountability.</li>
+          <li><strong>ITIL / change-management correlation</strong> — admin events provide the raw trail to reconcile changes against tickets and approvals.</li>
+          <li><strong>Audit-friendly evidence</strong> — every check leaves a CSV or Markdown artifact that can be handed to an auditor.</li>
+          <li><strong>Operational reporting</strong> — a daily consolidated report plus a dashboard for status at a glance.</li>
+        </ul>
+      </div>
+
+      <div class="chiprow" style="margin-top:20px;">
+        <span class="chip">Keycloak</span>
+        <span class="chip">OpenID Connect</span>
+        <span class="chip">Flask</span>
+        <span class="chip">Python</span>
+        <span class="chip">Docker Compose</span>
+        <span class="chip">Streamlit</span>
+        <span class="chip">pandas</span>
+        <span class="chip">Altair</span>
+        <span class="chip violet">Keycloak Admin REST API</span>
+        <span class="chip ok">IAM</span>
+        <span class="chip ok">RBAC</span>
+        <span class="chip priv">CyberIAM</span>
+        <span class="chip">SSO</span>
+        <span class="chip">Event Monitoring</span>
+        <span class="chip">Evidence Handling</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="next">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="sec-tag">08 · Next steps</p>
+        <h2>What would come next in a real environment.</h2>
+        <p>
+          This is a local hands-on lab, not a production deployment — and the honest way
+          to present it is to name what a production rollout would still need. These are
+          the realistic next iterations:
+        </p>
+      </div>
+
+      <div class="modules">
+        <div class="module">
+          <div class="mod-id"><span>NEXT-01</span><span class="st plan">PLANNED</span></div>
+          <h4>Scheduled automation</h4>
+          <p>Run the inventory, privileged review and daily report on a scheduler instead of on demand.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>NEXT-02</span><span class="st plan">PLANNED</span></div>
+          <h4>SIEM / SOC integration</h4>
+          <p>Ship the normalized IAM event stream into a SIEM or SOC dashboard for correlation.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>NEXT-03</span><span class="st plan">PLANNED</span></div>
+          <h4>Failed-login alerting</h4>
+          <p>Alert on repeated failed logins per account or client instead of manual review.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>NEXT-04</span><span class="st plan">PLANNED</span></div>
+          <h4>Privileged access workflow</h4>
+          <p>Add an approval workflow before the admin role can be granted or retained.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>NEXT-05</span><span class="st plan">PLANNED</span></div>
+          <h4>ITIL ticket correlation</h4>
+          <p>Reconcile every admin event against a change ticket to close the change-management loop.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>NEXT-06</span><span class="st plan">PLANNED</span></div>
+          <h4>MFA / PKI checks</h4>
+          <p>Extend authentication with MFA enrollment checks and certificate-based options.</p>
+        </div>
+        <div class="module">
+          <div class="mod-id"><span>NEXT-07</span><span class="st plan">PLANNED</span></div>
+          <h4>Reverse proxy &amp; TLS hardening</h4>
+          <p>Front the stack with a hardened reverse proxy and end-to-end TLS for realistic exposure.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="security">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="sec-tag">09 · Security notes</p>
+        <h2>Built and published with secrets in mind.</h2>
+      </div>
+
+      <div class="callout">
+        <h3>Handling of secrets and tokens</h3>
+        <ul>
+          <li>No secrets are displayed anywhere in the UI.</li>
+          <li>Raw tokens are never rendered or logged for display.</li>
+          <li>Client secrets live in a local .env file that is not committed.</li>
+          <li>Technical Keycloak roles are filtered out of the profile UI.</li>
+          <li>The dashboard reads exported evidence files only — it needs no live credentials.</li>
+          <li>This is a local hands-on lab, not a production system, and is presented as such.</li>
+        </ul>
+      </div>
+
+      <div class="hero-actions" style="margin-top:26px;">
+        <a class="cbtn solid" href="../../">Back to portfolio</a>
+        <!-- Update this href if the GitHub repository URL changes -->
+        <a class="cbtn" href="https://github.com/marcos-rojas-jimenez/iam-operations-cyberiam-lab" target="_blank" rel="noopener">GitHub repository</a>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="foot">
+    <div class="shell">
+      <div>
+        <b>Marcos Rojas Jimenez</b><br />
+        Cybersecurity Portfolio · IAM Operations · CyberIAM
+      </div>
+      <div class="mono">realm: airbus-iam-lab · env: local lab</div>
+    </div>
+  </footer>
+
+</body>
+</html>
