@@ -3883,10 +3883,28 @@ summary:focus-visible {
   z-index: 100000;
   background: #04070f;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: opacity 0.6s ease;
+}
+
+.boot-intro .boot-tip {
+  margin: 22px 0 0;
+  max-width: 86vw;
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: clamp(0.72rem, 2.1vw, 0.88rem);
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: #facc15;
+  text-shadow: 0 0 16px rgba(250, 204, 21, 0.4);
+  animation: bootTipPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes bootTipPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 
 .boot-intro pre {
@@ -4076,7 +4094,8 @@ summary:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .boot-intro,
-  .boot-intro pre::after {
+  .boot-intro pre::after,
+  .boot-intro .boot-tip {
     animation: none;
   }
 

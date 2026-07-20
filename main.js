@@ -583,6 +583,12 @@ if (bootPending) {
 
   const bootPre = document.createElement("pre");
   boot.appendChild(bootPre);
+
+  const bootTip = document.createElement("p");
+  bootTip.className = "boot-tip";
+  bootTip.textContent = "[ TIP ] For the best experience, view this portfolio on a computer";
+  boot.appendChild(bootTip);
+
   document.body.appendChild(boot);
 
   const bootLines = [
