@@ -2706,27 +2706,55 @@ if (fwCanvas) {
       tags: ["SOC Analyst L1", "Blue Team", "Incident response", "Remote / Spain"]
     },
 
-    "SOC and Blue Team": {
-      kicker: "01 · Core discipline",
+    "Identity and Access Management": {
+      kicker: "01 · Current focus",
+      lead: "Hands-on IAM operations against a real identity provider — the core of the IAM Operations & CyberIAM Monitoring Lab.",
+      sections: [
+        {
+          title: "Identity & SSO",
+          items: [
+            "<strong>Keycloak:</strong> dedicated realm (airbus-iam-lab), confidential OIDC client, users and role mappings.",
+            "<strong>OpenID Connect:</strong> full Authorization Code Flow — login, callback validation, protected routes, RP-initiated logout.",
+            "<strong>RBAC:</strong> four lab roles (user, admin, auditor, support) validated end to end, with technical roles filtered from the UI.",
+            "<strong>OAuth2 / SAML / MFA:</strong> working conceptual base around tokens, claims, federation and factor concepts."
+          ]
+        },
+        {
+          title: "IAM operations",
+          items: [
+            "<strong>Identity inventory:</strong> user-role exports through the Keycloak Admin REST API.",
+            "<strong>Privileged account review:</strong> admin role holders detected and flagged automatically.",
+            "<strong>Role compliance:</strong> missing lab role checks for RBAC hygiene.",
+            "<strong>IAM event monitoring:</strong> login, failed-login and admin events normalized with severity."
+          ]
+        }
+      ],
+      close: "Everything is demonstrated in the IAM lab: 4 users, 4 roles, 1 privileged account detected, 10 normalized IAM events and a Streamlit CyberIAM dashboard reading the evidence.",
+      tags: ["Keycloak", "OpenID Connect", "RBAC", "SSO", "Privileged Access", "Admin REST API", "IAM Events"]
+    },
+
+    "Security Operations": {
+      kicker: "02 · Core discipline",
       lead: "Detecting, triaging and investigating security events with a defensive mindset — the day-to-day of a SOC analyst.",
       sections: [
         {
           title: "What this covers",
           items: [
             "<strong>Alert triage:</strong> prioritize by severity, confirm true positives, cut the noise.",
-            "<strong>Log & event analysis:</strong> follow an incident across syslog, SMTP responses and dashboards.",
+            "<strong>Log & event analysis:</strong> follow an incident across syslog, SMTP responses, IAM event streams and dashboards.",
             "<strong>Threat detection:</strong> recognize spoofing, SMTP abuse, open-relay probing and auth failures.",
-            "<strong>SIEM fundamentals:</strong> aggregation, correlation and evidence-based investigation.",
+            "<strong>Failed login & admin event review:</strong> authentication errors and realm changes surfaced for analyst review.",
+            "<strong>SIEM fundamentals & ITIL concepts:</strong> aggregation, correlation, and change/event/incident awareness.",
             "<strong>Incident response basics:</strong> contain, document, report."
           ]
         }
       ],
-      close: "Applied for real in PhisDefense: 190 SOC events processed and categorized from a live mail environment, with 270 total security tests aggregated.",
-      tags: ["Alert Triage", "Log Analysis", "Threat Detection", "SIEM", "Evidence Handling", "Incident Response"]
+      close: "Applied for real in both labs: 190 SOC events processed in PhisDefense and a normalized, severity-tagged IAM event pipeline in the Keycloak lab.",
+      tags: ["Alert Triage", "Log Analysis", "Threat Detection", "SIEM", "Evidence Handling", "ITIL Concepts", "Incident Response"]
     },
 
     "Email Security": {
-      kicker: "02 · Signature strength",
+      kicker: "03 · Signature strength",
       lead: "A full defensive email stack designed, deployed and validated on a real Ubuntu VPS — the core of the PhisDefense project.",
       sections: [
         {
@@ -2757,7 +2785,7 @@ if (fwCanvas) {
     },
 
     "Systems and Networking": {
-      kicker: "03 · Infrastructure base",
+      kicker: "04 · Infrastructure base",
       lead: "The systems and networking knowledge that underpins solid defensive work — you can't protect traffic you don't understand.",
       sections: [
         {
@@ -2780,31 +2808,34 @@ if (fwCanvas) {
       tags: ["Linux", "Windows", "TCP/IP", "DNS", "DHCP", "Routing", "Firewalls", "TLS"]
     },
 
-    "Automation and Dashboarding": {
-      kicker: "04 · Force multiplier",
+    "Automation, Dashboards and Reporting": {
+      kicker: "05 · Force multiplier",
       lead: "Turning raw security data into readable evidence and repeatable automation instead of manual, error-prone work.",
       sections: [
         {
-          title: "Scripting & data",
+          title: "Scripting & APIs",
           items: [
-            "Python and Bash for parsing, enrichment and repetitive tasks.",
-            "Pandas and CSV processing to shape sanitized SOC datasets."
+            "Python for parsing, enrichment and repetitive tasks; Bash and PowerShell basics.",
+            "<strong>REST API automation:</strong> identity inventory, privileged account detection and event extraction against the Keycloak Admin REST API.",
+            "pandas, CSV/JSON processing and data normalization to shape sanitized datasets.",
+            "Markdown reporting: consolidated daily IAM operations reports."
           ]
         },
         {
-          title: "Visualization & delivery",
+          title: "Dashboards & delivery",
           items: [
-            "Interactive Python/Dash + Plotly dashboards: KPIs, event categories, SMTP security and reporting status.",
-            "Published with Git, GitHub Pages and Render as a public case study."
+            "<strong>Streamlit + pandas + Altair:</strong> the IAM/CyberIAM operations console (KPIs, reviews, evidence index).",
+            "<strong>Python/Dash + Plotly:</strong> the PhisDefense SOC dashboard (KPIs, event categories, SMTP security).",
+            "Published with Git, GitHub Pages and Render as public case studies."
           ]
         }
       ],
-      close: "In PhisDefense this turned 190 events into a dashboard a non-technical reviewer can actually read.",
-      tags: ["Python", "Bash", "Pandas", "Dash", "Plotly", "Git", "GitHub Pages", "Render"]
+      close: "Across both labs this turned raw logs and API exports into dashboards and reports a reviewer can actually read.",
+      tags: ["Python", "PowerShell Basics", "REST APIs", "pandas", "Streamlit", "Altair", "Dash", "Git"]
     },
 
     "Security Methodology": {
-      kicker: "05 · How I work",
+      kicker: "06 · How I work",
       lead: "A repeatable, evidence-driven approach applied to every task — the habit that ties all the technical skills together.",
       sections: [
         {
