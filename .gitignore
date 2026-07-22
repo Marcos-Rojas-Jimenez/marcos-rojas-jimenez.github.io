@@ -1,2 +1,22 @@
+# Local-only files
 omnira_framer_website.html
 assets/profile.jpg
+
+# Secrets — never commit environment or key material
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Tooling
+node_modules/
+*.log

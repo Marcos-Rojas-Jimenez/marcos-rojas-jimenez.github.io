@@ -1,5 +1,23 @@
 ﻿document.body.classList.add("js-ready");
 
+/* Hero portrait fallback (was an inline onerror handler; moved here so the
+   Content-Security-Policy can disallow inline scripts entirely) */
+(function heroPortraitFallback() {
+  const img = document.querySelector(".hero-portrait img");
+  if (!img) return;
+
+  const hide = () => {
+    const frame = img.closest(".hero-portrait");
+    if (frame) frame.style.display = "none";
+  };
+
+  if (img.complete && img.naturalWidth === 0) {
+    hide();
+  } else {
+    img.addEventListener("error", hide, { once: true });
+  }
+})();
+
 /* Performance: make high-frequency listeners passive and coalesce scroll /
    mousemove work to at most once per animation frame. This removes the
    layout thrashing from the many independent scroll/mousemove handlers
