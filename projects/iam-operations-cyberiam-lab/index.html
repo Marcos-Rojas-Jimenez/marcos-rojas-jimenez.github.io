@@ -6,6 +6,21 @@
   <title>IAM Operations & CyberIAM Monitoring Lab — Marcos Rojas Jiménez</title>
   <meta name="description" content="IAM Operations case study by Marcos Rojas Jiménez: Keycloak, OpenID Connect, Flask, Python automation, event monitoring and a Streamlit CyberIAM dashboard." />
   <link rel="canonical" href="https://marcos-rojas-jimenez.github.io/projects/iam-operations-cyberiam-lab/" />
+  <meta name="theme-color" content="#060b16" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Marcos Rojas Jiménez — Cybersecurity Portfolio" />
+  <meta property="og:title" content="IAM Operations & CyberIAM Monitoring Lab" />
+  <meta property="og:description" content="End-to-end IAM Operations lab: Keycloak, OpenID Connect, RBAC, Python automation, event monitoring and a Streamlit CyberIAM dashboard." />
+  <meta property="og:url" content="https://marcos-rojas-jimenez.github.io/projects/iam-operations-cyberiam-lab/" />
+  <meta property="og:image" content="https://marcos-rojas-jimenez.github.io/assets/projects/iam-operations-cyberiam-lab/18-dashboard-executive-overview.png" />
+  <meta property="og:image:alt" content="Executive overview of the Streamlit IAM/CyberIAM dashboard" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="IAM Operations & CyberIAM Monitoring Lab" />
+  <meta name="twitter:description" content="End-to-end IAM Operations lab: Keycloak, OpenID Connect, RBAC, Python automation, event monitoring and a Streamlit CyberIAM dashboard." />
+  <meta name="twitter:image" content="https://marcos-rojas-jimenez.github.io/assets/projects/iam-operations-cyberiam-lab/18-dashboard-executive-overview.png" />
 
   <style>
     :root {
@@ -793,6 +808,30 @@
       .topbar-inner { flex-direction: column; align-items: flex-start; padding: 12px 0; }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+
+      .led,
+      .pane,
+      .module,
+      .shot,
+      .layer,
+      .cbtn {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      /* SMIL packets can't be paused via CSS — hide the moving parts,
+         keep the static diagram readable */
+      .fl-dot-auth,
+      .fl-dot-token,
+      .fl-dot-ok,
+      .fl-dot-priv,
+      .fl-dot-fail {
+        display: none;
+      }
+    }
+
     @media (max-width: 620px) {
       .console-brand { white-space: normal; }
       .console-brand .path { display: none; }
@@ -1367,7 +1406,7 @@
         <div class="shot-grid two">
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/13-keycloak-login-airbus-realm.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/13-keycloak-login-airbus-realm.png" alt="Keycloak login page for the airbus-iam-lab realm" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/13-keycloak-login-airbus-realm.png" alt="Keycloak login page for the airbus-iam-lab realm" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="A1">Keycloak login — airbus-iam-lab</b>
@@ -1376,7 +1415,7 @@
           </figure>
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/17-protected-route-redirect-login.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/17-protected-route-redirect-login.png" alt="Protected route redirecting an unauthenticated request to login" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/17-protected-route-redirect-login.png" alt="Protected route redirecting an unauthenticated request to login" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="A2">Protected route enforcement</b>
@@ -1395,7 +1434,7 @@
         <div class="shot-grid">
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/12-home-iam-control-center.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/12-home-iam-control-center.png" alt="Home page of the Flask app presented as an IAM control center" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/12-home-iam-control-center.png" alt="Home page of the Flask app presented as an IAM control center" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="B1">IAM control center home</b>
@@ -1404,7 +1443,7 @@
           </figure>
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/14-profile-admin-privileged-access.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/14-profile-admin-privileged-access.png" alt="Profile page of an admin user classified as privileged access" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/14-profile-admin-privileged-access.png" alt="Profile page of an admin user classified as privileged access" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="B2">Privileged profile — admin</b>
@@ -1413,7 +1452,7 @@
           </figure>
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/15-profile-normal-standard-access.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/15-profile-normal-standard-access.png" alt="Profile page of a normal user with standard access" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/15-profile-normal-standard-access.png" alt="Profile page of a normal user with standard access" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="B3">Standard profile — normal user</b>
@@ -1422,7 +1461,7 @@
           </figure>
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/16-oidc-flow-and-system-status.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/16-oidc-flow-and-system-status.png" alt="View of the OIDC flow explanation and system status" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/16-oidc-flow-and-system-status.png" alt="View of the OIDC flow explanation and system status" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="B4">OIDC flow &amp; system status</b>
@@ -1441,7 +1480,7 @@
         <div class="shot-grid">
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/18-dashboard-executive-overview.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/18-dashboard-executive-overview.png" alt="Executive overview page of the Streamlit IAM dashboard" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/18-dashboard-executive-overview.png" alt="Executive overview page of the Streamlit IAM dashboard" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="C1">Executive overview</b>
@@ -1450,7 +1489,7 @@
           </figure>
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/19-dashboard-identity-inventory.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/19-dashboard-identity-inventory.png" alt="Identity inventory page of the dashboard" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/19-dashboard-identity-inventory.png" alt="Identity inventory page of the dashboard" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="C2">Identity inventory</b>
@@ -1459,7 +1498,7 @@
           </figure>
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/20-dashboard-privileged-accounts.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/20-dashboard-privileged-accounts.png" alt="Privileged accounts review page of the dashboard" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/20-dashboard-privileged-accounts.png" alt="Privileged accounts review page of the dashboard" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="C3">Privileged accounts</b>
@@ -1468,7 +1507,7 @@
           </figure>
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/21-dashboard-event-monitoring.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/21-dashboard-event-monitoring.png" alt="Event monitoring page of the dashboard" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/21-dashboard-event-monitoring.png" alt="Event monitoring page of the dashboard" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="C4">Event monitoring</b>
@@ -1477,7 +1516,7 @@
           </figure>
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/22-dashboard-failed-login-review.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/22-dashboard-failed-login-review.png" alt="Failed login review page of the dashboard" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/22-dashboard-failed-login-review.png" alt="Failed login review page of the dashboard" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="C5">Failed login review</b>
@@ -1486,7 +1525,7 @@
           </figure>
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/23-dashboard-admin-events-review.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/23-dashboard-admin-events-review.png" alt="Admin events review page of the dashboard" loading="lazy" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/23-dashboard-admin-events-review.png" alt="Admin events review page of the dashboard" loading="lazy" decoding="async" />
             </a>
             <figcaption>
               <b data-n="C6">Admin events review</b>

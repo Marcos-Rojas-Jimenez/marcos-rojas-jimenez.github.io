@@ -6026,3 +6026,19 @@ summary:focus-visible {
   stroke-width: 1.6;
   opacity: 0;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  /* SMIL-driven packets in the project-card diagrams can't be paused with
+     animation:none — hide the moving parts and keep the static diagram */
+  .sim-dot,
+  .sim-burst,
+  .sim-blocked,
+  .iam-dot-auth,
+  .iam-dot-token,
+  .iam-dot-ok,
+  .iam-dot-priv,
+  .iam-dot-fail,
+  .iam-fail-ring {
+    display: none;
+  }
+}
