@@ -1554,7 +1554,9 @@ if (planetSlots.length && window.innerWidth > 900) {
       });
 
     try {
-      THREE = await import("https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js");
+      // Self-hosted so the strict CSP (script-src 'self') allows it and
+      // the page carries no third-party runtime dependency.
+      THREE = await import("./assets/vendor/three.module.min.js");
 
       await nextFrame();
 
