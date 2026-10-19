@@ -874,7 +874,7 @@
   <section class="hero" id="top">
     <div class="shell hero-grid">
       <div>
-        <p class="prompt-line"><span class="dollar">$</span> <span class="cmd">iam-operations --status --realm airbus-iam-lab</span></p>
+        <p class="prompt-line"><span class="dollar">$</span> <span class="cmd">iam-operations --status --realm iam-ops-lab</span></p>
 
         <h1>IAM Operations<br /><span class="accent">&amp; CyberIAM Monitoring Lab</span></h1>
         <p class="hero-role">Identity · Access · Events · Evidence</p>
@@ -911,7 +911,7 @@
           <span>iam-lab / status</span>
         </div>
         <div class="console-body">
-          <div class="status-row"><span class="k">realm</span><span class="v blue">airbus-iam-lab</span></div>
+          <div class="status-row"><span class="k">realm</span><span class="v blue">iam-ops-lab</span></div>
           <div class="status-row"><span class="k">oidc_client</span><span class="v blue">flask-oidc-app</span></div>
           <div class="status-row"><span class="k">auth_flow</span><span class="v">Authorization Code</span></div>
           <div class="status-row"><span class="k">rbac</span><span class="v ok"><i class="led"></i>ACTIVE</span></div>
@@ -977,7 +977,7 @@
             <g class="fl-node fl-idp">
               <rect x="330" y="40" width="180" height="70" rx="10" />
               <text x="420" y="66">KEYCLOAK IdP</text>
-              <text x="420" y="82" class="sub">realm airbus-iam-lab</text>
+              <text x="420" y="82" class="sub">realm iam-ops-lab</text>
               <text x="420" y="96" class="sub">users · roles · oidc client</text>
             </g>
 
@@ -1187,7 +1187,7 @@
               confidential OIDC client, orchestrated locally with Docker Compose.
             </p>
             <div class="chiprow">
-              <span class="chip">realm: airbus-iam-lab</span>
+              <span class="chip">realm: iam-ops-lab</span>
               <span class="chip">client: flask-oidc-app</span>
               <span class="chip ok">roles: user · admin · auditor · support</span>
               <span class="chip">4 users</span>
@@ -1272,7 +1272,7 @@
         <p class="sec-tag">04 · What I built</p>
         <h2>Every component, delivered and validated.</h2>
         <p>
-          The concrete deliverables: realm <strong>airbus-iam-lab</strong>, OIDC client
+          The concrete deliverables: realm <strong>iam-ops-lab</strong>, OIDC client
           <strong>flask-oidc-app</strong>, the lab roles user / admin / auditor / support,
           test users, a protected Flask profile, IAM automation, event monitoring and the
           Streamlit dashboard.
@@ -1283,7 +1283,7 @@
         <div class="pane">
           <h3><span class="pin"></span>Identity &amp; SSO</h3>
           <ul class="ticklist">
-            <li>Keycloak realm <strong>airbus-iam-lab</strong> with event logging enabled.</li>
+            <li>Keycloak realm <strong>iam-ops-lab</strong> with event logging enabled.</li>
             <li>Confidential OIDC client <strong>flask-oidc-app</strong> with redirect and logout configuration.</li>
             <li>Four lab users mapped to the roles <strong>user, admin, auditor, support</strong>.</li>
             <li>Flask app with the complete <strong>Authorization Code Flow</strong>.</li>
@@ -1408,10 +1408,10 @@
         <div class="shot-grid two">
           <figure class="shot">
             <a href="../../assets/projects/iam-operations-cyberiam-lab/13-keycloak-login-airbus-realm.png" target="_blank" rel="noopener">
-              <img src="../../assets/projects/iam-operations-cyberiam-lab/13-keycloak-login-airbus-realm.png" alt="Keycloak login page for the airbus-iam-lab realm" loading="lazy" decoding="async" />
+              <img src="../../assets/projects/iam-operations-cyberiam-lab/13-keycloak-login-airbus-realm.png" alt="Keycloak login page of the lab realm" loading="lazy" decoding="async" />
             </a>
             <figcaption>
-              <b data-n="A1">Keycloak login — airbus-iam-lab</b>
+              <b data-n="A1">Keycloak login — lab realm</b>
               <span>Proves authentication is delegated: credentials are entered on the realm's own login page and never touch the Flask app.</span>
             </figcaption>
           </figure>
@@ -1706,7 +1706,7 @@
         <b>Marcos Rojas Jimenez</b><br />
         Cybersecurity Portfolio · IAM Operations · CyberIAM
       </div>
-      <div class="mono">realm: airbus-iam-lab · env: local lab</div>
+      <div class="mono">realm: iam-ops-lab · env: local lab</div>
     </div>
   </footer>
 

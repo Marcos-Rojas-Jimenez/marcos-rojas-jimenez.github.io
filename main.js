@@ -2733,7 +2733,7 @@ if (fwCanvas) {
         {
           title: "Identity & SSO",
           items: [
-            "<strong>Keycloak:</strong> dedicated realm (airbus-iam-lab), confidential OIDC client, users and role mappings.",
+            "<strong>Keycloak:</strong> dedicated realm (iam-ops-lab), confidential OIDC client, users and role mappings.",
             "<strong>OpenID Connect:</strong> full Authorization Code Flow — login, callback validation, protected routes, RP-initiated logout.",
             "<strong>RBAC:</strong> four lab roles (user, admin, auditor, support) validated end to end, with technical roles filtered from the UI.",
             "<strong>OAuth2 / SAML / MFA:</strong> working conceptual base around tokens, claims, federation and factor concepts."

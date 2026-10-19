@@ -330,6 +330,36 @@
     border-color: rgba(122,167,255,0.30) !important;
   }
 
+  #training .training-clean-roles {
+    list-style: none !important;
+    margin: 0 0 14px !important;
+    padding: 0 !important;
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  #training .training-clean-roles li {
+    color: #e7eefc !important;
+    font-size: 0.95rem !important;
+    line-height: 1.45 !important;
+  }
+
+  #training .training-clean-roles li span {
+    display: block !important;
+    color: #8fb5ff !important;
+    font-size: 0.8rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  #about .about-languages {
+    color: #aab6c8 !important;
+  }
+
+  #about .about-languages strong {
+    color: #ffffff !important;
+  }
+
   @media (max-width: 900px) {
     #training .training-clean-grid {
       grid-template-columns: 1fr !important;
@@ -536,7 +566,7 @@
     <nav class="nav shell">
       <a class="brand" href="#home">
         <span class="brand-mark">MR</span>
-        <span>Marcos Rojas Jimenez</span>
+        <span>Marcos Rojas Jiménez</span>
       </a>
 
       <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">Menu</button>
@@ -641,15 +671,15 @@
     <section id="about" class="section">
   <div class="shell">
     <div class="section-head reveal">
-      <span class="about-stamp" aria-hidden="true">Verified ✓</span>
       <p class="kicker">About Me</p>
       <h2>Junior cybersecurity profile focused on IAM operations, security monitoring and secure infrastructure.</h2>
       <p>
         I am a junior cybersecurity professional working across defensive security, with a
         strong practical interest in IAM operations, SOC-style monitoring and email security.
-        My background combines Telecommunications and Computer Systems training with a
-        Cybersecurity Master's Degree, giving me a practical foundation in networking, Linux
-        systems, troubleshooting, infrastructure maintenance and secure service configuration.
+        My background combines a Higher Technician Diploma in Telecommunications and Computer
+        Systems with a Professional Master's in Cybersecurity, giving me a practical foundation
+        in networking, Linux systems, troubleshooting, infrastructure maintenance and secure
+        service configuration.
       </p>
 
       <p>
@@ -666,6 +696,10 @@
         required anomaly detection, fault diagnosis, structured reporting, technical documentation
         and attention to detail. These skills transfer directly to IAM operations, SOC monitoring,
         alert triage, incident analysis and evidence-based investigation.
+      </p>
+
+      <p class="about-languages">
+        <strong>Languages:</strong> Spanish (native) · English (B2) · French (A1)
       </p>
     </div>
 
@@ -1218,7 +1252,7 @@
           <g class="iam-node iam-node-idp">
             <rect x="250" y="14" width="152" height="48" rx="10" />
             <text x="326" y="34">KEYCLOAK IdP</text>
-            <text x="326" y="48" class="iam-node-sub">realm airbus-iam-lab</text>
+            <text x="326" y="48" class="iam-node-sub">realm iam-ops-lab</text>
           </g>
 
           <g class="iam-gate">
@@ -1359,7 +1393,7 @@
       The lab runs locally with Docker Compose and uses a full IAM stack on top of Keycloak.
     </p>
     <ul>
-      <li>Keycloak realm airbus-iam-lab with users, roles and an OIDC client.</li>
+      <li>Keycloak realm iam-ops-lab with users, roles and an OIDC client.</li>
       <li>Flask application protected with OpenID Connect Authorization Code Flow.</li>
       <li>Role-Based Access Control with filtered lab roles: user, admin, auditor, support.</li>
       <li>Professional IAM identity profile UI on a protected /profile route.</li>
@@ -1451,8 +1485,8 @@
             <span>Oct 2025 - Jun 2026</span>
             <strong>Cybersecurity</strong>
           </div>
-          <h3>Cybersecurity Master's Degree</h3>
-          <p class="training-clean-place">DigitechFP</p>
+          <h3>Professional Master's in Cybersecurity in IT Environments</h3>
+          <p class="training-clean-place">DigitechFP · Official Spanish VET specialization (Máster de FP)</p>
           <p>
             Specialized training in threat analysis, security monitoring, incident response
             fundamentals, secure infrastructure and defensive cybersecurity projects.
@@ -1475,7 +1509,7 @@
             <span>Sep 2022 - Jun 2024</span>
             <strong>Systems</strong>
           </div>
-          <h3>Telecommunications and Computer Systems</h3>
+          <h3>Higher Technician in Telecommunications and Computer Systems</h3>
           <p class="training-clean-place">IES Universidad Laboral</p>
           <p>
             Technical training in telecommunications, computer systems, networking,
@@ -1496,14 +1530,19 @@
         <div class="planet-slot" data-body="earth" aria-hidden="true"></div>
         <article class="training-clean-card">
           <div class="training-clean-top">
-            <span>Technical experience</span>
-            <strong>Operations</strong>
+            <span>Aug 2023 - Dec 2025</span>
+            <strong>Experience</strong>
           </div>
-          <h3>Analysis and documentation</h3>
-          <p class="training-clean-place">Transferable experience to SOC environments</p>
+          <h3>Professional experience</h3>
+          <p class="training-clean-place">Technical roles with skills transferable to SOC and IAM operations</p>
+          <ul class="training-clean-roles">
+            <li><strong>Quality Inspector</strong> — Tradecorp <span>Feb 2025 - Dec 2025</span></li>
+            <li><strong>Railway Electrical Installation Technician</strong> — Stadler Rail <span>Oct 2024 - Dec 2024</span></li>
+            <li><strong>Electrical Installations Technician</strong> — A&amp;J Systems <span>Aug 2023 - Feb 2024</span></li>
+          </ul>
           <p>
-            Previous technical roles developed skills in anomaly detection, fault diagnosis,
-            structured reporting, quality checks and evidence-based documentation.
+            Anomaly detection, fault diagnosis, structured incident reporting and technical
+            documentation in high-precision environments.
           </p>
           <div class="training-clean-tags">
             <span>Anomaly detection</span>
@@ -1625,7 +1664,7 @@
     </section>
   </main>
 
-  <script src="main.js?v=20260726"></script>
+  <script src="main.js?v=20261019"></script>
 </body>
 </html>
 
