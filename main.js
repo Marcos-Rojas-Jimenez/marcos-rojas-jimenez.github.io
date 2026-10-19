@@ -111,55 +111,6 @@ window.addEventListener("scroll", () => {
   progressBar.style.width = `${progress}%`;
 });
 
-const cursorGlow = document.createElement("div");
-cursorGlow.className = "cursor-glow";
-document.body.appendChild(cursorGlow);
-
-const cursorTarget = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-const cursorCurrent = { x: cursorTarget.x, y: cursorTarget.y };
-
-let glowRunning = false;
-
-function animateCursorGlow() {
-  const dx = cursorTarget.x - cursorCurrent.x;
-  const dy = cursorTarget.y - cursorCurrent.y;
-
-  cursorCurrent.x += dx * 0.14;
-  cursorCurrent.y += dy * 0.14;
-
-  cursorGlow.style.left = `${cursorCurrent.x}px`;
-  cursorGlow.style.top = `${cursorCurrent.y}px`;
-
-  // stop looping once the glow has caught up to the pointer; a mousemove
-  // restarts it. Avoids a permanent rAF loop while the pointer is still.
-  if (Math.abs(dx) < 0.4 && Math.abs(dy) < 0.4) {
-    glowRunning = false;
-    return;
-  }
-
-  requestAnimationFrame(animateCursorGlow);
-}
-
-function kickCursorGlow() {
-  if (!glowRunning) {
-    glowRunning = true;
-    requestAnimationFrame(animateCursorGlow);
-  }
-}
-
-window.addEventListener("mousemove", (event) => {
-  cursorTarget.x = event.clientX;
-  cursorTarget.y = event.clientY;
-
-  if (prefersReducedMotion) {
-    cursorGlow.style.left = `${cursorTarget.x}px`;
-    cursorGlow.style.top = `${cursorTarget.y}px`;
-    return;
-  }
-
-  kickCursorGlow();
-});
-
 const sectionIds = ["about", "skills", "projects", "training", "certifications", "contact"];
 const navAnchors = document.querySelectorAll(".nav-links a");
 const navIndicator = document.getElementById("navIndicator");

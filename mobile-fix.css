@@ -32,23 +32,6 @@ main,
   content: none !important;
 }
 
-.cursor-glow {
-  position: fixed !important;
-  width: 280px !important;
-  height: 280px !important;
-  left: 0;
-  top: 0;
-  pointer-events: none !important;
-  border-radius: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 9999 !important;
-  opacity: 0.38 !important;
-  background:
-    radial-gradient(circle, rgba(122,167,255,0.26), rgba(167,139,250,0.12) 34%, transparent 68%) !important;
-  filter: blur(10px) !important;
-  mix-blend-mode: screen !important;
-}
-
 .skills-search {
   max-width: 620px;
   margin: 0 0 28px 0;

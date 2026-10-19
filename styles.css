@@ -461,19 +461,6 @@ h3 {
   box-shadow: 0 0 18px rgba(108, 92, 231, 0.35);
 }
 
-.cursor-glow {
-  position: fixed;
-  width: 360px;
-  height: 360px;
-  pointer-events: none;
-  border-radius: 50%;
-  z-index: -1;
-  background: radial-gradient(circle, rgba(108,92,231,0.12), transparent 62%);
-  transform: translate(-50%, -50%);
-  transition: opacity 0.25s ease;
-  opacity: 0.9;
-}
-
 body::after {
   content: "";
   position: fixed;
