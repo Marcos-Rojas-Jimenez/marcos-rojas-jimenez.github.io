@@ -1248,7 +1248,7 @@ const paletteActions = [
   { label: "Go to Training", hint: "section", run: () => scrollToSection("#training") },
   { label: "Go to Certifications", hint: "section", run: () => scrollToSection("#certifications") },
   { label: "Go to Contact", hint: "section", run: () => scrollToSection("#contact") },
-  { label: "Download CV", hint: "pdf", run: () => window.open(SITE_ROOT + "assets/cv/marcos-rojas-jimenez-cv.pdf", "_blank", "noopener") },
+  { label: "Download CV", hint: "pdf", run: () => window.open(SITE_ROOT + (I18N.cvPath || "assets/cv/marcos-rojas-jimenez-cv.pdf"), "_blank", "noopener") },
   { label: "Open featured case study", hint: "link", run: () => window.open("https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/", "_blank", "noopener") },
   { label: "Open LinkedIn", hint: "link", run: () => window.open("https://www.linkedin.com/in/marcos-rojas-jimenez", "_blank", "noopener") },
   { label: "Email me", hint: "mailto", run: () => { window.location.href = "mailto:marcosrojasjimenez2@gmail.com"; } },

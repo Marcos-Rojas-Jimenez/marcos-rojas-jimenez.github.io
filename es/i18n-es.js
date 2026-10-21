@@ -1,6 +1,8 @@
 /* Spanish texts for main.js. Loaded only by /es/ before main.js.
    Card details are keyed by each card's <h3> heading on the Spanish page. */
 window.PORTFOLIO_I18N = {
+  cvPath: "assets/cv/marcos-rojas-jimenez-cv-es.pdf",
+
   ui: {
     bootTip: "[ TIP ] Para una mejor experiencia, abre este portfolio en un ordenador",
     bootWelcome: "> acceso concedido — bienvenido",
