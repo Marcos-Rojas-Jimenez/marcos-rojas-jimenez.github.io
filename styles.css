@@ -6029,3 +6029,85 @@ summary:focus-visible {
     display: none;
   }
 }
+
+/* Language switch in the nav + site footer (SEO pass, 2026-10-21) */
+.nav-links a.nav-lang {
+  padding: 4px 10px;
+  border: 1px solid rgba(122,167,255,0.38);
+  border-radius: 999px;
+  color: #c7d7ff;
+  font-size: 0.82em;
+  letter-spacing: 0.06em;
+}
+
+.nav-links a.nav-lang:hover {
+  background: rgba(122,167,255,0.16);
+  color: #ffffff;
+}
+
+.site-footer {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 28px 0 34px;
+  color: #8f9bb0;
+  font-size: 0.92rem;
+}
+
+.site-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer strong {
+  color: #e7eefc;
+}
+
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.site-footer a {
+  color: #aab6c8;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .site-footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 64px; /* room for the back-to-top button */
+  }
+}
+
+/* Nav labels stay on one line; the Spanish labels are longer, so the
+   role pill hides earlier and the links tighten on mid-size screens. */
+.nav-links a {
+  white-space: nowrap;
+}
+
+@media (max-width: 1560px) {
+  html[lang="es"] .nav-role-pill {
+    display: none;
+  }
+}
+
+@media (min-width: 921px) and (max-width: 1100px) {
+  html[lang="es"] .nav-links {
+    gap: 14px;
+    font-size: 0.92rem;
+  }
+}

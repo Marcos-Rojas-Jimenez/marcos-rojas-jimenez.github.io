@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marcos Rojas Jiménez | Portfolio de Ciberseguridad · Analista SOC e IAM Junior</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png" />
+  <meta name="description" content="Portfolio de ciberseguridad de Marcos Rojas Jiménez, analista de ciberseguridad junior en Albacete (España): operaciones IAM con Keycloak, monitorización SOC, seguridad del correo (SPF, DKIM, DMARC) y automatización con Python." />
+  <meta name="author" content="Marcos Rojas Jiménez" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#070a11" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link rel="canonical" href="https://marcos-rojas-jimenez.github.io/es/" />
+  <link rel="alternate" hreflang="en" href="https://marcos-rojas-jimenez.github.io/" />
+  <link rel="alternate" hreflang="es" href="https://marcos-rojas-jimenez.github.io/es/" />
+  <link rel="alternate" hreflang="x-default" href="https://marcos-rojas-jimenez.github.io/" />
+  <meta property="og:type" content="profile" />
+  <meta property="profile:first_name" content="Marcos" />
+  <meta property="profile:last_name" content="Rojas Jiménez" />
+  <meta property="og:site_name" content="Marcos Rojas Jiménez — Portfolio de Ciberseguridad" />
+  <meta property="og:title" content="Marcos Rojas Jiménez | Portfolio de Ciberseguridad" />
+  <meta property="og:description" content="Analista de ciberseguridad junior en Albacete (España): operaciones IAM, monitorización SOC, seguridad del correo y automatización con Python, demostradas con proyectos basados en evidencias." />
+  <meta property="og:url" content="https://marcos-rojas-jimenez.github.io/es/" />
+  <meta property="og:locale" content="es_ES" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:image" content="https://marcos-rojas-jimenez.github.io/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Marcos Rojas Jiménez — portfolio de analista de ciberseguridad junior" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Marcos Rojas Jiménez | Portfolio de Ciberseguridad" />
+  <meta name="twitter:description" content="Analista de ciberseguridad junior en Albacete (España): operaciones IAM, monitorización SOC, seguridad del correo y automatización con Python, demostradas con proyectos basados en evidencias." />
+  <meta name="twitter:image" content="https://marcos-rojas-jimenez.github.io/assets/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ProfilePage",
+        "@id": "https://marcos-rojas-jimenez.github.io/es/#profilepage",
+        "url": "https://marcos-rojas-jimenez.github.io/es/",
+        "name": "Marcos Rojas Jiménez | Portfolio de Ciberseguridad",
+        "inLanguage": "es",
+        "isPartOf": {
+          "@id": "https://marcos-rojas-jimenez.github.io/#website"
+        },
+        "mainEntity": {
+          "@id": "https://marcos-rojas-jimenez.github.io/#person"
+        },
+        "about": {
+          "@id": "https://marcos-rojas-jimenez.github.io/#person"
+        },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://marcos-rojas-jimenez.github.io/assets/profile-cut.png"
+        },
+        "dateCreated": "2026-07-09T00:00:00+02:00",
+        "dateModified": "2026-10-21T00:00:00+02:00"
+      },
+      {
+        "@type": "Person",
+        "@id": "https://marcos-rojas-jimenez.github.io/#person",
+        "name": "Marcos Rojas Jiménez",
+        "alternateName": [
+          "Marcos Rojas Jimenez",
+          "Marcos Rojas"
+        ],
+        "givenName": "Marcos",
+        "familyName": "Rojas Jiménez",
+        "jobTitle": "Analista de Ciberseguridad Junior",
+        "description": "Analista de ciberseguridad junior en Albacete (España), centrado en operaciones IAM, monitorización SOC, seguridad del correo electrónico y automatización con Python.",
+        "url": "https://marcos-rojas-jimenez.github.io/es/",
+        "mainEntityOfPage": "https://marcos-rojas-jimenez.github.io/es/",
+        "email": "mailto:marcosrojasjimenez2@gmail.com",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://marcos-rojas-jimenez.github.io/assets/profile-cut.png",
+          "caption": "Marcos Rojas Jiménez"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Albacete",
+          "addressRegion": "Castilla-La Mancha",
+          "addressCountry": "ES"
+        },
+        "knowsLanguage": [
+          {
+            "@type": "Language",
+            "name": "Spanish",
+            "alternateName": "es"
+          },
+          {
+            "@type": "Language",
+            "name": "English",
+            "alternateName": "en"
+          },
+          {
+            "@type": "Language",
+            "name": "French",
+            "alternateName": "fr"
+          }
+        ],
+        "alumniOf": [
+          {
+            "@type": "EducationalOrganization",
+            "name": "DigitechFP"
+          },
+          {
+            "@type": "EducationalOrganization",
+            "name": "IES Universidad Laboral"
+          }
+        ],
+        "hasCredential": [
+          {
+            "@type": "EducationalOccupationalCredential",
+            "name": "Curso de Especialización en Ciberseguridad en Entornos de las Tecnologías de la Información (Máster de FP)",
+            "credentialCategory": "degree",
+            "recognizedBy": {
+              "@type": "EducationalOrganization",
+              "name": "DigitechFP"
+            }
+          },
+          {
+            "@type": "EducationalOccupationalCredential",
+            "name": "Técnico Superior en Sistemas de Telecomunicaciones e Informáticos",
+            "credentialCategory": "degree",
+            "recognizedBy": {
+              "@type": "EducationalOrganization",
+              "name": "IES Universidad Laboral"
+            }
+          },
+          {
+            "@type": "EducationalOccupationalCredential",
+            "name": "CCNA: Introduction to Networks",
+            "credentialCategory": "certificate",
+            "recognizedBy": {
+              "@type": "Organization",
+              "name": "Cisco Networking Academy"
+            }
+          }
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/in/marcos-rojas-jimenez",
+          "https://github.com/Marcos-Rojas-Jimenez"
+        ],
+        "knowsAbout": [
+          "Ciberseguridad",
+          "Gestión de identidades y accesos (IAM)",
+          "Operaciones IAM",
+          "Analista SOC",
+          "Monitorización de seguridad",
+          "Blue Team",
+          "Seguridad del correo electrónico",
+          "Keycloak",
+          "OpenID Connect",
+          "RBAC",
+          "SPF",
+          "DKIM",
+          "DMARC",
+          "SIEM",
+          "Linux",
+          "Python",
+          "Streamlit",
+          "Log analysis"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://marcos-rojas-jimenez.github.io/#website",
+        "name": "Marcos Rojas Jiménez — Cybersecurity Portfolio",
+        "alternateName": [
+          "Portfolio de ciberseguridad de Marcos Rojas Jiménez",
+          "Marcos Rojas Jimenez Cybersecurity Portfolio"
+        ],
+        "url": "https://marcos-rojas-jimenez.github.io/",
+        "inLanguage": [
+          "en",
+          "es"
+        ],
+        "about": {
+          "@id": "https://marcos-rojas-jimenez.github.io/#person"
+        },
+        "publisher": {
+          "@id": "https://marcos-rojas-jimenez.github.io/#person"
+        }
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="../styles.css?v=20261021" />
+<style id="project-accordion-final-fix">
+  #projects .compact-project-card {
+    overflow: hidden !important;
+  }
+
+  #projects .compact-project-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 18px !important;
+    flex-wrap: wrap !important;
+  }
+
+  #projects .compact-cta {
+    white-space: normal !important;
+    max-width: 100% !important;
+  }
+
+  #projects details {
+    display: block !important;
+    background: linear-gradient(180deg, rgba(20,27,43,0.98), rgba(10,15,28,0.96)) !important;
+    border: 1px solid rgba(255,255,255,0.14) !important;
+    border-radius: 18px !important;
+    color: #f4f7fb !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.22) !important;
+    overflow: hidden !important;
+    margin: 0 0 12px 0 !important;
+    padding: 0 !important;
+  }
+
+  #projects details[open] {
+    background: linear-gradient(180deg, rgba(28,36,58,0.98), rgba(13,19,34,0.96)) !important;
+    border-color: rgba(122,167,255,0.40) !important;
+    box-shadow: 0 22px 55px rgba(0,0,0,0.32), 0 0 28px rgba(122,167,255,0.10) !important;
+  }
+
+  #projects summary {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    cursor: pointer !important;
+    padding: 18px 20px !important;
+    color: #ffffff !important;
+    font-weight: 950 !important;
+    list-style: none !important;
+    background: transparent !important;
+  }
+
+  #projects summary::-webkit-details-marker {
+    display: none !important;
+  }
+
+  #projects summary::before {
+    content: "+" !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 999px !important;
+    background: rgba(122,167,255,0.16) !important;
+    border: 1px solid rgba(122,167,255,0.28) !important;
+    color: #a9c2ff !important;
+    font-weight: 950 !important;
+  }
+
+  #projects details[open] summary::before {
+    content: "-" !important;
+    background: linear-gradient(135deg, #7aa7ff, #a78bfa) !important;
+    color: #070a11 !important;
+    border-color: transparent !important;
+  }
+
+  #projects details p {
+    color: #aab6c8 !important;
+    padding: 0 22px 22px 58px !important;
+    margin: 0 !important;
+    line-height: 1.65 !important;
+    font-size: 0.98rem !important;
+  }
+
+  #projects details ul {
+    color: #aab6c8 !important;
+    padding: 0 22px 22px 78px !important;
+    margin: 0 !important;
+    line-height: 1.65 !important;
+  }
+
+  #projects details li {
+    color: #aab6c8 !important;
+    margin-bottom: 7px !important;
+  }
+
+  #projects details:hover {
+    border-color: rgba(122,167,255,0.48) !important;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.34), 0 0 30px rgba(122,167,255,0.12) !important;
+  }
+</style>
+<style id="final-cta-click-fix">
+  #projects .compact-project-card,
+  #projects .compact-project-header,
+  #projects .compact-project-header div {
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #projects .compact-project-card::before,
+  #projects .compact-project-card::after,
+  #projects .btn::before,
+  #projects .btn::after {
+    display: none !important;
+    pointer-events: none !important;
+  }
+
+  #projects .compact-project-header {
+    display: block !important;
+  }
+
+  #projects .compact-cta {
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 250px !important;
+    height: 58px !important;
+    margin-top: 22px !important;
+    padding: 0 28px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    isolation: isolate !important;
+  }
+
+  #projects .compact-project-card * {
+    pointer-events: auto;
+  }
+</style>
+<style id="training-clean-final-style">
+  #training.training-clean {
+    padding-top: 72px !important;
+    padding-bottom: 72px !important;
+  }
+
+  #training .training-clean-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+    align-items: stretch !important;
+  }
+
+  #training .training-clean-card {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 26px !important;
+    border-radius: 28px !important;
+    background: linear-gradient(180deg, rgba(22,29,46,0.98), rgba(13,18,31,0.94)) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.34) !important;
+    min-height: 300px !important;
+  }
+
+  #training .training-clean-card.highlight {
+    border-color: rgba(122,167,255,0.36) !important;
+  }
+
+  #training .training-clean-card::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 5px !important;
+    background: linear-gradient(180deg, #7aa7ff, #a78bfa) !important;
+  }
+
+  #training .training-clean-card::after {
+    content: "" !important;
+    position: absolute !important;
+    right: -90px !important;
+    top: -90px !important;
+    width: 190px !important;
+    height: 190px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle, rgba(122,167,255,0.14), transparent 70%) !important;
+    pointer-events: none !important;
+  }
+
+  #training .training-clean-card:hover {
+    transform: translateY(-6px) !important;
+    border-color: rgba(122,167,255,0.40) !important;
+    box-shadow: 0 34px 95px rgba(0,0,0,0.46) !important;
+  }
+
+  #training .training-clean-top {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  #training .training-clean-top span {
+    color: #8fb5ff !important;
+    font-size: 0.78rem !important;
+    font-weight: 950 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  #training .training-clean-top strong {
+    padding: 7px 10px !important;
+    border-radius: 999px !important;
+    background: rgba(122,167,255,0.14) !important;
+    border: 1px solid rgba(122,167,255,0.24) !important;
+    color: #c7d7ff !important;
+    font-size: 0.78rem !important;
+  }
+
+  #training .training-clean-card h3 {
+    color: #ffffff !important;
+    margin: 0 0 8px !important;
+    font-size: 1.34rem !important;
+    line-height: 1.18 !important;
+  }
+
+  #training .training-clean-place {
+    color: #c4b5fd !important;
+    font-weight: 850 !important;
+    margin: 0 0 14px !important;
+  }
+
+  #training .training-clean-card p {
+    color: #aab6c8 !important;
+    line-height: 1.65 !important;
+    margin-top: 0 !important;
+  }
+
+  #training .training-clean-tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin-top: 18px !important;
+  }
+
+  #training .training-clean-tags span {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 8px 10px !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,0.075) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    color: #e7eefc !important;
+    font-size: 0.86rem !important;
+    font-weight: 760 !important;
+  }
+
+  #training .training-clean-tags span:hover {
+    background: rgba(122,167,255,0.16) !important;
+    border-color: rgba(122,167,255,0.30) !important;
+  }
+
+  #training .training-clean-roles {
+    list-style: none !important;
+    margin: 0 0 14px !important;
+    padding: 0 !important;
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  #training .training-clean-roles li {
+    color: #e7eefc !important;
+    font-size: 0.95rem !important;
+    line-height: 1.45 !important;
+  }
+
+  #training .training-clean-roles li span {
+    display: block !important;
+    color: #8fb5ff !important;
+    font-size: 0.8rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  #about .about-languages {
+    color: #aab6c8 !important;
+  }
+
+  #about .about-languages strong {
+    color: #ffffff !important;
+  }
+
+  @media (max-width: 900px) {
+    #training .training-clean-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    #training .training-clean-card {
+      min-height: auto !important;
+    }
+  }
+</style>
+<style id="mobile-hero-final-fix">
+  @media (max-width: 768px) {
+    html,
+    body {
+      max-width: 100% !important;
+      overflow-x: hidden !important;
+    }
+
+    .shell {
+      width: calc(100% - 32px) !important;
+      max-width: 1120px !important;
+    }
+
+    .hero {
+      min-height: auto !important;
+      padding: 118px 0 44px !important;
+    }
+
+    .hero-grid {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 28px !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .hero-copy {
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow: visible !important;
+    }
+
+    .hero-copy h1,
+    .hero h1,
+    h1 {
+      width: 100% !important;
+      max-width: 100% !important;
+      font-size: clamp(2.35rem, 12.5vw, 3.15rem) !important;
+      line-height: 0.96 !important;
+      letter-spacing: -0.045em !important;
+      word-break: normal !important;
+      overflow-wrap: normal !important;
+    }
+
+    .role {
+      max-width: 100% !important;
+      font-size: clamp(1.15rem, 5.8vw, 1.45rem) !important;
+      line-height: 1.15 !important;
+    }
+
+    .hero-text {
+      max-width: 100% !important;
+      font-size: 0.98rem !important;
+      line-height: 1.6 !important;
+    }
+
+    .kicker {
+      max-width: 100% !important;
+      white-space: normal !important;
+      overflow-wrap: break-word !important;
+      font-size: 0.68rem !important;
+      letter-spacing: 0.08em !important;
+    }
+
+    .actions {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+      width: 100% !important;
+    }
+
+    .actions .btn {
+      width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    .profile-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+
+    .hero-copy::before,
+    .hero-copy::after {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .hero-copy h1,
+    .hero h1,
+    h1 {
+      font-size: clamp(2.15rem, 11.5vw, 2.85rem) !important;
+      line-height: 0.98 !important;
+      letter-spacing: -0.035em !important;
+    }
+
+    .role {
+      font-size: clamp(1.05rem, 5.6vw, 1.32rem) !important;
+    }
+  }
+</style>
+<style id="remove-hero-blocks-final">
+  #home::before,
+  #home::after,
+  #home .hero-copy::before,
+  #home .hero-copy::after,
+  .hero::before,
+  .hero::after,
+  .hero-copy::before,
+  .hero-copy::after {
+    display: none !important;
+    content: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+</style>
+<style id="projects-highlight-final">
+  /* Featured project section highlight */
+  #projects .compact-project-card,
+  #projects .project-card {
+    position: relative !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(94, 234, 212, 0.45) !important;
+    box-shadow:
+      0 34px 100px rgba(0, 0, 0, 0.46),
+      0 0 45px rgba(94, 234, 212, 0.14) !important;
+    background:
+      radial-gradient(circle at 90% 10%, rgba(94, 234, 212, 0.14), transparent 32%),
+      linear-gradient(180deg, rgba(22,29,46,0.98), rgba(10,15,28,0.96)) !important;
+  }
+
+  #projects .project-label {
+    display: inline-flex !important;
+    padding: 8px 12px !important;
+    border-radius: 999px !important;
+    background: rgba(94, 234, 212, 0.14) !important;
+    border: 1px solid rgba(94, 234, 212, 0.36) !important;
+    color: #99f6e4 !important;
+    font-weight: 950 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  #projects .compact-metrics div,
+  #projects .project-stats div {
+    border-color: rgba(94, 234, 212, 0.24) !important;
+    background: rgba(255,255,255,0.07) !important;
+  }
+
+  #projects .compact-metrics strong,
+  #projects .project-stats strong {
+    color: #5eead4 !important;
+  }
+
+  #projects .compact-tags span {
+    border-color: rgba(94, 234, 212, 0.22) !important;
+  }
+
+  #projects .compact-tags span:hover {
+    background: rgba(94, 234, 212, 0.14) !important;
+    border-color: rgba(94, 234, 212, 0.42) !important;
+    color: #ffffff !important;
+  }
+
+  /* Green case study button */
+  #projects a[href*="phisdefense-email-security-soc"],
+  #projects a[href*="iam-operations-cyberiam-lab"] {
+    background: linear-gradient(135deg, #22c55e, #5eead4) !important;
+    color: #06110d !important;
+    border: 1px solid rgba(94, 234, 212, 0.70) !important;
+    box-shadow:
+      0 18px 50px rgba(34, 197, 94, 0.34),
+      0 0 32px rgba(94, 234, 212, 0.28) !important;
+    font-weight: 950 !important;
+  }
+
+  #projects a[href*="phisdefense-email-security-soc"]:hover,
+  #projects a[href*="iam-operations-cyberiam-lab"]:hover {
+    transform: translateY(-3px) !important;
+    box-shadow:
+      0 24px 70px rgba(34, 197, 94, 0.42),
+      0 0 44px rgba(94, 234, 212, 0.38) !important;
+  }
+</style>
+  <link rel="stylesheet" href="../mobile-fix.css?v=20261021" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <header class="topbar">
+    <nav class="nav shell">
+      <a class="brand" href="#home">
+        <span class="brand-mark">MR</span>
+        <span>Marcos Rojas Jiménez</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks">Menú</button>
+
+      <div class="nav-role-pill">Analista de Ciberseguridad Junior</div>
+      <div class="nav-links" id="navLinks">
+        <span class="nav-indicator" id="navIndicator" aria-hidden="true"></span>
+        <a href="#about">Sobre mí</a>
+        <a href="#skills">Habilidades</a>
+        <a href="#projects">Proyectos</a>
+        <a href="#training">Formación</a>
+        <a href="#certifications">Certificaciones</a>
+        <a href="#contact">Contacto</a>
+        <a class="nav-lang" href="../" hreflang="en" lang="en" title="View in English">EN</a>
+
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section id="home" class="hero">
+      <div class="hero-orbs" aria-hidden="true">
+        <span class="hero-orb hero-orb-a"></span>
+        <span class="hero-orb hero-orb-b"></span>
+        <span class="hero-orb hero-orb-c"></span>
+      </div>
+
+      <figure class="hero-portrait">
+        <img src="../assets/profile-cut.webp" alt="Marcos Rojas Jiménez, analista de ciberseguridad junior" width="1079" height="1081" fetchpriority="high" />
+      </figure>
+
+      <div class="shell hero-grid">
+        <div class="hero-copy reveal">
+          <p class="kicker">Portfolio de Ciberseguridad · Albacete, España</p>
+
+          <h1>Marcos Rojas Jiménez</h1>
+
+          <p class="role">Analista de Ciberseguridad Junior</p>
+
+          <p class="hero-text">
+            Analista de ciberseguridad junior con un fuerte interés práctico en operaciones IAM,
+            automatización de seguridad, monitorización tipo SOC, seguridad del correo electrónico
+            e informes basados en evidencias, demostrado con proyectos prácticos y validación real.
+          </p>
+
+          <div class="actions">
+            <a class="btn primary" href="#projects">Ver proyectos</a>
+            <a class="btn ghost" href="mailto:marcosrojasjimenez2@gmail.com">Contacto</a>
+            <a class="btn secondary cv-btn" href="../assets/cv/marcos-rojas-jimenez-cv.pdf" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#facc15,#f59e0b)!important;color:#111827!important;border:1px solid rgba(250,204,21,.85)!important;box-shadow:0 18px 50px rgba(250,204,21,.34),0 0 34px rgba(245,158,11,.28)!important;font-weight:950!important;">Descargar CV</a>
+          </div>
+        </div>
+
+        <aside class="profile-card reveal">
+          <p class="card-label">Enfoque actual</p>
+
+          <div class="focus-row">
+            <span>Operaciones IAM</span>
+            <strong>Keycloak · OIDC · RBAC</strong>
+          </div>
+
+          <div class="focus-row">
+            <span>Monitorización SOC</span>
+            <strong>Blue Team</strong>
+          </div>
+
+          <div class="focus-row">
+            <span>Seguridad del correo</span>
+            <strong>SPF · DKIM · DMARC</strong>
+          </div>
+
+          <div class="focus-row">
+            <span>Automatización</span>
+            <strong>Python · Streamlit · Dash</strong>
+          </div>
+
+          <div class="focus-row career-row">
+            <span>Objetivo</span>
+            <strong>Operaciones IAM · Analista SOC L1</strong>
+          </div></aside>
+      </div>
+
+      <a href="#about" class="scroll-cue" aria-hidden="true">
+        <span class="scroll-cue-label">Bajar</span>
+        <span class="scroll-cue-arrow"></span>
+      </a>
+    </section>
+
+    <section class="soc-strip" aria-label="Feed simulado de logs SOC">
+      <div class="shell">
+        <div class="soc-terminal reveal">
+          <div class="soc-terminal-bar">
+            <span class="soc-dot red"></span>
+            <span class="soc-dot yellow"></span>
+            <span class="soc-dot green"></span>
+            <p>soc-monitor — tail -f /var/log/mail.log</p>
+            <strong>LIVE</strong>
+          </div>
+          <div class="soc-terminal-body" id="socFeed"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Sobre mí</p>
+      <h2>Perfil junior de ciberseguridad centrado en operaciones IAM, monitorización de seguridad e infraestructura segura.</h2>
+      <p>
+        Soy un profesional junior de ciberseguridad, de Albacete, enfocado en la seguridad defensiva,
+        con un fuerte interés práctico en operaciones IAM, monitorización tipo SOC y seguridad del
+        correo electrónico. Mi formación combina el Técnico Superior en Sistemas de Telecomunicaciones
+        e Informáticos con un Máster Profesional en Ciberseguridad, lo que me da una base práctica en
+        redes, sistemas Linux, resolución de incidencias, mantenimiento de infraestructuras y
+        configuración segura de servicios.
+      </p>
+
+      <p>
+        Construyo laboratorios prácticos de ciberseguridad que combinan identidad, gestión de accesos,
+        automatización, monitorización e informes basados en evidencias. Entre mis trabajos recientes
+        están un IAM Operations &amp; CyberIAM Monitoring Lab — Keycloak, OpenID Connect, RBAC,
+        automatización en Python sobre la Admin REST API y un dashboard en Streamlit — y PhisDefense,
+        un proyecto de seguridad del correo y dashboard SOC montado en un VPS real con Postfix, Dovecot,
+        SPF, DKIM, DMARC p=reject, DNSSEC, MTA-STS y TLS-RPT.
+      </p>
+
+      <p>
+        Antes de especializarme en ciberseguridad, gané experiencia técnica en entornos que exigían
+        detección de anomalías, diagnóstico de fallos, informes estructurados, documentación técnica
+        y atención al detalle. Son habilidades que se trasladan directamente a las operaciones IAM,
+        la monitorización SOC, el triaje de alertas, el análisis de incidentes y la investigación
+        basada en evidencias.
+      </p>
+
+      <p class="about-languages">
+        <strong>Idiomas:</strong> español (nativo) · inglés (B2) · francés (A1)
+      </p>
+    </div>
+
+    <div class="cards three">
+      <article class="card reveal">
+        <h3>Base técnica</h3>
+        <p>
+          Formación en Telecomunicaciones, Sistemas Informáticos y Ciberseguridad, con experiencia
+          práctica en fundamentos de redes, resolución de incidencias, documentación, detección de
+          anomalías e informes técnicos de incidentes.
+        </p>
+      </article>
+
+      <article class="card reveal">
+        <h3>Enfoque en ciberseguridad</h3>
+        <p>
+          Seguridad defensiva en operaciones IAM, monitorización tipo SOC, seguridad del correo,
+          análisis de logs y eventos, manejo de evidencias y validación mediante proyectos
+          prácticos.
+        </p>
+      </article>
+
+      <article class="card reveal">
+        <h3>Objetivo profesional</h3>
+        <p>
+          Busco oportunidades junior en operaciones IAM, operaciones IT, análisis SOC, monitorización
+          de seguridad y gestión de servicios: puestos donde la automatización, los informes basados
+          en evidencias y la resolución estructurada de problemas aporten valor.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="tech-marquee" aria-hidden="true">
+  <div class="tech-marquee-track">
+    <span>IAM Operations</span>
+    <span>Keycloak</span>
+    <span>OpenID Connect</span>
+    <span>RBAC</span>
+    <span>SOC Monitoring</span>
+    <span>Blue Team</span>
+    <span>SPF</span>
+    <span>DKIM</span>
+    <span>DMARC</span>
+    <span>MTA-STS</span>
+    <span>Linux</span>
+    <span>Python</span>
+    <span>Streamlit</span>
+    <span>Monitorización de eventos</span>
+    <span>Email Security</span>
+    <span>IAM Operations</span>
+    <span>Keycloak</span>
+    <span>OpenID Connect</span>
+    <span>RBAC</span>
+    <span>SOC Monitoring</span>
+    <span>Blue Team</span>
+    <span>SPF</span>
+    <span>DKIM</span>
+    <span>DMARC</span>
+    <span>MTA-STS</span>
+    <span>Linux</span>
+    <span>Python</span>
+    <span>Streamlit</span>
+    <span>Monitorización de eventos</span>
+    <span>Email Security</span>
+  </div>
+</div>
+
+<section id="skills" class="section skills-section">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Habilidades</p>
+      <h2>Habilidades de ciberseguridad en IAM, operaciones de seguridad y automatización.</h2>
+      <p>
+        Una visión práctica de las áreas técnicas que estoy desarrollando en ciberseguridad:
+        gestión de identidades y accesos, seguridad del correo, operaciones de seguridad, sistemas,
+        scripting, automatización e informes.
+      </p>
+    </div>
+
+    <div class="skills-search reveal">
+      <label for="skillSearchInput">Buscar habilidades</label>
+      <input id="skillSearchInput" type="search" placeholder="Busca IAM, Keycloak, Python, DMARC..." autocomplete="off" />
+    </div>
+
+    <div class="skills-matrix reveal">
+
+      <article class="skill-category iam">
+        <div class="skill-category-head">
+          <span>01</span>
+          <h3>Gestión de Identidades y Accesos (IAM)</h3>
+        </div>
+        <p>
+          Operaciones IAM practicadas en el laboratorio de Keycloak: integración SSO, RBAC,
+          visibilidad de accesos privilegiados y monitorización de identidades.
+        </p>
+        <div class="skill-pills">
+          <span>IAM</span>
+          <span>SSO</span>
+          <span>OpenID Connect</span>
+          <span>Fundamentos de OAuth2</span>
+          <span>Fundamentos de SAML</span>
+          <span>Conceptos de MFA</span>
+          <span>RBAC</span>
+          <span>Keycloak</span>
+          <span>Proveedores de identidad (IdP)</span>
+          <span>Access / ID Tokens</span>
+          <span>Revisión de cuentas privilegiadas</span>
+          <span>Inventario de usuarios y roles</span>
+          <span>Monitorización de eventos IAM</span>
+        </div>
+      </article>
+
+      <article class="skill-category soc">
+        <div class="skill-category-head">
+          <span>02</span>
+          <h3>Operaciones de Seguridad</h3>
+        </div>
+        <p>
+          Monitorización tipo SOC, análisis de eventos e investigación basada en evidencias
+          aplicados en los laboratorios de seguridad del correo e IAM.
+        </p>
+        <div class="skill-pills">
+          <span>Monitorización tipo SOC</span>
+          <span>Triaje de alertas</span>
+          <span>Análisis de logs</span>
+          <span>Análisis de eventos de seguridad</span>
+          <span>Revisión de logins fallidos</span>
+          <span>Revisión de eventos de administración</span>
+          <span>Recogida de evidencias</span>
+          <span>Informes de seguridad</span>
+          <span>Fundamentos de respuesta a incidentes</span>
+          <span>Fundamentos de SIEM</span>
+          <span>Conceptos ITIL</span>
+        </div>
+      </article>
+
+      <article class="skill-category email">
+        <div class="skill-category-head">
+          <span>03</span>
+          <h3>Seguridad del Correo Electrónico</h3>
+        </div>
+        <p>
+          Controles defensivos de seguridad del correo, autenticación de dominio, validación
+          frente a suplantación e infraestructura de correo segura.
+        </p>
+        <div class="skill-pills">
+          <span>SPF</span>
+          <span>DKIM</span>
+          <span>DMARC</span>
+          <span>DNSSEC</span>
+          <span>MTA-STS</span>
+          <span>TLS-RPT</span>
+          <span>OpenDKIM</span>
+          <span>OpenDMARC</span>
+          <span>OpenARC</span>
+          <span>Análisis de cabeceras de correo</span>
+          <span>Simulación de spoofing</span>
+        </div>
+      </article>
+
+      <article class="skill-category systems">
+        <div class="skill-category-head">
+          <span>04</span>
+          <h3>Sistemas y Redes</h3>
+        </div>
+        <p>
+          Base técnica en Linux, Windows, fundamentos de redes, resolución de incidencias
+          y conceptos de infraestructura segura.
+        </p>
+        <div class="skill-pills">
+          <span>Linux</span>
+          <span>Windows</span>
+          <span>TCP/IP</span>
+          <span>DNS</span>
+          <span>DHCP</span>
+          <span>Enrutamiento</span>
+          <span>Conmutación</span>
+          <span>Conceptos de firewall</span>
+          <span>TLS</span>
+          <span>Resolución de problemas de red</span>
+        </div>
+      </article>
+
+      <article class="skill-category automation">
+        <div class="skill-category-head">
+          <span>05</span>
+          <h3>Automatización, Dashboards e Informes</h3>
+        </div>
+        <p>
+          Scripting, automatización con REST API, procesado de datos y dashboards operativos
+          para monitorización de seguridad e informes técnicos.
+        </p>
+        <div class="skill-pills">
+          <span>Python</span>
+          <span>PowerShell (básico)</span>
+          <span>Bash (básico)</span>
+          <span>Automatización con REST API</span>
+          <span>Keycloak Admin REST API</span>
+          <span>Procesado de CSV / JSON</span>
+          <span>Normalización de datos</span>
+          <span>Informes en Markdown</span>
+          <span>Streamlit</span>
+          <span>pandas</span>
+          <span>Altair</span>
+          <span>Dash</span>
+          <span>Dashboards de KPIs</span>
+          <span>Docker Compose</span>
+          <span>Flask</span>
+          <span>Git</span>
+          <span>GitHub Pages</span>
+        </div>
+      </article>
+
+      <article class="skill-category methods">
+        <div class="skill-category-head">
+          <span>06</span>
+          <h3>Metodología de Seguridad</h3>
+        </div>
+        <p>
+          Enfoque práctico basado en validación, documentación, conciencia del riesgo,
+          recogida de evidencias y publicación saneada.
+        </p>
+        <div class="skill-pills">
+          <span>Documentación técnica</span>
+          <span>Informes de incidentes</span>
+          <span>Detección de anomalías</span>
+          <span>Diagnóstico de fallos</span>
+          <span>Conciencia del riesgo</span>
+          <span>Pruebas de seguridad</span>
+          <span>Validación defensiva</span>
+          <span>Saneamiento de datos públicos</span>
+        </div>
+      </article>
+
+      <article class="skill-category radar-card">
+        <div class="skill-category-head">
+          <span>07</span>
+          <h3>Radar de habilidades</h3>
+        </div>
+        <p>
+          Una foto sincera de áreas defensivas y ofensivas: mi foco es el trabajo
+          Blue Team y SOC, no las herramientas ofensivas.
+        </p>
+        <canvas id="skillRadar" width="320" height="300" aria-label="Gráfico radar de áreas de habilidad, con foco defensivo"></canvas>
+      </article>
+
+
+    </div>
+  </div>
+</section>
+
+<section class="section game-section" aria-label="Minijuego de defensa del firewall">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Nivel extra</p>
+      <h2>PhisDefense: Mail Storm.</h2>
+      <p>
+        Una tormenta de correos golpea el servidor, oleada tras oleada. Elimina el
+        phishing antes de que llegue, deja pasar el correo legítimo y cuidado
+        con la botnet.
+      </p>
+    </div>
+
+    <div class="fw-frame reveal">
+      <div class="fw-hud">
+        <span class="fw-chip" id="fwScore">SCORE 0</span>
+        <span class="fw-chip" id="fwWave">WAVE 1</span>
+        <span class="fw-chip" id="fwCombo">COMBO ×1</span>
+        <span class="fw-integrity">
+          <i id="fwIntegrityFill"></i>
+          <b id="fwIntegrityLabel">FIREWALL 100%</b>
+        </span>
+      </div>
+      <div class="fw-stage" id="fwStage">
+        <canvas id="fwCanvas"></canvas>
+        <div class="fw-overlay" id="fwOverlay">
+          <p class="fw-title">PHISDEFENSE // MAIL STORM</p>
+          <p class="fw-sub">
+            ✖ phishing — elimínalo &nbsp;·&nbsp; ✓ correo legítimo — déjalo pasar &nbsp;·&nbsp;
+            🔒 cifrado — necesita dos impactos &nbsp;·&nbsp; 💀 ransomware — que nunca llegue &nbsp;·&nbsp;
+            ⛨ parche — repara &nbsp;·&nbsp; ★ dorado — DMARC overdrive
+          </p>
+          <button type="button" id="fwStart">▶ EMPEZAR TURNO</button>
+          <p class="fw-best" id="fwBest"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="giant-marquee" aria-hidden="true">
+  <div class="giant-marquee-track">
+    <span>Seguridad defensiva</span>
+    <span>SOC Monitoring</span>
+    <span>Blue Team</span>
+    <span>Email Security</span>
+    <span>Seguridad defensiva</span>
+    <span>SOC Monitoring</span>
+    <span>Blue Team</span>
+    <span>Email Security</span>
+  </div>
+</div>
+
+<section id="projects" class="section">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Proyectos</p>
+      <h2>Proyectos destacados de seguridad defensiva.</h2>
+      <p>
+        Trabajo práctico de ciberseguridad centrado en seguridad defensiva, análisis SOC,
+        operaciones IAM, manejo de evidencias e infraestructura segura.
+      </p>
+    </div>
+
+    <article class="compact-project-card reveal">
+      <div class="compact-project-header">
+        <div>
+          <p class="project-label">Caso de estudio destacado</p>
+          <h3>PhisDefense: laboratorio SOC y de seguridad del correo</h3>
+        </div>
+
+        <a class="btn primary compact-cta" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">
+          Ver caso de estudio completo
+        </a>
+      </div>
+
+      <p class="compact-summary">
+        Proyecto de seguridad del correo y monitorización SOC construido sobre un entorno de correo
+        real. Valida SPF, DKIM, una política DMARC progresiva que termina en p=reject, DNSSEC,
+        MTA-STS, TLS-RPT, controles de seguridad SMTP y manejo de evidencias tipo SOC mediante
+        un dashboard público.
+      </p>
+
+      <div class="attack-sim" aria-label="Diagrama animado: el correo suplantado lo bloquea DMARC y el legítimo se entrega">
+        <svg viewBox="0 0 720 185" role="img" focusable="false">
+          <text x="12" y="58" class="sim-label sim-red">ATTACKER</text>
+          <text x="12" y="138" class="sim-label sim-green">LEGIT SENDER</text>
+
+          <line x1="110" y1="54" x2="640" y2="54" class="sim-lane" />
+          <line x1="110" y1="134" x2="640" y2="134" class="sim-lane" />
+
+          <g class="sim-gate">
+            <rect x="260" y="30" width="4" height="130" rx="2" />
+            <text x="262" y="20">SPF</text>
+          </g>
+          <g class="sim-gate">
+            <rect x="380" y="30" width="4" height="130" rx="2" />
+            <text x="382" y="20">DKIM</text>
+          </g>
+          <g class="sim-gate sim-gate-dmarc">
+            <rect x="500" y="30" width="4" height="130" rx="2" />
+            <text x="502" y="20">DMARC</text>
+          </g>
+
+          <g class="sim-inbox">
+            <rect x="628" y="112" width="80" height="44" rx="10" />
+            <text x="668" y="139">INBOX</text>
+          </g>
+
+          <circle class="sim-dot sim-dot-red" cx="110" cy="54" r="6">
+            <animateMotion dur="3.8s" repeatCount="indefinite" path="M0,0 L390,0" />
+            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.9;0.94;1" dur="3.8s" repeatCount="indefinite" />
+          </circle>
+
+          <circle class="sim-burst" cx="502" cy="54" r="1">
+            <animate attributeName="r" values="1;1;18" keyTimes="0;0.9;1" dur="3.8s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0;0.9;0" keyTimes="0;0.88;0.94;1" dur="3.8s" repeatCount="indefinite" />
+          </circle>
+
+          <text x="520" y="46" class="sim-blocked">
+            BLOCKED — p=reject
+            <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.88;0.94;1" dur="3.8s" repeatCount="indefinite" />
+          </text>
+
+          <circle class="sim-dot sim-dot-green" cx="110" cy="134" r="6">
+            <animateMotion dur="5s" repeatCount="indefinite" path="M0,0 L530,0" />
+          </circle>
+        </svg>
+        <p class="sim-caption">
+          Simulación en vivo: el correo suplantado se rechaza en la puerta DMARC (p=reject)
+          y el correo autenticado llega a la bandeja de entrada.
+        </p>
+      </div>
+
+      <div class="compact-metrics">
+        <div>
+          <strong>270</strong>
+          <span>pruebas de seguridad</span>
+        </div>
+
+        <div>
+          <strong>190</strong>
+          <span>eventos SOC</span>
+        </div>
+
+        <div>
+          <strong>p=reject</strong>
+          <span>política DMARC final</span>
+        </div>
+
+        <div>
+          <strong>s2026</strong>
+          <span>selector de rotación DKIM</span>
+        </div>
+      </div>
+
+      <div class="compact-tags">
+        <span>Email Security</span>
+        <span>Blue Team</span>
+        <span>SOC</span>
+        <span>Linux</span>
+        <span>Postfix</span>
+        <span>Dovecot</span>
+        <span>OpenDKIM</span>
+        <span>OpenDMARC</span>
+        <span>OpenARC</span>
+        <span>Python</span>
+        <span>Dash</span>
+      </div>
+
+      <div class="project-dark-accordion">
+  <details open>
+    <summary>Objetivo del proyecto</summary>
+    <p>
+      Construir un laboratorio defensivo de seguridad del correo donde los controles no solo se
+      configuran, sino que se prueban, documentan y validan con evidencias técnicas.
+    </p>
+    <ul>
+      <li>Validar cómo reacciona un entorno de correo real ante escenarios de suplantación y abuso de SMTP.</li>
+      <li>Demostrar los controles defensivos con logs, respuestas SMTP y evidencias en el dashboard.</li>
+      <li>Convertir un despliegue técnico en un caso de estudio público apto para revisar en un portfolio.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Entorno técnico</summary>
+    <p>
+      El proyecto se desplegó en un VPS Ubuntu real con una plataforma completa de seguridad del correo.
+    </p>
+    <ul>
+      <li>Postfix como servicio SMTP principal.</li>
+      <li>Dovecot para validar IMAPS con TLS.</li>
+      <li>OpenDKIM para firmar y validar DKIM.</li>
+      <li>OpenDMARC para evaluar la política DMARC y rechazar.</li>
+      <li>OpenARC para la cadena de autenticación ARC.</li>
+      <li>Syslog como fuente principal de evidencias técnicas.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Controles validados</summary>
+    <p>
+      El proyecto validó la autenticación del correo, los controles basados en DNS y la seguridad
+      del transporte. DMARC se aplicó de forma progresiva hasta llegar a la política final p=reject.
+      La rotación de DKIM se hizo aparte con el selector s2026.
+    </p>
+    <ul>
+      <li>Validación de SPF pass y SPF fail.</li>
+      <li>Escenarios DKIM válido, roto y ausente.</li>
+      <li>Rotación del selector DKIM a s2026.</li>
+      <li>Política DMARC progresiva hasta p=reject.</li>
+      <li>Rechazo de la suplantación externa mediante DMARC.</li>
+      <li>Documentación de DNSSEC, MTA-STS y TLS-RPT.</li>
+      <li>Validación de STARTTLS en SMTP y TLS en IMAPS.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Evidencias SOC y dashboard</summary>
+    <p>
+      Los eventos del servidor y las pruebas controladas se procesaron en un dataset SOC saneado y
+      se visualizaron en un dashboard interactivo hecho con Python/Dash.
+    </p>
+    <ul>
+      <li>270 pruebas de seguridad agregadas en el proyecto.</li>
+      <li>190 eventos SOC procesados y categorizados.</li>
+      <li>Eventos de fallos de SMTP AUTH, destinatario desconocido, pruebas de open relay y comprobaciones TLS.</li>
+      <li>Eventos de seguridad del correo: SPF fail, problemas de DKIM y rechazo de suplantación por DMARC.</li>
+      <li>Vistas del dashboard para KPIs, tablas, categorías de eventos, seguridad SMTP y estado de los informes.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Versión pública y privacidad</summary>
+    <p>
+      La versión pública se preparó para el portfolio protegiendo los datos operativos sensibles
+      del entorno original.
+    </p>
+    <ul>
+      <li>Sin claves DKIM privadas.</li>
+      <li>Sin credenciales ni ficheros .env.</li>
+      <li>Sin logs completos en bruto ni copias completas del servidor.</li>
+      <li>Sin IPs sensibles ni datos operativos internos.</li>
+      <li>Solo se incluyen datasets saneados y evidencias públicas.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Valor profesional</summary>
+    <p>
+      Este proyecto demuestra habilidades Blue Team prácticas con un flujo defensivo completo:
+      configuración, validación, recogida de evidencias, automatización, dashboards y comunicación técnica.
+    </p>
+    <ul>
+      <li>Relevante para puestos de analista SOC L1, analista de ciberseguridad junior y Blue Team junior.</li>
+      <li>Muestra capacidad para documentar y explicar controles técnicos con claridad.</li>
+      <li>Conecta la seguridad de la infraestructura con el análisis y los informes tipo SOC.</li>
+    </ul>
+  </details>
+</div>
+    </article>
+
+    <article class="compact-project-card reveal">
+      <div class="compact-project-header">
+        <div>
+          <p class="project-label">Caso de estudio IAM</p>
+          <h3>Laboratorio de operaciones IAM y monitorización CyberIAM</h3>
+        </div>
+
+        <a class="btn primary compact-cta" href="../projects/iam-operations-cyberiam-lab/" target="_blank" rel="noopener">
+          Ver caso de estudio completo
+        </a>
+      </div>
+
+      <p class="compact-summary">
+        Un laboratorio de operaciones IAM de extremo a extremo, montado como un pequeño centro de control
+        de identidades: un proveedor de identidad Keycloak real, una aplicación Flask protegida con
+        OpenID Connect, automatización en Python para el inventario de identidades y la revisión de
+        cuentas privilegiadas, y un dashboard CyberIAM en Streamlit que convierte los logins, los logins
+        fallidos y los eventos de administración en evidencias revisables y auditables.
+      </p>
+
+      <div class="iam-sim" aria-label="Diagrama animado: el login se redirige a Keycloak, el token pasa la puerta RBAC hasta el perfil Flask protegido y los eventos de login, administración y logins fallidos llegan al dashboard de monitorización IAM">
+        <svg viewBox="0 0 720 210" role="img" focusable="false">
+          <text x="16" y="24" class="iam-sim-tag">OIDC AUTHORIZATION CODE FLOW</text>
+          <text x="446" y="152" class="iam-sim-tag">EVENT STREAM</text>
+
+          <path id="iamPathAuth" class="iam-wire" d="M100,100 C170,100 185,37 248,37" />
+          <path id="iamPathToken" class="iam-wire" d="M402,37 C448,37 440,100 470,100" />
+          <path class="iam-wire" d="M494,100 L506,100" />
+          <path id="iamPathEvents" class="iam-wire iam-wire-events" d="M325,62 C325,140 440,177 536,177" />
+
+          <g class="iam-node">
+            <rect x="14" y="78" width="86" height="44" rx="10" />
+            <text x="57" y="97">USER</text>
+            <text x="57" y="111" class="iam-node-sub">browser session</text>
+          </g>
+
+          <g class="iam-node iam-node-idp">
+            <rect x="250" y="14" width="152" height="48" rx="10" />
+            <text x="326" y="34">KEYCLOAK IdP</text>
+            <text x="326" y="48" class="iam-node-sub">realm iam-ops-lab</text>
+          </g>
+
+          <g class="iam-gate">
+            <rect x="470" y="72" width="24" height="56" rx="7" />
+            <text x="482" y="64">RBAC</text>
+          </g>
+
+          <g class="iam-node iam-node-ok">
+            <rect x="506" y="78" width="134" height="44" rx="10" />
+            <text x="573" y="97">FLASK /PROFILE</text>
+            <text x="573" y="111" class="iam-node-sub" fill="#5fbf94">access granted</text>
+          </g>
+
+          <g class="iam-node iam-node-mon">
+            <rect x="536" y="155" width="170" height="44" rx="10" />
+            <text x="621" y="174">IAM MONITORING</text>
+            <text x="621" y="188" class="iam-node-sub" fill="#b3985a">streamlit dashboard</text>
+          </g>
+
+          <g>
+            <text x="16" y="156" class="iam-sim-tag">LAB ROLES</text>
+            <rect class="iam-role-pill" x="14" y="164" width="52" height="20" rx="10" />
+            <text x="40" y="177" class="iam-role iam-role-user">USER</text>
+            <rect class="iam-role-pill" x="72" y="164" width="56" height="20" rx="10" />
+            <text x="100" y="177" class="iam-role iam-role-admin">ADMIN</text>
+            <rect class="iam-role-pill" x="134" y="164" width="66" height="20" rx="10" />
+            <text x="167" y="177" class="iam-role iam-role-other">AUDITOR</text>
+            <rect class="iam-role-pill" x="206" y="164" width="68" height="20" rx="10" />
+            <text x="240" y="177" class="iam-role iam-role-other">SUPPORT</text>
+          </g>
+
+          <circle class="iam-dot-auth" r="5">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.02;0.24;1">
+              <mpath href="#iamPathAuth" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.03;0.22;0.26;1" dur="7s" repeatCount="indefinite" />
+          </circle>
+
+          <rect class="iam-dot-token" x="-7" y="-5" width="14" height="10" rx="3">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.28;0.50;1">
+              <mpath href="#iamPathToken" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.28;0.30;0.48;0.52;1" dur="7s" repeatCount="indefinite" />
+          </rect>
+
+          <circle class="iam-dot-ok" r="4.5">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.56;0.72;1">
+              <mpath href="#iamPathEvents" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.56;0.58;0.70;0.74;1" dur="7s" repeatCount="indefinite" />
+          </circle>
+
+          <circle class="iam-dot-priv" r="4.5">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.66;0.82;1">
+              <mpath href="#iamPathEvents" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.66;0.68;0.80;0.84;1" dur="7s" repeatCount="indefinite" />
+          </circle>
+
+          <circle class="iam-dot-fail" r="4.5">
+            <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.80;0.96;1">
+              <mpath href="#iamPathEvents" />
+            </animateMotion>
+            <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.80;0.82;0.94;0.98" dur="7s" repeatCount="indefinite" />
+          </circle>
+
+          <circle class="iam-fail-ring" cx="326" cy="62" r="2">
+            <animate attributeName="r" values="2;2;16" keyTimes="0;0.78;0.88" dur="7s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0;0.85;0" keyTimes="0;0.77;0.82;0.90" dur="7s" repeatCount="indefinite" />
+          </circle>
+        </svg>
+        <p class="sim-caption">
+          Flujo de identidad y acceso: el login se redirige a Keycloak, el token emitido pasa la puerta
+          RBAC hasta el perfil protegido y los eventos de login, privilegiados y de logins fallidos
+          llegan al dashboard de monitorización IAM.
+        </p>
+      </div>
+
+      <div class="compact-metrics">
+        <div>
+          <strong>4</strong>
+          <span>usuarios y roles de laboratorio</span>
+        </div>
+
+        <div>
+          <strong>1</strong>
+          <span>app Flask protegida (OIDC)</span>
+        </div>
+
+        <div>
+          <strong>1</strong>
+          <span>cuenta privilegiada detectada</span>
+        </div>
+
+        <div>
+          <strong>10</strong>
+          <span>eventos IAM normalizados</span>
+        </div>
+      </div>
+
+      <div class="compact-tags">
+        <span>Keycloak</span>
+        <span>OpenID Connect</span>
+        <span>Flask</span>
+        <span>Python</span>
+        <span>Docker Compose</span>
+        <span>Streamlit</span>
+        <span>pandas</span>
+        <span>Altair</span>
+        <span>Keycloak Admin REST API</span>
+        <span>IAM</span>
+        <span>RBAC</span>
+        <span>CyberIAM</span>
+      </div>
+
+      <div class="project-dark-accordion">
+  <details open>
+    <summary>Objetivo del proyecto</summary>
+    <p>
+      Construir un laboratorio local que simula el día a día de un equipo de operaciones IAM:
+      visibilidad del ciclo de vida de las identidades, validación del control de accesos e informes
+      basados en evidencias.
+    </p>
+    <ul>
+      <li>Configurar un proveedor de identidad Keycloak real con realm dedicado, cliente OIDC, usuarios y roles.</li>
+      <li>Proteger una aplicación Flask con el Authorization Code Flow de OpenID Connect.</li>
+      <li>Automatizar con Python el inventario de identidades, la revisión de cuentas privilegiadas y la monitorización de eventos IAM.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Entorno técnico</summary>
+    <p>
+      El laboratorio se ejecuta en local con Docker Compose y usa una plataforma IAM completa sobre Keycloak.
+    </p>
+    <ul>
+      <li>Realm de Keycloak iam-ops-lab con usuarios, roles y un cliente OIDC.</li>
+      <li>Aplicación Flask protegida con el Authorization Code Flow de OpenID Connect.</li>
+      <li>Control de acceso basado en roles (RBAC) con roles de laboratorio filtrados: user, admin, auditor, support.</li>
+      <li>Interfaz profesional de perfil de identidad en una ruta /profile protegida.</li>
+      <li>Orquestación con Docker Compose de Keycloak y la app Flask.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Automatización y monitorización IAM</summary>
+    <p>
+      Scripts en Python usan la Admin REST API de Keycloak para automatizar tareas operativas de IAM
+      y extraer eventos de autenticación y de administración.
+    </p>
+    <ul>
+      <li>Exportación del inventario de usuarios y roles.</li>
+      <li>Detección de cuentas privilegiadas.</li>
+      <li>Control de usuarios sin rol de laboratorio.</li>
+      <li>Informe diario de operaciones IAM.</li>
+      <li>Monitorización de eventos de login y de administración de Keycloak.</li>
+      <li>Pipeline de eventos IAM normalizados con clasificación por severidad.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Dashboard CyberIAM y evidencias</summary>
+    <p>
+      Un dashboard de operaciones IAM/CyberIAM en Streamlit reúne las evidencias generadas
+      en vistas operativas para su revisión e informe.
+    </p>
+    <ul>
+      <li>KPIs ejecutivos e inventario de identidades.</li>
+      <li>Revisión de cuentas privilegiadas.</li>
+      <li>Revisión de logins fallidos y de eventos de administración.</li>
+      <li>Evidencias en CSV y Markdown para facilitar la auditoría.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Seguridad y privacidad</summary>
+    <p>
+      El laboratorio se construyó priorizando la seguridad en el manejo de secretos y tokens.
+    </p>
+    <ul>
+      <li>La interfaz no muestra ningún secreto.</li>
+      <li>Los client secrets se quedan en el .env local y no se suben al repositorio.</li>
+      <li>No se muestran tokens en bruto.</li>
+      <li>Los roles técnicos de Keycloak se filtran en la interfaz de perfil.</li>
+      <li>El dashboard lee ficheros de evidencias y no necesita credenciales en vivo.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Valor profesional</summary>
+    <p>
+      Este laboratorio demuestra habilidades prácticas de operaciones IAM directamente relacionadas con
+      IAM IT Operations, la monitorización CyberIAM y los flujos de gestión de servicios.
+    </p>
+    <ul>
+      <li>Visibilidad del ciclo de vida de las identidades y validación RBAC.</li>
+      <li>Revisión de cuentas privilegiadas y monitorización de eventos de autenticación.</li>
+      <li>Revisión de eventos de administración e informes basados en evidencias.</li>
+    </ul>
+  </details>
+</div>
+    </article>
+
+  </div>
+</section>
+
+<section id="training" class="section training-clean">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Formación</p>
+      <h2>Formación en ciberseguridad y base técnica.</h2>
+      <p>
+        Formación en ciberseguridad, conocimientos de sistemas, fundamentos de redes y experiencia
+        técnica previa aplicada a la resolución de incidencias, el análisis y la documentación.
+      </p>
+    </div>
+
+    <div class="training-timeline reveal" id="trainingTimeline">
+      <div class="training-progress" aria-hidden="true"><span id="trainingProgressFill"></span></div>
+
+      <div class="training-item">
+        <span class="training-node" aria-hidden="true"></span>
+        <div class="planet-slot" data-body="sun" aria-hidden="true"></div>
+        <article class="training-clean-card highlight">
+          <div class="training-clean-top">
+            <span>Oct 2025 - Jun 2026</span>
+            <strong>Ciberseguridad</strong>
+          </div>
+          <h3>Máster Profesional en Ciberseguridad en Entornos de las Tecnologías de la Información</h3>
+          <p class="training-clean-place">DigitechFP · Curso de especialización oficial de FP (Máster de FP)</p>
+          <p>
+            Formación especializada en análisis de amenazas, monitorización de seguridad, fundamentos
+            de respuesta a incidentes, infraestructura segura y proyectos de ciberseguridad defensiva.
+          </p>
+          <div class="training-clean-tags">
+            <span>Monitorización SOC</span>
+            <span>Análisis de amenazas</span>
+            <span>Seguridad del correo</span>
+            <span>Respuesta a incidentes</span>
+            <span>Infraestructura segura</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="training-item">
+        <span class="training-node" aria-hidden="true"></span>
+        <div class="planet-slot" data-body="saturn" aria-hidden="true"></div>
+        <article class="training-clean-card">
+          <div class="training-clean-top">
+            <span>Sep 2022 - Jun 2024</span>
+            <strong>Sistemas</strong>
+          </div>
+          <h3>Técnico Superior en Sistemas de Telecomunicaciones e Informáticos</h3>
+          <p class="training-clean-place">IES Universidad Laboral</p>
+          <p>
+            Formación técnica en telecomunicaciones, sistemas informáticos, redes, conectividad,
+            mantenimiento de infraestructuras y resolución de averías.
+          </p>
+          <div class="training-clean-tags">
+            <span>Redes</span>
+            <span>TCP/IP</span>
+            <span>Infraestructura</span>
+            <span>Conectividad</span>
+            <span>Resolución de averías</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="training-item">
+        <span class="training-node" aria-hidden="true"></span>
+        <div class="planet-slot" data-body="earth" aria-hidden="true"></div>
+        <article class="training-clean-card">
+          <div class="training-clean-top">
+            <span>Ago 2023 - Dic 2025</span>
+            <strong>Experiencia</strong>
+          </div>
+          <h3>Experiencia profesional</h3>
+          <p class="training-clean-place">Puestos técnicos con habilidades transferibles a SOC y operaciones IAM</p>
+          <ul class="training-clean-roles">
+            <li><strong>Inspector de calidad</strong> — Tradecorp <span>Feb 2025 - Dic 2025</span></li>
+            <li><strong>Técnico de instalaciones eléctricas ferroviarias</strong> — Stadler Rail <span>Oct 2024 - Dic 2024</span></li>
+            <li><strong>Técnico de instalaciones eléctricas</strong> — A&amp;J Systems <span>Ago 2023 - Feb 2024</span></li>
+          </ul>
+          <p>
+            Detección de anomalías, diagnóstico de fallos, informes estructurados de incidencias y
+            documentación técnica en entornos de alta precisión.
+          </p>
+          <div class="training-clean-tags">
+            <span>Detección de anomalías</span>
+            <span>Diagnóstico de fallos</span>
+            <span>Informes</span>
+            <span>Documentación</span>
+            <span>Atención al detalle</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="training-item">
+        <span class="training-node" aria-hidden="true"></span>
+        <div class="planet-slot" data-body="moon" aria-hidden="true"></div>
+        <article class="training-clean-card">
+          <div class="training-clean-top">
+            <span>Aprendizaje continuo</span>
+            <strong>Blue Team</strong>
+          </div>
+          <h3>Certificaciones y laboratorios prácticos</h3>
+          <p class="training-clean-place">Ruta de redes, SOC y Blue Team</p>
+          <p>
+            Desarrollo continuo con fundamentos de redes, formación de analista SOC, rutas de
+            aprendizaje Blue Team y laboratorios prácticos de ciberseguridad.
+          </p>
+          <div class="training-clean-tags">
+            <span>CCNA ITN</span>
+            <span>SOC Analyst L1</span>
+            <span>Ruta BTL1</span>
+            <span>Laboratorios prácticos</span>
+            <span>Monitorización de seguridad</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="certifications" class="section">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="kicker">Certificaciones</p>
+      <h2>Certificaciones y ruta de aprendizaje.</h2>
+      <p>
+        Resumen visual de las certificaciones completadas, en curso y previstas sobre redes,
+        análisis SOC, operaciones Blue Team y ciberseguridad defensiva.
+      </p>
+    </div>
+
+    <div class="cert-grid">
+
+      <article class="cert-card reveal">
+        <div class="cert-image">
+          <img src="../assets/certifications/ccna-introduction-to-networks.webp" alt="Certificado CCNA Introduction to Networks" loading="lazy" decoding="async" />
+        </div>
+        <div class="cert-content">
+          <span class="cert-status completed">Completada</span>
+          <div class="cert-progress"><span style="--p: 100%"></span></div>
+          <h3>CCNA: Introduction to Networks</h3>
+          <p>
+            Certificación de Cisco Networking Academy sobre fundamentos de redes, TCP/IP,
+            enrutamiento, conmutación, direccionamiento y resolución básica de problemas de red.
+          </p>
+        </div>
+      </article>
+
+      <article class="cert-card reveal">
+        <div class="cert-image">
+          <img src="../assets/certifications/tryhackme-sal1.png" alt="Ruta de aprendizaje SOC Analyst Level 1 de TryHackMe" loading="lazy" decoding="async" />
+        </div>
+        <div class="cert-content">
+          <span class="cert-status progress">En curso</span>
+          <div class="cert-progress"><span style="--p: 45%"></span></div>
+          <h3>SOC Analyst Level 1</h3>
+          <p>
+            Ruta de aprendizaje de TryHackMe sobre fundamentos de SOC, triaje de alertas,
+            análisis de logs, monitorización de seguridad y flujos de trabajo Blue Team.
+          </p>
+        </div>
+      </article>
+
+      <article class="cert-card reveal">
+        <div class="cert-image">
+          <img src="../assets/certifications/btl1.jpg" alt="Ruta de certificación Blue Team Level 1" loading="lazy" decoding="async" />
+        </div>
+        <div class="cert-content">
+          <span class="cert-status planned">Próximamente</span>
+          <div class="cert-progress"><span style="--p: 8%"></span></div>
+          <h3>Blue Team Level 1</h3>
+          <p>
+            Certificación prevista centrada en habilidades Blue Team prácticas, análisis defensivo,
+            gestión de incidentes, operaciones de seguridad y metodología de investigación.
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+<section id="contact" class="section">
+      <div class="shell">
+        <div class="contact-card reveal">
+          <p class="kicker">Contacto</p>
+          <h2>Abierto a oportunidades junior en ciberseguridad.</h2>
+          <p>Vivo en Albacete (España). Disponible para puestos junior de operaciones IAM, SOC, operaciones IT y ciberseguridad en España o en remoto.</p>
+
+          <p class="contact-status">
+            <span class="status-dot"></span>
+            Disponible para nuevas oportunidades — suelo responder en menos de 24 h
+          </p>
+
+          <div class="actions center">
+            <a class="btn primary" href="mailto:marcosrojasjimenez2@gmail.com">Escríbeme</a>
+            <a class="btn secondary" href="https://www.linkedin.com/in/marcos-rojas-jimenez" target="_blank" rel="noopener me">LinkedIn</a>
+            <a class="btn secondary" href="https://github.com/Marcos-Rojas-Jimenez" target="_blank" rel="noopener me">GitHub</a>
+            <a class="btn ghost" href="../projects/iam-operations-cyberiam-lab/" target="_blank" rel="noopener">Proyecto IAM</a>
+            <a class="btn ghost" href="https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/" target="_blank" rel="noopener">Proyecto de seguridad del correo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell site-footer-inner">
+      <p>© 2026 <strong>Marcos Rojas Jiménez</strong> · Analista de Ciberseguridad Junior · Albacete, España</p>
+      <nav aria-label="Perfiles e idioma">
+        <a href="https://www.linkedin.com/in/marcos-rojas-jimenez" target="_blank" rel="noopener me">LinkedIn</a>
+        <a href="https://github.com/Marcos-Rojas-Jimenez" target="_blank" rel="noopener me">GitHub</a>
+        <a href="mailto:marcosrojasjimenez2@gmail.com">Email</a>
+        <a href="../" hreflang="en" lang="en">English version</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="i18n-es.js?v=20261021"></script>
+  <script src="../main.js?v=20261021"></script>
+</body>
+</html>

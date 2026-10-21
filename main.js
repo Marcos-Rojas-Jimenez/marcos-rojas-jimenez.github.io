@@ -1,4 +1,13 @@
-﻿document.body.classList.add("js-ready");
+document.body.classList.add("js-ready");
+
+/* Site root (folder that holds main.js) so asset paths also work from /es/.
+   Optional translations: a page can define window.PORTFOLIO_I18N before
+   loading this file (the Spanish page loads es/i18n-es.js). */
+const SITE_ROOT = document.currentScript && document.currentScript.src
+  ? new URL(".", document.currentScript.src).href
+  : "./";
+const I18N = window.PORTFOLIO_I18N || {};
+const i18nText = (key, fallback) => (I18N.ui && I18N.ui[key] !== undefined ? I18N.ui[key] : fallback);
 
 /* Hero portrait fallback (was an inline onerror handler; moved here so the
    Content-Security-Policy can disallow inline scripts entirely) */
@@ -273,12 +282,11 @@ if (skillSearchInput) {
 const roleElement = document.querySelector(".hero .role");
 
 if (roleElement && !prefersReducedMotion) {
-  const roles = [
-    roleElement.textContent.trim(),
+  const roles = [roleElement.textContent.trim()].concat(I18N.roles || [
     "SOC Analyst L1 · in training",
     "Blue Team Junior",
     "Email Security · SPF / DKIM / DMARC"
-  ];
+  ]);
 
   roleElement.textContent = "";
   roleElement.classList.add("typing");
@@ -555,7 +563,7 @@ if (bootPending) {
 
   const bootTip = document.createElement("p");
   bootTip.className = "boot-tip";
-  bootTip.textContent = "[ TIP ] For the best experience, view this portfolio on a computer";
+  bootTip.textContent = i18nText("bootTip", "[ TIP ] For the best experience, view this portfolio on a computer");
   boot.appendChild(bootTip);
 
   document.body.appendChild(boot);
@@ -566,7 +574,7 @@ if (bootPending) {
     "> loading SOC modules .......... OK",
     "> mounting evidence store ...... OK",
     "> DMARC policy ................. p=reject",
-    "> access granted — welcome"
+    i18nText("bootWelcome", "> access granted — welcome")
   ];
 
   let bootIndex = 0;
@@ -862,7 +870,7 @@ if (!prefersReducedMotion) {
 const backToTop = document.createElement("a");
 backToTop.className = "back-to-top";
 backToTop.href = "#home";
-backToTop.setAttribute("aria-label", "Back to top");
+backToTop.setAttribute("aria-label", i18nText("backToTop", "Back to top"));
 backToTop.innerHTML =
   '<svg viewBox="0 0 40 40" aria-hidden="true">' +
   '<circle class="ring-bg" cx="20" cy="20" r="17"></circle>' +
@@ -889,7 +897,7 @@ window.addEventListener("scroll", () => {
 const sideDotSections = ["home", ...sectionIds];
 const sideDots = document.createElement("nav");
 sideDots.className = "side-dots";
-sideDots.setAttribute("aria-label", "Section quick navigation");
+sideDots.setAttribute("aria-label", i18nText("sideDots", "Section quick navigation"));
 
 sideDotSections.forEach((id) => {
   const dot = document.createElement("a");
@@ -1078,10 +1086,11 @@ if (certLightboxImages.length) {
   const lightbox = document.createElement("div");
   lightbox.className = "cert-lightbox";
   lightbox.setAttribute("role", "dialog");
-  lightbox.setAttribute("aria-label", "Certificate viewer");
+  lightbox.setAttribute("aria-label", i18nText("certViewer", "Certificate viewer"));
 
   const lbFigure = document.createElement("figure");
   const lbImg = document.createElement("img");
+  lbImg.alt = "";
   const lbCaption = document.createElement("figcaption");
   const lbClose = document.createElement("span");
 
@@ -1239,12 +1248,19 @@ const paletteActions = [
   { label: "Go to Training", hint: "section", run: () => scrollToSection("#training") },
   { label: "Go to Certifications", hint: "section", run: () => scrollToSection("#certifications") },
   { label: "Go to Contact", hint: "section", run: () => scrollToSection("#contact") },
-  { label: "Download CV", hint: "pdf", run: () => window.open("assets/cv/marcos-rojas-jimenez-cv.pdf", "_blank", "noopener") },
+  { label: "Download CV", hint: "pdf", run: () => window.open(SITE_ROOT + "assets/cv/marcos-rojas-jimenez-cv.pdf", "_blank", "noopener") },
   { label: "Open featured case study", hint: "link", run: () => window.open("https://marcos-rojas-jimenez.github.io/phisdefense-email-security-soc/", "_blank", "noopener") },
   { label: "Open LinkedIn", hint: "link", run: () => window.open("https://www.linkedin.com/in/marcos-rojas-jimenez", "_blank", "noopener") },
   { label: "Email me", hint: "mailto", run: () => { window.location.href = "mailto:marcosrojasjimenez2@gmail.com"; } },
   { label: "Enter the matrix", hint: "easter egg", run: () => { if (window.__runMatrixRain) window.__runMatrixRain(6000); } }
 ];
+
+if (I18N.palette) {
+  paletteActions.forEach((action) => {
+    const tr = I18N.palette[action.label];
+    if (tr) action.label = tr;
+  });
+}
 
 function scrollToSection(selector) {
   const target = document.querySelector(selector);
@@ -1258,12 +1274,12 @@ const palette = document.createElement("div");
 palette.className = "cmd-palette";
 palette.setAttribute("role", "dialog");
 palette.setAttribute("aria-modal", "true");
-palette.setAttribute("aria-label", "Command palette");
+palette.setAttribute("aria-label", i18nText("paletteLabel", "Command palette"));
 palette.innerHTML =
   '<div class="cmd-panel">' +
-  '<input type="text" placeholder="Type a command or search..." aria-label="Search commands" />' +
+  '<input type="text" placeholder="' + i18nText("palettePlaceholder", "Type a command or search...") + '" aria-label="' + i18nText("paletteSearch", "Search commands") + '" />' +
   '<div class="cmd-list"></div>' +
-  '<div class="cmd-footer"><span><kbd>↑↓</kbd> navigate</span><span><kbd>Enter</kbd> run</span><span><kbd>Esc</kbd> close</span></div>' +
+  '<div class="cmd-footer"><span><kbd>↑↓</kbd> ' + i18nText("kbdNavigate", "navigate") + '</span><span><kbd>Enter</kbd> ' + i18nText("kbdRun", "run") + '</span><span><kbd>Esc</kbd> ' + i18nText("kbdClose", "close") + '</span></div>' +
   "</div>";
 document.body.appendChild(palette);
 
@@ -1286,7 +1302,7 @@ function renderPalette() {
   if (!paletteFiltered.length) {
     const empty = document.createElement("p");
     empty.className = "cmd-empty";
-    empty.textContent = "No matching commands";
+    empty.textContent = i18nText("paletteEmpty", "No matching commands");
     paletteList.appendChild(empty);
     return;
   }
@@ -1517,7 +1533,7 @@ if (planetSlots.length && window.innerWidth > 900) {
       loader.setOptions({ imageOrientation: "flipY" });
 
       const loadTex = async (file, srgb) => {
-        const bmp = await loader.loadAsync("assets/planets/" + file);
+        const bmp = await loader.loadAsync(SITE_ROOT + "assets/planets/" + file);
         const t = new THREE.Texture(bmp);
         t.flipY = false;
         t.needsUpdate = true;
@@ -2601,7 +2617,7 @@ if (fwCanvas) {
   }
 
   // additional / deeper detail per card, keyed by its heading
-  const DETAILS = {
+  const DETAILS = I18N.details || {
     "Technical Background": {
       kicker: "Foundations",
       lead: "A cybersecurity-first profile: defensive security is the focus, standing on a solid networking and systems foundation.",
@@ -2659,7 +2675,7 @@ if (fwCanvas) {
         {
           title: "Roles I'm targeting",
           items: [
-            "SOC Analyst L1 · Junior Cybersecurity Analyst · Blue Team junior.",
+            "IAM Operations junior · SOC Analyst L1 · Junior Cybersecurity Analyst · Blue Team junior.",
             "Location: Spain or fully remote."
           ]
         },
@@ -2823,7 +2839,7 @@ if (fwCanvas) {
       tags: ["Technical Documentation", "Incident Reporting", "Defensive Validation", "Data Sanitization", "Risk Awareness"]
     },
 
-    "Cybersecurity Master's Degree": {
+    "Professional Master's in Cybersecurity in IT Environments": {
       kicker: "Oct 2025 – Jun 2026 · DigitechFP (Barcelona, distancia)",
       lead: "Official Spanish specialization course — <strong>Curso de Especialización en Ciberseguridad en Entornos de las Tecnologías de la Información</strong> (Real Decreto 479/2020) — completed with a final grade of <strong>7.35</strong>.",
       modules: [
@@ -2852,7 +2868,7 @@ if (fwCanvas) {
       tags: ["Incident response", "Hardening", "Forensics", "Secure deployment", "Ethical hacking", "Compliance"]
     },
 
-    "Telecommunications and Computer Systems": {
+    "Higher Technician in Telecommunications and Computer Systems": {
       kicker: "Sep 2022 – Jun 2024 · IES Universidad Laboral",
       lead: "<strong>Técnico Superior en Sistemas de Telecomunicaciones e Informáticos</strong> (higher vocational degree, Real Decreto 883/2011) — the technical grounding that makes the security work solid.",
       sections: [
@@ -2880,7 +2896,7 @@ if (fwCanvas) {
       tags: ["Networking", "TCP/IP", "Infrastructure", "Radiocomms", "Telephony", "Project management"]
     },
 
-    "Analysis and documentation": {
+    "Professional experience": {
       kicker: "Transferable experience",
       lead: "Skills from earlier technical roles that map straight onto SOC work — the analytical muscle behind the security knowledge.",
       sections: [
@@ -2982,8 +2998,9 @@ if (fwCanvas) {
   overlay.className = "card-zoom-overlay";
   overlay.setAttribute("role", "dialog");
   overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-label", i18nText("cardDetails", "Card details"));
   overlay.innerHTML =
-    '<button class="card-zoom-close" aria-label="Close">✕</button>' +
+    '<button class="card-zoom-close" aria-label="' + i18nText("close", "Close") + '">✕</button>' +
     '<div class="card-zoom-stage">' +
     '<div class="card-zoom-original"></div>' +
     '<div class="card-zoom-detail"></div>' +
@@ -3002,7 +3019,7 @@ if (fwCanvas) {
   function buildDetail(heading) {
     const d = DETAILS[heading];
     if (!d) {
-      return "<h3>" + heading + "</h3><p>More detail coming soon.</p>";
+      return "<h3>" + heading + "</h3><p>" + i18nText("moreSoon", "More detail coming soon.") + "</p>";
     }
     let html = "";
     if (d.kicker) html += '<p class="detail-kicker">' + d.kicker + "</p>";
